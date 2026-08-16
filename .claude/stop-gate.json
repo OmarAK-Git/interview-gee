@@ -1,0 +1,25 @@
+{
+  "checks": [
+    {
+      "name": "autopilot queue exists",
+      "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath '.workflow/autopilot-queue.json' -PathType Leaf)) { exit 1 }\""
+    },
+    {
+      "name": "project brief exists",
+      "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'memory-bank/projectbrief.md' -PathType Leaf)) { exit 1 }\""
+    },
+    {
+      "name": "autopilot command exists",
+      "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath '.cursor/commands/gsd-autopilot-loop.md' -PathType Leaf)) { exit 1 }\""
+    },
+    {
+      "name": "product spec exists",
+      "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'docs/b83b4a6b-e9dc-4c74-9edc-2e0b9bf9de54-spec.md' -PathType Leaf)) { exit 1 }\""
+    },
+    {
+      "name": "implementation plan exists",
+      "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'docs/b83b4a6b-e9dc-4c74-9edc-2e0b9bf9de54-plan.md' -PathType Leaf)) { exit 1 }\""
+    }
+  ],
+  "timeout_seconds": 30
+}

@@ -1,0 +1,16 @@
+{
+  "queue_path": ".workflow/autopilot-queue.json",
+  "goal": "Bounded GSD autopilot loop for Hermes Interview Sparring Partner.",
+  "active_run": {
+    "status": "idle",
+    "item_id": null,
+    "next_runnable": "S1-T1",
+    "stop_reason": "queue_loaded_not_drained",
+    "completed_this_run": [],
+    "blocked": [],
+    "human_needed": [],
+    "evidence": [],
+    "flags": ["queue_loaded", "gate_model_grok"],
+    "updated_at": "2026-08-16T14:26:00-04:00"
+  }
+}

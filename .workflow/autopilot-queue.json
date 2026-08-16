@@ -1,0 +1,760 @@
+{
+  "schema_version": 1,
+  "controller": ".cursor/commands/gsd-autopilot-loop.md",
+  "loop_state": ".workflow/autopilot-loop/state.json",
+  "defaults": {
+    "max_tasks_per_run": "until_queue_empty",
+    "max_retries_per_task": 1,
+    "verification_scope": "task",
+    "phase_gate_verification": "explicit_queue_item_only",
+    "require_fresh_context_verifier": true,
+    "allow_parallel_implementation": false,
+    "implementation_model": "composer-2.5",
+    "verification_model": "cursor-grok-4.5-high",
+    "gate_model": "cursor-grok-4.5-high",
+    "gate_run_mode": "in_session_grok",
+    "researcher_agent": "researcher",
+    "researcher_policy": "multi_path_opportunity_cost",
+    "implementation_agent": "implementer",
+    "code_review_agent": "code-reviewer",
+    "code_review_policy": "frequent_after_implement",
+    "verification_agent": "skeptic-verifier",
+    "test_runner_agent": "test-runner",
+    "test_runner_policy": "gates_and_major_sections",
+    "active_sprint": "sprint-1"
+  },
+  "status_values": [
+    "pending",
+    "in_progress",
+    "verifying",
+    "retry",
+    "done",
+    "blocked",
+    "human_needed"
+  ],
+  "notes": {
+    "project": "Hermes Interview Sparring Partner",
+    "spec": "docs/b83b4a6b-e9dc-4c74-9edc-2e0b9bf9de54-spec.md",
+    "plan": "docs/b83b4a6b-e9dc-4c74-9edc-2e0b9bf9de54-plan.md",
+    "spec_version": "sparring-1.0.0",
+    "ship_target": "S2-GE",
+    "execution_order": "research? -> implement -> code-review? -> skeptic-verify",
+    "cut_order": "T4 question-bank, T11 free-form, T9 risk beat, T8 artifact polish; never isolation, process separation, or memory-only opener"
+  },
+  "items": [
+    {
+      "id": "S1-T1",
+      "title": "Verify the installed Hermes contract",
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "must",
+      "depends_on": [],
+      "goal": "Replace every provisional Hermes path and capability assumption with verified, fallback, or unsupported evidence.",
+      "scope": "Sprint 1 task 1 only: read-only discovery plus preflight artifacts. Do not implement weakness merge, demo sessions, or isolation enforcement beyond recording the chosen Curator strategy.",
+      "description": "Read-only discovery first. Record findings in docs/hermes-compatibility.md and replace provisional paths/commands with shared variables in scripts/demo_common.sh. Also record: who writes MEMORY.md (agent-direct vs Hermes-mediated) and whether a delimited YAML section survives a write round-trip. Pick one Curator strategy. Test first: failing preflight that checks Hermes executable/version; effective MEMORY.md and skill-dir paths; a new invocation yields a distinct session/process ID; skill loading timing; learning-loop trigger and artifact latency (measured); Curator can be paused/isolated/snapshotted; session_search observability.",
+      "code_changing": true,
+      "needs_research": true,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        "scripts/preflight.sh",
+        "scripts/demo_common.sh",
+        "docs/hermes-compatibility.md",
+        "tests/preflight.bats",
+        "memory-bank/"
+      ],
+      "acceptance_criteria": [
+        "Every required capability is reported verified, unsupported, or documented-fallback in docs/hermes-compatibility.md.",
+        "The MEMORY.md write mechanism is characterized (agent-direct vs Hermes-mediated) including whether a delimited YAML section survives a write round-trip.",
+        "One Curator strategy is recorded.",
+        "No public-doc assumption remains implicit.",
+        "tests/preflight.bats exists and encodes the required capability checks."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Test-Path -LiteralPath docs\\hermes-compatibility.md -PathType Leaf",
+          "Test-Path -LiteralPath scripts\\preflight.sh -PathType Leaf",
+          "Test-Path -LiteralPath tests\\preflight.bats -PathType Leaf",
+          "Select-String -Path docs\\hermes-compatibility.md -Pattern 'MEMORY.md|Curator|session_search|verified|unsupported|fallback' | Measure-Object | Select-Object -ExpandProperty Count"
+        ],
+        "manual_checks": []
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_dir": ".workflow/S1-T1",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    },
+    {
+      "id": "S1-T1b",
+      "title": "Enforce environment isolation",
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "must",
+      "depends_on": ["S1-T1"],
+      "goal": "Prove an automated run leaves real Hermes state unchanged.",
+      "scope": "Sprint 1 task 1b only: isolation env and tests. BUILD-BLOCKING. If isolation cannot be achieved, STOP automating against Hermes and record the hand-script decision; do not implement later Hermes-touching tasks.",
+      "description": "Assert that setting the isolation mechanism (HERMES_HOME override or existing scripts/start-wsl-isolated.sh) makes Hermes read/write a disposable directory, and that a marker file written to the real ~/.hermes is never touched by a test run. Every subsequent script and test sources the isolation env. If no override exists, tests run against a copied throwaway ~/.hermes; automation NEVER points at the real one.",
+      "code_changing": true,
+      "needs_research": true,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        "scripts/start-wsl-isolated.sh",
+        "scripts/demo_common.sh",
+        "tests/isolation.bats",
+        "docs/hermes-compatibility.md",
+        "memory-bank/"
+      ],
+      "acceptance_criteria": [
+        "An automated run provably leaves real Hermes state unchanged.",
+        "Subsequent scripts/tests are documented to source the isolation env.",
+        "If isolation cannot be achieved, a recorded decision stops automation against Hermes (hand-script only)."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Test-Path -LiteralPath tests\\isolation.bats -PathType Leaf",
+          "Test-Path -LiteralPath scripts\\demo_common.sh -PathType Leaf"
+        ],
+        "manual_checks": [
+          "Confirm isolation.bats would fail if a marker in real ~/.hermes were touched (read the test; do not run against the real profile)."
+        ]
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_dir": ".workflow/S1-T1b",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    },
+    {
+      "id": "S1-T2",
+      "title": "Weakness schema and deterministic merge",
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "must",
+      "depends_on": ["S1-T1", "S1-T1b"],
+      "goal": "Ship a deterministic MEMORY.md weakness-block merge with schema, dedup, cap, and failure-safety tests passing.",
+      "scope": "Sprint 1 task 2 only: harness-owned delimited block + atomic update. No fuzzy semantic merge. Do not implement demo sessions or candidate skills.",
+      "description": "Strict TDD on deterministic shell logic: insert complete record; reject missing fields; merge same topic/family; dedup identical source_session_id+answer_ref; increment only on new observation; preserve first_seen, update last_seen; evict oldest on 4th topic; preserve unrelated MEMORY.md content; leave original intact on validation failure. Write into the delimited block form confirmed survivable in Task 1.",
+      "code_changing": true,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        "scripts/weakness_memory.sh",
+        "tests/weakness_memory.bats",
+        "tests/fixtures/memory-empty.md",
+        "tests/fixtures/memory-three-weaknesses.md",
+        "scripts/demo_common.sh"
+      ],
+      "acceptance_criteria": [
+        "All schema, merge, dedup, cap, eviction, preservation, and failure-safety tests pass.",
+        "Unrelated MEMORY.md content is preserved.",
+        "Validation failure leaves the original block intact."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Test-Path -LiteralPath scripts\\weakness_memory.sh -PathType Leaf",
+          "Test-Path -LiteralPath tests\\weakness_memory.bats -PathType Leaf",
+          "Test-Path -LiteralPath tests\\fixtures\\memory-empty.md -PathType Leaf",
+          "Test-Path -LiteralPath tests\\fixtures\\memory-three-weaknesses.md -PathType Leaf"
+        ],
+        "manual_checks": []
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_dir": ".workflow/S1-T2",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    },
+    {
+      "id": "S1-T3",
+      "title": "Family-specific assessment contract",
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "must",
+      "depends_on": ["S1-T1b"],
+      "goal": "Make family selection and persist decisions hold within the fixture-eval tolerance.",
+      "scope": "Sprint 1 task 3 only: stable interviewer assessment contract and fixture eval. Do not implement session harness or MEMORY.md writes beyond proposing assessments.",
+      "description": "Tolerance eval, not strict equality. Strong/weak fixtures per family; assert correct family selected; weakness proposed only when >=2 required elements missing; output names missing elements + concise evidence; technical answers not scored with STAR; one missing element does not persist. Run each case N times; require it to hold in the large majority, and flag flakiness rather than hard-failing a single off-run. Spec: N=5, pass if >=4 runs match persist decision.",
+      "code_changing": true,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        "skills/crossfire-interviewer/SKILL.md",
+        "tests/fixtures/assessment-cases.md",
+        "tests/assessment_eval.bats"
+      ],
+      "acceptance_criteria": [
+        "The fixture suite reliably (within tolerance) produces expected family, missing-element, and persist decisions.",
+        "Technical answers are not scored with STAR.",
+        "One missing element does not persist; >=2 missing elements does."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Test-Path -LiteralPath skills\\crossfire-interviewer\\SKILL.md -PathType Leaf",
+          "Test-Path -LiteralPath tests\\fixtures\\assessment-cases.md -PathType Leaf",
+          "Test-Path -LiteralPath tests\\assessment_eval.bats -PathType Leaf"
+        ],
+        "manual_checks": []
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_dir": ".workflow/S1-T3",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    },
+    {
+      "id": "S1-GE",
+      "title": "Gate: platform proof + deterministic core",
+      "status": "pending",
+      "tier": "T3",
+      "type": "phase_exit",
+      "priority": "must",
+      "depends_on": ["S1-T1", "S1-T1b", "S1-T2", "S1-T3"],
+      "goal": "Confirm the platform contract is known, isolation is enforced, and core logic is testable.",
+      "scope": "Verify-only Sprint 1 phase exit; do not implement features.",
+      "description": "Sprint 1 exit: platform contract known, isolation enforced, core logic testable. Do not start session-one harness work in this item.",
+      "code_changing": false,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        ".workflow/S1-GE/",
+        "memory-bank/"
+      ],
+      "acceptance_criteria": [
+        "docs/hermes-compatibility.md records verified/unsupported/fallback for required capabilities.",
+        "Isolation tests exist and claim real ~/.hermes is untouched.",
+        "Weakness merge and assessment fixture artifacts exist."
+      ],
+      "verification": {
+        "scope": "phase_exit",
+        "commands": [
+          "Test-Path -LiteralPath docs\\hermes-compatibility.md -PathType Leaf",
+          "Test-Path -LiteralPath tests\\isolation.bats -PathType Leaf",
+          "Test-Path -LiteralPath tests\\weakness_memory.bats -PathType Leaf",
+          "Test-Path -LiteralPath tests\\assessment_eval.bats -PathType Leaf"
+        ],
+        "manual_checks": []
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_mode": "in_session_grok",
+      "run_dir": ".workflow/S1-GE",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    },
+    {
+      "id": "S2-T5",
+      "title": "Three-question demo mode with deferred persistence",
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "must",
+      "depends_on": ["S1-GE", "S1-T2", "S1-T3"],
+      "goal": "Run session one end-to-end in the isolated profile with exactly three questions and deferred automatic persistence.",
+      "scope": "Sprint 2 task 5 only: demo session one harness. Do not implement session two opener or candidate activation.",
+      "description": "E2E against the isolated profile: exactly three questions; answers read from the scripted input file; assessments buffered; MEMORY.md unchanged before the third answer completes; session completion writes qualifying observations; no confirmation; concise output. Prefer Hermes-native session state if verified, else session-ID-scoped buffer under .crossfire/run/; commit only on explicit session-complete path. After the third answer the harness invokes /done (same finalize path as typing /done).",
+      "code_changing": true,
+      "needs_research": true,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        "skills/crossfire-interviewer/SKILL.md",
+        "scripts/demo_session_1.sh",
+        "scripts/demo_common.sh",
+        "tests/demo_session_1.bats",
+        "tests/fixtures/demo-answers.txt"
+      ],
+      "acceptance_criteria": [
+        "E2E shows deferred automatic persistence.",
+        "Session one runs against installed Hermes in the isolated profile.",
+        "Exactly three questions; MEMORY.md unchanged until finalize after the third answer.",
+        "No persist confirmation prompt."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Test-Path -LiteralPath scripts\\demo_session_1.sh -PathType Leaf",
+          "Test-Path -LiteralPath tests\\demo_session_1.bats -PathType Leaf",
+          "Test-Path -LiteralPath tests\\fixtures\\demo-answers.txt -PathType Leaf"
+        ],
+        "manual_checks": []
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_dir": ".workflow/S2-T5",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    },
+    {
+      "id": "S2-T6",
+      "title": "Create and stage the unverified candidate skill",
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "must",
+      "depends_on": ["S1-T1", "S1-T1b", "S1-T2", "S2-T5"],
+      "goal": "A poor answer produces a visible provenance-linked candidate SKILL.md that is not loadable before session two.",
+      "scope": "Sprint 2 task 6 only: stage candidate outside the live skill dir and snapshot immediately. Do not load it for the opener.",
+      "description": "Candidate created/patched after completion; status: unverified; contains weakness_id, source_session_id, answer_ref, observation_count; reuses one provenance key; lands outside the loaded skill dir; snapshotted immediately on creation before any Curator window; survives to the risk beat under the chosen Curator strategy. Prefer the verified learning-loop mechanism; if Hermes writes into the live dir, snapshot immediately then disable/move the live copy reversibly. Document whether the artifact is Hermes-authored, skill-authored, or harness-relocated.",
+      "code_changing": true,
+      "needs_research": true,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        "scripts/stage_candidate_skill.sh",
+        ".crossfire/candidate-skills/.gitkeep",
+        "tests/candidate_skill.bats",
+        "skills/crossfire-interviewer/SKILL.md",
+        "docs/hermes-compatibility.md"
+      ],
+      "acceptance_criteria": [
+        "A poor answer produces a visible provenance-linked candidate SKILL.md.",
+        "A pre-session-two assertion proves it is not loadable.",
+        "If exclusion is impossible, the degraded path is recorded."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Test-Path -LiteralPath scripts\\stage_candidate_skill.sh -PathType Leaf",
+          "Test-Path -LiteralPath tests\\candidate_skill.bats -PathType Leaf",
+          "Test-Path -LiteralPath .crossfire\\candidate-skills\\.gitkeep -PathType Leaf"
+        ],
+        "manual_checks": []
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_dir": ".workflow/S2-T6",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    },
+    {
+      "id": "S2-T7",
+      "title": "Fresh-process, memory-only opener",
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "must",
+      "depends_on": ["S1-T1", "S1-T1b", "S1-T2", "S2-T5", "S2-T6"],
+      "goal": "Session two targets the persisted weakness with no naming prompt, no loaded candidate (or disclosed degraded path), and no pre-opener search.",
+      "scope": "Sprint 2 task 7 only: session-two opener. This is the demo's minimum success bar. Do not implement the risk beat.",
+      "description": "Integration: end process one; start process two with a different session ID; fail if any candidate skill is in the live dir (unless degraded path recorded); select newest weakness deterministically; print opening_target_source=MEMORY.md, weakness ID, source session before the question; ask a matching opener; detect and fail on any pre-opener session_search. Encode deterministic selection; add process/session evidence; instrument tool-call logging if supported, else structure the opener path so no archive-search action is available until selection returns.",
+      "code_changing": true,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        "scripts/demo_session_2.sh",
+        "scripts/demo_common.sh",
+        "skills/crossfire-interviewer/SKILL.md",
+        "tests/demo_session_2.bats"
+      ],
+      "acceptance_criteria": [
+        "Automated and manual runs both show session two targeting the persisted weakness.",
+        "No naming prompt, no loaded candidate (or disclosed degraded path), no pre-opener search.",
+        "Distinct process and session IDs versus session one.",
+        "Opener prints opening_target_source, weakness_id, and source_session_id before the question."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Test-Path -LiteralPath scripts\\demo_session_2.sh -PathType Leaf",
+          "Test-Path -LiteralPath tests\\demo_session_2.bats -PathType Leaf"
+        ],
+        "manual_checks": [
+          "Confirm the opener path prints opening_target_source before asking the question."
+        ]
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_dir": ".workflow/S2-T7",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    },
+    {
+      "id": "S2-GE",
+      "title": "Gate: cross-session memory-only opener",
+      "status": "pending",
+      "tier": "T3",
+      "type": "phase_exit",
+      "priority": "must",
+      "depends_on": ["S2-T5", "S2-T6", "S2-T7"],
+      "goal": "Confirm the deliverable demo: memory-only opener works across separate processes with candidate exclusion (or recorded degraded path).",
+      "scope": "Verify-only Sprint 2 phase exit; do not implement the risk beat or timed demo assembly.",
+      "description": "This is the deliverable demo gate. Do not start the risk beat until this passes.",
+      "code_changing": false,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        ".workflow/S2-GE/",
+        "memory-bank/"
+      ],
+      "acceptance_criteria": [
+        "Session two targets the weak area with no operator prompt that names it.",
+        "Candidate skill is not in the live dir at opener (or degraded path is recorded).",
+        "Session one and two are different processes and session IDs.",
+        "Tests never mutate real ~/.hermes."
+      ],
+      "verification": {
+        "scope": "phase_exit",
+        "commands": [
+          "Test-Path -LiteralPath tests\\demo_session_1.bats -PathType Leaf",
+          "Test-Path -LiteralPath tests\\demo_session_2.bats -PathType Leaf",
+          "Test-Path -LiteralPath tests\\candidate_skill.bats -PathType Leaf",
+          "Test-Path -LiteralPath tests\\isolation.bats -PathType Leaf"
+        ],
+        "manual_checks": []
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_mode": "in_session_grok",
+      "run_dir": ".workflow/S2-GE",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    },
+    {
+      "id": "S3-T4",
+      "title": "Question bank",
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "nice",
+      "depends_on": ["S1-T3"],
+      "goal": "Add a statically validated broader question bank without inventing employer facts.",
+      "scope": "Sprint 3 slot for plan Task 4. CUT FIRST under time pressure. Do not change the three never-cut demo questions.",
+      "description": "Static validation: covers McCain/Mastercard/Praetor/ALTER_EGO and all three families; every question has stable ID + declared family; demo questions concise; no invented employer facts. Three demo questions live in session-one fixtures and are never cut.",
+      "code_changing": true,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        "skills/crossfire-interviewer/questions.md",
+        "tests/question_bank.bats"
+      ],
+      "acceptance_criteria": [
+        "Static tests pass.",
+        "Three demo questions remain complete within the measured session-one budget.",
+        "No invented employer facts."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Test-Path -LiteralPath skills\\crossfire-interviewer\\questions.md -PathType Leaf",
+          "Test-Path -LiteralPath tests\\question_bank.bats -PathType Leaf"
+        ],
+        "manual_checks": []
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_dir": ".workflow/S3-T4",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    },
+    {
+      "id": "S3-T8",
+      "title": "Artifact evidence and bounded waits",
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "nice",
+      "depends_on": ["S2-T5", "S2-T6", "S2-T7"],
+      "goal": "A reviewer sees durable artifacts without filesystem navigation, with bounded timeouts.",
+      "scope": "Sprint 3 task 8 only: evidence display helpers. Cut after T4/T11/T9 if time-constrained; never wait indefinitely.",
+      "description": "Before-snapshot of MEMORY.md; print only the relevant diff after completion; print candidate skill + metadata; time out with nonzero status and useful message when an artifact is missing; never wait indefinitely.",
+      "code_changing": true,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        "scripts/demo_common.sh",
+        "tests/artifact_evidence.bats"
+      ],
+      "acceptance_criteria": [
+        "Success and timeout paths pass.",
+        "A reviewer sees the durable artifacts without filesystem navigation."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Test-Path -LiteralPath tests\\artifact_evidence.bats -PathType Leaf"
+        ],
+        "manual_checks": []
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_dir": ".workflow/S3-T8",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    },
+    {
+      "id": "S3-T9",
+      "title": "Labeled unverified-learning risk beat",
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "nice",
+      "depends_on": ["S2-T6", "S2-T7", "S3-T8"],
+      "goal": "Show the generated skill shaping a later turn without contaminating opener attribution.",
+      "scope": "Sprint 3 task 9 only. Cut if time-constrained; the opener demo stands alone. Do not start this until S2-GE would pass.",
+      "description": "Activation cannot occur before the opener completes; UNVERIFIED LEARNING RISK DEMO label + warning appear before candidate influence; candidate installs to a namespaced live path; new process started if loading is startup-only; active candidate keeps unverified metadata; candidate available in a later session unless cleaned up.",
+      "code_changing": true,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        "scripts/activate_candidate_skill.sh",
+        "scripts/demo_risk_beat.sh",
+        "tests/risk_beat.bats",
+        "docs/demo-script.md"
+      ],
+      "acceptance_criteria": [
+        "The beat visibly uses the generated skill.",
+        "It cannot contaminate opener attribution.",
+        "It truthfully presents unverified status."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Test-Path -LiteralPath scripts\\demo_risk_beat.sh -PathType Leaf",
+          "Test-Path -LiteralPath tests\\risk_beat.bats -PathType Leaf"
+        ],
+        "manual_checks": []
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_dir": ".workflow/S3-T9",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    },
+    {
+      "id": "S3-T10",
+      "title": "Assemble and time the ~90-second demo",
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "nice",
+      "depends_on": ["S2-T7", "S3-T8", "S3-T9"],
+      "goal": "Compose a full-sequence smoke that completes within 90 seconds after pre-warm.",
+      "scope": "Sprint 3 task 10 only: compose existing scripts. Do not duplicate session logic. If measured time exceeds 90s, drop one extra question-bank item before touching process separation or attribution — never drop the three demo questions.",
+      "description": "Full-sequence smoke: preflight passes; session one, restart, memory-only opener, evidence display, risk beat all complete; distinct IDs + layer labels appear; total <=90s after pre-warm; any failure exits early with a recovery instruction. Scripted bad answer unambiguously missing >=2 elements. Narrow, explicit reset/prep command that never deletes unrelated Hermes state.",
+      "code_changing": true,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        "scripts/demo.sh",
+        "tests/demo_e2e.bats",
+        "docs/demo-script.md"
+      ],
+      "acceptance_criteria": [
+        "Three consecutive rehearsals complete within 90s and produce the expected evidence and opener.",
+        "Failure exits early with a recovery instruction.",
+        "Reset/prep never deletes unrelated Hermes state."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Test-Path -LiteralPath scripts\\demo.sh -PathType Leaf",
+          "Test-Path -LiteralPath tests\\demo_e2e.bats -PathType Leaf",
+          "Test-Path -LiteralPath docs\\demo-script.md -PathType Leaf"
+        ],
+        "manual_checks": [
+          "Timed rehearsal evidence is recorded if the e2e test cannot enforce wall-clock 90s."
+        ]
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_dir": ".workflow/S3-T10",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    },
+    {
+      "id": "S3-GE",
+      "title": "Gate: evidence + risk beat",
+      "status": "pending",
+      "tier": "T3",
+      "type": "phase_exit",
+      "priority": "nice",
+      "depends_on": ["S3-T8", "S3-T9", "S3-T10"],
+      "goal": "Confirm the audience sees what was learned, which layer caused each behavior, and why ungated learning is dangerous.",
+      "scope": "Verify-only Sprint 3 phase exit. Cuttable with the sprint. Task 4 is not required to pass this gate.",
+      "description": "Sprint 3 exit. Do not implement Monday free-form or the final acceptance checklist here.",
+      "code_changing": false,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        ".workflow/S3-GE/",
+        "memory-bank/"
+      ],
+      "acceptance_criteria": [
+        "Evidence display and risk beat artifacts exist.",
+        "Demo script documents layer labels and the unverified-learning warning."
+      ],
+      "verification": {
+        "scope": "phase_exit",
+        "commands": [
+          "Test-Path -LiteralPath tests\\artifact_evidence.bats -PathType Leaf",
+          "Test-Path -LiteralPath tests\\risk_beat.bats -PathType Leaf",
+          "Test-Path -LiteralPath tests\\demo_e2e.bats -PathType Leaf"
+        ],
+        "manual_checks": []
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_mode": "in_session_grok",
+      "run_dir": ".workflow/S3-GE",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    },
+    {
+      "id": "S4-T11",
+      "title": "Free-form Monday usability",
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "nice",
+      "depends_on": ["S1-T3", "S2-T5", "S2-T6", "S2-T7", "S3-T8"],
+      "goal": "Record a manual free-form run that is useful without editing prompts or files.",
+      "scope": "Sprint 4 task 11 only. Cut second under time pressure. Do not auto-copy stage-demo weaknesses into real ~/.hermes.",
+      "description": "Non-demo run: agent continues beyond three questions; sensible no-weakness behavior; targets an existing weakness without demo-only chatter; optional session_search only after the opener and degrades gracefully; exit still flushes buffered qualifying observations.",
+      "code_changing": true,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        "tests/interactive_smoke.md",
+        "skills/crossfire-interviewer/SKILL.md",
+        "README.md"
+      ],
+      "acceptance_criteria": [
+        "A manual free-form run is recorded.",
+        "The tool is useful without editing prompts or files.",
+        "Demo weaknesses do not auto-copy into the Monday profile."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Test-Path -LiteralPath tests\\interactive_smoke.md -PathType Leaf",
+          "Test-Path -LiteralPath README.md -PathType Leaf"
+        ],
+        "manual_checks": [
+          "A recorded free-form run exists in tests/interactive_smoke.md."
+        ]
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_dir": ".workflow/S4-T11",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    },
+    {
+      "id": "S4-T12",
+      "title": "Final safety and acceptance pass",
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "must",
+      "depends_on": ["S2-GE"],
+      "goal": "Record demo-blocking acceptance evidence and known limitations for anything cut.",
+      "scope": "Sprint 4 task 12: full suite in the isolated profile plus a read-only audit. Do not point checks at real ~/.hermes. Optional sprint items are logged as known limitations if cut, not treated as blockers.",
+      "description": "Full suite in the isolated profile, then a read-only audit: real MEMORY.md has no malformed/duplicate section; candidate and stable skill namespaces cannot collide; no fixture leaked into live Hermes state; Curator handling matches the compatibility note; every demo-blocking acceptance criterion has recorded evidence.",
+      "code_changing": true,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        "docs/acceptance-checklist.md",
+        "README.md",
+        "memory-bank/"
+      ],
+      "acceptance_criteria": [
+        "Demo-blocking tests pass.",
+        "The checklist is complete.",
+        "The demo runs from a clean terminal without undocumented manual steps.",
+        "Should-pass items are logged as known limitations if cut."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Test-Path -LiteralPath docs\\acceptance-checklist.md -PathType Leaf",
+          "Test-Path -LiteralPath README.md -PathType Leaf"
+        ],
+        "manual_checks": []
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_dir": ".workflow/S4-T12",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    },
+    {
+      "id": "S4-GE",
+      "title": "Gate: final acceptance",
+      "status": "pending",
+      "tier": "T3",
+      "type": "phase_exit",
+      "priority": "must",
+      "depends_on": ["S4-T12"],
+      "goal": "Confirm demo-blocking acceptance criteria have recorded evidence and the demo is operable from a clean terminal.",
+      "scope": "Verify-only final plan gate. Cuttable sprint-4 polish must not be inferred as required if logged as known limitations.",
+      "description": "Final gate. Gate model is cursor-grok-4.5-high; never Opus.",
+      "code_changing": false,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "files_allowed": [
+        ".workflow/S4-GE/",
+        "memory-bank/"
+      ],
+      "acceptance_criteria": [
+        "docs/acceptance-checklist.md exists and covers demo-blocking criteria.",
+        "Isolation and two-process opener evidence still exist."
+      ],
+      "verification": {
+        "scope": "phase_exit",
+        "commands": [
+          "Test-Path -LiteralPath docs\\acceptance-checklist.md -PathType Leaf",
+          "Test-Path -LiteralPath tests\\demo_session_2.bats -PathType Leaf",
+          "Test-Path -LiteralPath tests\\isolation.bats -PathType Leaf"
+        ],
+        "manual_checks": []
+      },
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "run_mode": "in_session_grok",
+      "run_dir": ".workflow/S4-GE",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": []
+    }
+  ]
+}

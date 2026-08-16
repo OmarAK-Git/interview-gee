@@ -1,0 +1,53 @@
+{
+  "goal": "TODO",
+  "success_criteria": ["TODO"],
+  "constraints": [
+    "Stay within task scope",
+    "Task-scoped verification by default",
+    "Use explicit queue items for phase exits",
+    "Never mutate real ~/.hermes"
+  ],
+  "risks": [
+    {
+      "risk": "TODO",
+      "approval_required": false,
+      "mitigation": "TODO"
+    }
+  ],
+  "max_concurrent_agents": 2,
+  "max_total_agents": 6,
+  "packets": [
+    {
+      "id": "01-research",
+      "objective": "Resolve multi-path opportunity cost when triggered",
+      "ownership": "researcher",
+      "status": "pending"
+    },
+    {
+      "id": "02-implementation",
+      "objective": "Implement the scoped queue item",
+      "ownership": "implementer",
+      "status": "pending"
+    },
+    {
+      "id": "03-review",
+      "objective": "Review code-changing implementation",
+      "ownership": "code-reviewer",
+      "status": "pending"
+    },
+    {
+      "id": "04-verify",
+      "objective": "Run task-scoped verification",
+      "ownership": "skeptic-verifier",
+      "status": "pending"
+    }
+  ],
+  "verification": [
+    {
+      "check": "TODO",
+      "command": null,
+      "required": true,
+      "status": "pending"
+    }
+  ]
+}
