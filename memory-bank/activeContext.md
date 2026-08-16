@@ -2,25 +2,16 @@
 
 ## Current state
 
-Repo bootstrap is in progress. Memory-bank now projects `sparring-1.0.0`. The implementation plan is loaded into `.workflow/autopilot-queue.json`. **No implementation tasks have started.**
+Hermes Agent **v0.20.2** is installed on WSL Ubuntu (user `fish`). Isolation probe passed for **profile data** under `HERMES_HOME=.crossfire/profiles/test`. `S2-T5` is **pending** again (no longer blocked).
+
+Nous Portal is logged in on the isolated test profile. Free-tier chat works with `stepfun/step-3.7-flash:free` (paid catalog IDs 404 without credits).
 
 ## Immediate next step
 
-First runnable queue item: **S1-T1** — verify the installed Hermes contract (read-only discovery, compatibility note, preflight).
+Drain `S2-T5` (three-question demo with deferred persistence).
 
-Do not drain the loop until the operator asks.
+## Isolation facts
 
-## Constraints in force
-
-- Spec `sparring-1.0.0` wins over the plan.
-- Tests never mutate real `~/.hermes`.
-- Never cut isolation, distinct processes, three demo questions, automatic persist, or the memory-only opener.
-- All gates use `cursor-grok-4.5-high` (`in_session_grok`), never Opus.
-
-## Profiles (from spec)
-
-| Profile | Path | Used by |
-| --- | --- | --- |
-| Test | `.crossfire/profiles/test` via `HERMES_HOME` (or verified equivalent) | Automated tests |
-| Stage | `.crossfire/profiles/stage` | Live 90s demo |
-| Monday | Real `~/.hermes` | Free-form use after the event; not written by tests |
+- Real WSL `~/.hermes` is the **install** (`bin`, `hermes-agent`, `node`).
+- Disposable profile: `<repo>/.crossfire/profiles/test`.
+- Windows `%USERPROFILE%\.hermes` is absent.

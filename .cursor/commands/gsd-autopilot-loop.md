@@ -33,10 +33,10 @@ Read queue `defaults`; item fields may override:
 | `researcher` | `multi_path_opportunity_cost`: run for ≥2 viable paths, forks, ambiguous design, or close opportunity cost |
 | `implementer` | always for non-gate tasks with `implementation_model: composer-2.5` |
 | `code-reviewer` | `frequent_after_implement`: run after every code-changing implementation |
-| `skeptic-verifier` | always for task verification with `verification_model: cursor-grok-4.5-high` and fresh context |
+| `skeptic-verifier` | always for task verification with `verification_model: cursor-grok-4.6-high-fast` and fresh context |
 | `test-runner` | `gates_and_major_sections`: run at sprint/phase gates and other major-section boundaries |
 
-Gate verdict model is `cursor-grok-4.5-high`; `gate_run_mode` is `in_session_grok`. Opus unavailable; gates use Grok.
+Gate verdict model is `cursor-grok-4.6-high-fast`; `gate_run_mode` is `in_session_grok`. Opus unavailable; gates use Grok.
 
 Record which optional agents fired and why in the run plan. If a policy-triggered agent is skipped, record one line explaining why.
 
@@ -47,7 +47,7 @@ The controller orchestrates; it does not implement or verify inline.
 1. **Research?** When `needs_research` or the researcher policy fires, dispatch `researcher`; record the chosen path, alternatives, and evidence.
 2. **Implement.** Dispatch `implementer` using `composer-2.5`, limited to `files_allowed`.
 3. **Code review?** If code changed, dispatch `code-reviewer`. Blocking findings force `retry` or `blocked`; do not continue as passed.
-4. **Skeptic verify.** Set status to `verifying`, then dispatch `skeptic-verifier` using `cursor-grok-4.5-high`.
+4. **Skeptic verify.** Set status to `verifying`, then dispatch `skeptic-verifier` using `cursor-grok-4.6-high-fast`.
 
 The verifier packet contains the original goal, acceptance criteria, changed files/diff, task commands, manual checks, and result paths. Do not include the implementer's reasoning dump. Tell the verifier to treat implementation claims as unevidenced until checked and to ignore phase-level gaps for task-scoped work.
 
@@ -61,7 +61,7 @@ Without `--stop-before-gate`, gates continue in this session:
 
 1. Create the gate run directory and verification packet.
 2. Dispatch `test-runner` on `verification.commands`; save `results/test-runner-result.md`.
-3. Request the gate verdict via Task with model `cursor-grok-4.5-high` (or Grok-class in-session judgment). Do not use Opus. Save `results/verifier-result.md`.
+3. Request the gate verdict via Task with model `cursor-grok-4.6-high-fast` (or Grok-class in-session judgment). Do not use Opus. Save `results/verifier-result.md`.
 4. Update the queue only from the Grok gate verdict.
 
 Gates are verify-only; do not dispatch implementer.
@@ -90,4 +90,4 @@ Stop on queue drain, dependency waiting, task cap, `blocked`, `human_needed`, `-
 
 ## Final report
 
-Report completed item IDs and evidence, agents used/skipped with reasons, blocked/human-needed items, dependency waiting, next runnable ID, and checks run. For any gate completed in-session, confirm the gate model was `cursor-grok-4.5-high` (Opus unavailable; gates use Grok).
+Report completed item IDs and evidence, agents used/skipped with reasons, blocked/human-needed items, dependency waiting, next runnable ID, and checks run. For any gate completed in-session, confirm the gate model was `cursor-grok-4.6-high-fast` (Opus unavailable; gates use Grok).

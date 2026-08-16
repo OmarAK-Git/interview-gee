@@ -1,36 +1,22 @@
 # Tasks
 
-Projected from `docs/b83b4a6b-e9dc-4c74-9edc-2e0b9bf9de54-plan.md` into `.workflow/autopilot-queue.json`. All items are **pending**.
+Projected from the plan into `.workflow/autopilot-queue.json`.
 
-## Sprint 1 — Platform proof + deterministic core (must)
+## Sprint 1 — Platform proof + deterministic core (must) — GATED
 
-- `S1-T1` Verify the installed Hermes contract
-- `S1-T1b` Enforce environment isolation (build-blocking)
-- `S1-T2` Weakness schema and deterministic merge
-- `S1-T3` Family-specific assessment contract
-- `S1-GE` Gate: platform contract known, isolation enforced, core logic testable
+- `S1-T1` done
+- `S1-T1b` done
+- `S1-T2` done
+- `S1-T3` done
+- `S1-GE` done (pass, Grok 4.5-high)
 
-## Sprint 2 — Cross-session learning (must, deliverable demo)
+## Sprint 2 — Cross-session learning (must)
 
-- `S2-T5` Three-question demo mode with deferred persistence
-- `S2-T6` Create and stage the unverified candidate skill
-- `S2-T7` Fresh-process, memory-only opener
-- `S2-GE` Gate: memory-only opener works across separate processes
+- `S2-T5` pending — Hermes v0.20.2 installed; isolation probe passed; needs model config for live sessions
+- `S2-T6` pending (waits on T5)
+- `S2-T7` pending (waits on T5)
+- `S2-GE` pending
 
-## Sprint 3 — Evidence + risk beat (cuttable)
+## Sprint 3–4
 
-- `S3-T4` Question bank (cut first)
-- `S3-T8` Artifact evidence and bounded waits
-- `S3-T9` Labeled unverified-learning risk beat
-- `S3-T10` Assemble and time the ~90-second demo
-- `S3-GE` Gate: audience sees artifacts, layers, and ungated-learning risk
-
-## Sprint 4 — Usability + hardening (cuttable)
-
-- `S4-T11` Free-form Monday usability
-- `S4-T12` Final safety and acceptance pass
-- `S4-GE` Gate: demo-blocking acceptance with recorded evidence
-
-## Cut order (never reverse)
-
-Question-bank breadth (T4) → free-form mode (T11) → risk beat (T9) → artifact polish (T8). Never cut process separation, single-layer attribution, or environment isolation.
+Pending. Next technically runnable nice item: `S3-T4` (cut first under time pressure).

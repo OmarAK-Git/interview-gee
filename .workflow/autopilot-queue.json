@@ -10,8 +10,8 @@
     "require_fresh_context_verifier": true,
     "allow_parallel_implementation": false,
     "implementation_model": "composer-2.5",
-    "verification_model": "cursor-grok-4.5-high",
-    "gate_model": "cursor-grok-4.5-high",
+    "verification_model": "cursor-grok-4.6-high-fast",
+    "gate_model": "cursor-grok-4.6-high-fast",
     "gate_run_mode": "in_session_grok",
     "researcher_agent": "researcher",
     "researcher_policy": "multi_path_opportunity_cost",
@@ -45,7 +45,7 @@
     {
       "id": "S1-T1",
       "title": "Verify the installed Hermes contract",
-      "status": "pending",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "must",
@@ -84,14 +84,16 @@
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
       "run_dir": ".workflow/S1-T1",
-      "attempts": 0,
+      "attempts": 2,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S1-T1/results/verifier-result.md"
+      ]
     },
     {
       "id": "S1-T1b",
       "title": "Enforce environment isolation",
-      "status": "pending",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "must",
@@ -128,14 +130,16 @@
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
       "run_dir": ".workflow/S1-T1b",
-      "attempts": 0,
+      "attempts": 2,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S1-T1b/results/verifier-result.md"
+      ]
     },
     {
       "id": "S1-T2",
       "title": "Weakness schema and deterministic merge",
-      "status": "pending",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "must",
@@ -172,14 +176,16 @@
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
       "run_dir": ".workflow/S1-T2",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S1-T2/results/verifier-result.md"
+      ]
     },
     {
       "id": "S1-T3",
       "title": "Family-specific assessment contract",
-      "status": "pending",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "must",
@@ -213,14 +219,16 @@
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
       "run_dir": ".workflow/S1-T3",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S1-T3/results/verifier-result.md"
+      ]
     },
     {
       "id": "S1-GE",
       "title": "Gate: platform proof + deterministic core",
-      "status": "pending",
+      "status": "done",
       "tier": "T3",
       "type": "phase_exit",
       "priority": "must",
@@ -255,14 +263,17 @@
       "verification_agent": "skeptic-verifier",
       "run_mode": "in_session_grok",
       "run_dir": ".workflow/S1-GE",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S1-GE/results/test-runner-result.md",
+        ".workflow/S1-GE/results/verifier-result.md"
+      ]
     },
     {
       "id": "S2-T5",
       "title": "Three-question demo mode with deferred persistence",
-      "status": "pending",
+      "status": "in_progress",
       "tier": "T2",
       "type": "task",
       "priority": "must",
@@ -299,7 +310,7 @@
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
       "run_dir": ".workflow/S2-T5",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
       "evidence": []
     },
@@ -726,7 +737,7 @@
       "depends_on": ["S4-T12"],
       "goal": "Confirm demo-blocking acceptance criteria have recorded evidence and the demo is operable from a clean terminal.",
       "scope": "Verify-only final plan gate. Cuttable sprint-4 polish must not be inferred as required if logged as known limitations.",
-      "description": "Final gate. Gate model is cursor-grok-4.5-high; never Opus.",
+      "description": "Final gate. Gate model is cursor-grok-4.6-high-fast; never Opus.",
       "code_changing": false,
       "needs_research": false,
       "researcher_policy": "multi_path_opportunity_cost",

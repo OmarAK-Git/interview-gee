@@ -2,15 +2,31 @@
   "queue_path": ".workflow/autopilot-queue.json",
   "goal": "Bounded GSD autopilot loop for Hermes Interview Sparring Partner.",
   "active_run": {
-    "status": "idle",
-    "item_id": null,
-    "next_runnable": "S1-T1",
-    "stop_reason": "queue_loaded_not_drained",
-    "completed_this_run": [],
+    "status": "stopped",
+    "item_id": "S2-T5",
+    "next_runnable": "S2-T5",
+    "stop_reason": "commit_push_then_cloud; S2-T5 in_progress — finish implementer then review/verify",
+    "completed_this_run": ["S1-T1", "S1-T1b", "S1-T2", "S1-T3", "S1-GE"],
     "blocked": [],
     "human_needed": [],
-    "evidence": [],
-    "flags": ["queue_loaded", "gate_model_grok"],
-    "updated_at": "2026-08-16T14:26:00-04:00"
+    "evidence": [
+      ".workflow/S2-T5/results/install-probe.md",
+      ".workflow/S2-T5/results/researcher-result.md",
+      ".workflow/S2-T5/HANDOFF.md"
+    ],
+    "flags": [
+      "hermes_v0.20.2_wsl",
+      "hermes_home_profile_data_verified",
+      "nous_portal_free_tier",
+      "cloud_launch_failed_no_remote",
+      "local_drain_continue"
+    ],
+    "updated_at": "2026-08-16T16:38:00-04:00",
+    "current_packet": "02-implementation",
+    "dispatch": {
+      "role": "implementer",
+      "model": "composer-2.5-fast",
+      "reason": "Prior implementer aborted; finish T5 within files_allowed"
+    }
   }
 }

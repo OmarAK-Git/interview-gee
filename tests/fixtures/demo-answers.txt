@@ -1,0 +1,8 @@
+# q_technical_01 (strong)
+Problem: Praetor must recommend disposition without auto-containing production assets. Approach: the SOAR engine evaluates each alert against a never-contain list and emits advisory-only output with a hash-chained audit ledger entry for every decision. Tradeoff: we accept slower human approval instead of risky automated containment when classification confidence is borderline. Verification: replay the ledger hash chain and compare the advisory boundary flag to post-incident review—if containment would have been wrong, the never-contain match or ledger gap shows up in the verification pass.
+
+# q_behavioral_01 (bad — demo persist)
+I just kind of watched the dashboard.
+
+# q_product_01 (strong)
+User: merchants and their payment ops teams on Agent Suite (R-281517). Constraint: a false positive must not freeze checkout during rollout. Decision: stage by merchant segment—shadow mode first, then limited actuation with human approval before any automated freeze. Metric: track false-freeze rate per thousand sessions and rollback if it exceeds our agreed SLO.

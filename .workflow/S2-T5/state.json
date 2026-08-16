@@ -1,0 +1,75 @@
+{
+  "goal": "Run session one end-to-end in the isolated profile with exactly three questions and deferred automatic persistence.",
+  "success_criteria": [
+    "E2E shows deferred automatic persistence.",
+    "Session one runs against installed Hermes in the isolated profile.",
+    "Exactly three questions; MEMORY.md unchanged until finalize after the third answer.",
+    "No persist confirmation prompt."
+  ],
+  "constraints": [
+    "Stay within S2-T5 files_allowed",
+    "Task-scoped verification",
+    "Never mutate real ~/.hermes",
+    "Do not implement candidate staging or session-two opener"
+  ],
+  "risks": [
+    {
+      "risk": "Live Hermes chat writes real ~/.hermes",
+      "approval_required": false,
+      "mitigation": "Fail closed unless HERMES_HOME is under .crossfire/profiles/"
+    },
+    {
+      "risk": "Hermes memory tool rewrites MEMORY.md before finalize",
+      "approval_required": false,
+      "mitigation": "Choose disable-memory-tool or harness-only writes; throwaway profile only"
+    }
+  ],
+  "max_concurrent_agents": 2,
+  "max_total_agents": 6,
+  "packets": [
+    {
+      "id": "01-research",
+      "objective": "Resolve buffer, Hermes drive path, and test strategy",
+      "ownership": "researcher",
+      "status": "done"
+    },
+    {
+      "id": "02-implementation",
+      "objective": "Implement session-one demo harness",
+      "ownership": "implementer",
+      "status": "in_progress"
+    },
+    {
+      "id": "03-review",
+      "objective": "Review code-changing implementation",
+      "ownership": "code-reviewer",
+      "status": "pending"
+    },
+    {
+      "id": "04-verify",
+      "objective": "Run task-scoped verification",
+      "ownership": "skeptic-verifier",
+      "status": "pending"
+    }
+  ],
+  "verification": [
+    {
+      "check": "demo_session_1.sh exists",
+      "command": "Test-Path -LiteralPath scripts\\demo_session_1.sh -PathType Leaf",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "check": "demo_session_1.bats exists",
+      "command": "Test-Path -LiteralPath tests\\demo_session_1.bats -PathType Leaf",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "check": "demo-answers.txt exists",
+      "command": "Test-Path -LiteralPath tests\\fixtures\\demo-answers.txt -PathType Leaf",
+      "required": true,
+      "status": "pending"
+    }
+  ]
+}

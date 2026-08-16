@@ -37,8 +37,11 @@ credentials.json
 # Hermes / Crossfire runtime (disposable profiles and rehearsal artifacts)
 .crossfire/runs/
 .crossfire/profiles/
+.crossfire/shared/
 .hermes/
 HERMES_HOME/
+**/auth.json
+**/nous_auth.json
 
 # Bats / shell test scratch
 *.tmp

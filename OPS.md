@@ -24,8 +24,8 @@ Do not install global tools. Do not point automated tests at real `~/.hermes`. `
 ## Autopilot defaults
 
 - Implement: `implementer` / `composer-2.5`
-- Verify: `skeptic-verifier` / `cursor-grok-4.5-high`
-- Gate: `test-runner`, then Task verdict / `cursor-grok-4.5-high`
+- Verify: `skeptic-verifier` / `cursor-grok-4.6-high-fast`
+- Gate: `test-runner`, then Task verdict / `cursor-grok-4.6-high-fast`
 - Gate mode: `in_session_grok`
 - Research: `multi_path_opportunity_cost`
 - Review: `frequent_after_implement`
@@ -34,7 +34,7 @@ Do not install global tools. Do not point automated tests at real `~/.hermes`. `
 
 Order is research? → implement → code-review? → skeptic-verify. Never mark done without verifier evidence.
 
-Gate model standing order (set 2026-07-30): all gates run on Grok (`cursor-grok-4.5-high`), never Opus. Without `--stop-before-gate`, gates continue in-session.
+Gate model standing order (set 2026-08-16): all gates run on Grok (`cursor-grok-4.6-high-fast`), never Opus. Without `--stop-before-gate`, gates continue in-session.
 
 The must-ship target is Sprint 2 / Task 7 (fresh-process memory-only opener). Tasks 4 and 8–12 are quality/hardening and cut in plan order if time runs short.
 

@@ -17,7 +17,7 @@ For each runnable **gate** when `--stop-before-gate` is absent:
 
 1. Create the gate run and verification packet.
 2. Run `test-runner` on `verification.commands`.
-3. Request the gate verdict through Task using `cursor-grok-4.5-high` (Opus unavailable; gates use Grok), not the chat UI model unless the controller is already Grok-class.
+3. Request the gate verdict through Task using `cursor-grok-4.6-high-fast` (Opus unavailable; gates use Grok), not the chat UI model unless the controller is already Grok-class.
 4. Update the queue from that verdict only.
 
 ## Agent roles and defaults
@@ -27,9 +27,9 @@ For each runnable **gate** when `--stop-before-gate` is absent:
 | `researcher` | `multi_path_opportunity_cost` | Run for ≥2 viable paths, forks, ambiguity, or close trade-offs |
 | `implementer` | `composer-2.5` | Always for non-gate tasks |
 | `code-reviewer` | `frequent_after_implement` | Run after every code-changing implementation |
-| `skeptic-verifier` | `cursor-grok-4.5-high` | Always verify normal tasks from fresh context |
+| `skeptic-verifier` | `cursor-grok-4.6-high-fast` | Always verify normal tasks from fresh context |
 | `test-runner` | `gates_and_major_sections` | Run at phase gates and other major-section boundaries |
-| Gate verdict | `cursor-grok-4.5-high` | Run in-session via Task when a gate is entered (Opus unavailable; gates use Grok) |
+| Gate verdict | `cursor-grok-4.6-high-fast` | Run in-session via Task when a gate is entered (Opus unavailable; gates use Grok) |
 
 Any skipped opportunistic agent needs a one-line reason in the run plan.
 

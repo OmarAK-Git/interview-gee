@@ -1,0 +1,71 @@
+{
+  "goal": "Replace every provisional Hermes path and capability assumption with verified, fallback, or unsupported evidence.",
+  "success_criteria": [
+    "Every required capability is reported verified, unsupported, or documented-fallback in docs/hermes-compatibility.md.",
+    "The MEMORY.md write mechanism is characterized (agent-direct vs Hermes-mediated) including whether a delimited YAML section survives a write round-trip.",
+    "One Curator strategy is recorded.",
+    "No public-doc assumption remains implicit.",
+    "tests/preflight.bats exists and encodes the required capability checks."
+  ],
+  "constraints": [
+    "Stay within S1-T1 files_allowed",
+    "Task-scoped verification",
+    "Never mutate real ~/.hermes",
+    "Do not implement weakness merge, demo sessions, or isolation enforcement beyond recording Curator strategy"
+  ],
+  "risks": [
+    {
+      "risk": "Mutating real ~/.hermes during discovery",
+      "approval_required": false,
+      "mitigation": "Read-only against the live profile; disposable copies only inside the workspace"
+    }
+  ],
+  "max_concurrent_agents": 2,
+  "max_total_agents": 6,
+  "packets": [
+    {
+      "id": "01-research",
+      "objective": "Resolve Hermes contract paths and choose Curator / MEMORY.md / persistence branches",
+      "ownership": "researcher",
+      "status": "done"
+    },
+    {
+      "id": "02-implementation",
+      "objective": "Implement the scoped queue item",
+      "ownership": "implementer",
+      "status": "done"
+    },
+    {
+      "id": "03-review",
+      "objective": "Review code-changing implementation",
+      "ownership": "code-reviewer",
+      "status": "pending"
+    },
+    {
+      "id": "04-verify",
+      "objective": "Run task-scoped verification",
+      "ownership": "skeptic-verifier",
+      "status": "pending"
+    }
+  ],
+  "verification": [
+    {
+      "check": "docs/hermes-compatibility.md exists",
+      "command": "Test-Path -LiteralPath docs\\hermes-compatibility.md -PathType Leaf",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "check": "scripts/preflight.sh exists",
+      "command": "Test-Path -LiteralPath scripts\\preflight.sh -PathType Leaf",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "check": "tests/preflight.bats exists",
+      "command": "Test-Path -LiteralPath tests\\preflight.bats -PathType Leaf",
+      "required": true,
+      "status": "pending"
+    }
+  ]
+}

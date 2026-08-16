@@ -41,16 +41,16 @@ Autopilot task order: research when triggered → implement → code-review afte
 Defaults:
 
 - `implementation_model`: `composer-2.5`
-- `verification_model`: `cursor-grok-4.5-high`
-- `gate_model`: `cursor-grok-4.5-high`
+- `verification_model`: `cursor-grok-4.6-high-fast`
+- `gate_model`: `cursor-grok-4.6-high-fast`
 - `gate_run_mode`: `in_session_grok`
 - `researcher_policy`: `multi_path_opportunity_cost`
 - `code_review_policy`: `frequent_after_implement`
 - `test_runner_policy`: `gates_and_major_sections`
 
-Gate model standing order (set 2026-07-30, active until the user says otherwise): **all** gates — phase exits, sprint exits, milestone exits, and final plan gates — run on Grok (`cursor-grok-4.5-high`), never Opus.
+Gate model standing order (set 2026-08-16, active until the user says otherwise): **all** gates — phase exits, sprint exits, milestone exits, and final plan gates — run on Grok (`cursor-grok-4.6-high-fast`), never Opus.
 
-Without `--stop-before-gate`, gates continue in-session: run `test-runner` on gate commands, then the gate verdict via Task with `cursor-grok-4.5-high`. Do not rely on the chat UI model. `--stop-before-gate` still pauses before gates when requested.
+Without `--stop-before-gate`, gates continue in-session: run `test-runner` on gate commands, then the gate verdict via Task with `cursor-grok-4.6-high-fast`. Do not rely on the chat UI model. `--stop-before-gate` still pauses before gates when requested.
 
 ## Permissioned setup
 
