@@ -67,7 +67,7 @@ If the probe fails after install: **documented-fallback** → session archive + 
 | Pause / isolate Curator | Required | **documented-fallback** | Chosen strategy: **isolated** profile via `HERMES_HOME`; `hermes curator pause` not run | Isolate profile (chosen) |
 | Disable `session_search` for opener **or** log calls | Preferred | **documented-fallback** | Tool is present (`hermes doctor`). Disable-for-opener / logging not yet exercised. Spec fallback: disk artifact + distinct process | Disk artifact + distinct process |
 | Learning-loop write ≤ 8s | Preferred | **documented-fallback** | Not measured; would write profile. Spec: pre-persist before timed run | Pre-persist before timed run |
-| Exclude candidate from live dir before session two | Required | **unsupported** | Harness staging / lock not built in Task 1 | Degraded path + disclosure |
+| Exclude candidate from live dir before session two | Required | **verified** | S2-T6 researcher probe (isolated `HERMES_HOME`): file under `.crossfire/candidate-skills/` absent from `hermes skills list --source local`; `--skills` on staged path → `Unknown skill(s)`; live-dir drop is listed. Harness: `scripts/stage_candidate_skill.sh` never-write-live + snapshot-before-assert + `crossfire_assert_candidates_excluded_from_live` fail-closed | Degraded path + disclosure |
 | Skill reload without new process | Optional | **documented-fallback** | Treat as startup-only until reload proven; *public-doc (not checked against install):* memory injection startup-frozen | Start new process after opener |
 
 ## Task 1 discovery inventory (read-only)

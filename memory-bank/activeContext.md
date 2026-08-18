@@ -2,16 +2,17 @@
 
 ## Current state
 
-Hermes Agent **v0.20.2** is installed on WSL Ubuntu (user `fish`). Isolation probe passed for **profile data** under `HERMES_HOME=.crossfire/profiles/test`. `S2-T5` is **pending** again (no longer blocked).
-
-Nous Portal is logged in on the isolated test profile. Free-tier chat works with `stepfun/step-3.7-flash:free` (paid catalog IDs 404 without credits).
+**Queue drained.** Sprint 1–4 complete including S2-GE (must-ship), S3-GE, and S4-GE (final acceptance). Gate model for all in-session gates this drain: `cursor-grok-4.6-high-fast`.
 
 ## Immediate next step
 
-Drain `S2-T5` (three-question demo with deferred persistence).
+None in the autopilot queue. Optional: operator fills S4-T11 live free-form transcript; install bats if desired; live spoken 90s rehearsal with `CROSSFIRE_LIVE=1`.
 
-## Isolation facts
+## Known limitations (not demo blockers)
 
-- Real WSL `~/.hermes` is the **install** (`bin`, `hermes-agent`, `node`).
-- Disposable profile: `<repo>/.crossfire/profiles/test`.
-- Windows `%USERPROFILE%\.hermes` is absent.
+| Limitation | Status |
+| --- | --- |
+| `bats` not installed | bash-equivalents used |
+| S4-T11 live Q&A transcript | human_needed |
+| MEMORY.md YAML round-trip | probe-pending |
+| Live spoken 90s | stub ≤90s proven; live not re-measured |

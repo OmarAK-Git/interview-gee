@@ -8,6 +8,7 @@ setup() {
   TEST_ROOT="$(mktemp -d "${BATS_TMPDIR:-/tmp}/crossfire-s1.XXXXXX")"
   export HERMES_HOME="${TEST_ROOT}/.crossfire/profiles/test"
   mkdir -p "${HERMES_HOME}/memories"
+  export CROSSFIRE_RUNS_DIR="${TEST_ROOT}/runs"
   export CROSSFIRE_ASSESSOR=stub
   export CROSSFIRE_HERMES_DISCOVERY=0
   # shellcheck disable=SC1091
@@ -25,12 +26,14 @@ demo_memory_fp() {
 
 demo_run_harness() {
   env HERMES_HOME="$HERMES_HOME" \
+    CROSSFIRE_RUNS_DIR="$CROSSFIRE_RUNS_DIR" \
     CROSSFIRE_ASSESSOR=stub CROSSFIRE_HERMES_DISCOVERY=0 \
     bash "$DEMO_SCRIPT"
 }
 
 demo_run_defer_finalize() {
   env HERMES_HOME="$HERMES_HOME" \
+    CROSSFIRE_RUNS_DIR="$CROSSFIRE_RUNS_DIR" \
     CROSSFIRE_ASSESSOR=stub CROSSFIRE_HERMES_DISCOVERY=0 \
     CROSSFIRE_DEFER_FINALIZE=1 \
     bash "$DEMO_SCRIPT"
@@ -39,6 +42,7 @@ demo_run_defer_finalize() {
 demo_finalize_run() {
   local run_id="$1"
   env HERMES_HOME="$HERMES_HOME" \
+    CROSSFIRE_RUNS_DIR="$CROSSFIRE_RUNS_DIR" \
     CROSSFIRE_ASSESSOR=stub CROSSFIRE_HERMES_DISCOVERY=0 \
     CROSSFIRE_FINALIZE_RUN_ID="$run_id" \
     bash "$DEMO_SCRIPT"
@@ -113,7 +117,7 @@ demo_finalize_run() {
   local run_id spool_dir
   run_id=$(grep '^CROSSFIRE_RUN_ID=' <<<"$output" | tail -1 | cut -d= -f2)
   [ -n "$run_id" ]
-  spool_dir="${REPO_ROOT}/.crossfire/runs/${run_id}/spool"
+  spool_dir="${CROSSFIRE_RUNS_DIR}/${run_id}/spool"
   [ -d "$spool_dir" ]
   [ -f "${spool_dir}/q_technical_01.yaml" ]
   [ -f "${spool_dir}/q_behavioral_01.yaml" ]
@@ -142,17 +146,55 @@ demo_finalize_run() {
 }
 
 @test "/done finalize uses same function as post-Q3 auto-finalize" {
-  grep -q 'crossfire_session_one_finalize' "$DEMO_SCRIPT"
-  local count
-  count=$(grep -c 'crossfire_session_one_finalize' "$DEMO_SCRIPT" || true)
-  [ "$count" -ge 2 ]
+  # Harness /done equivalent: CROSSFIRE_FINALIZE_RUN_ID → crossfire_session_one_finalize
+  # (Hermes has no /done command). Post-Q3 auto-finalize must share persist side effects.
+  local run_id blocks_auto blocks_done
+  run demo_run_harness
+  [ "$status" -eq 0 ]
+  blocks_auto=$(grep -c 'weakness_id:' "$HERMES_MEMORY_MD" 2>/dev/null || echo 0)
+  [ "$blocks_auto" -eq 1 ]
+  rm -f "$HERMES_MEMORY_MD"
   run demo_run_defer_finalize
   [ "$status" -eq 0 ]
-  local run_id
   run_id=$(grep '^CROSSFIRE_RUN_ID=' <<<"$output" | tail -1 | cut -d= -f2)
   run demo_finalize_run "$run_id"
   [ "$status" -eq 0 ]
   [[ "$output" == *"CROSSFIRE: session one finalized"* ]]
+  blocks_done=$(grep -c 'weakness_id:' "$HERMES_MEMORY_MD" 2>/dev/null || echo 0)
+  [ "$blocks_done" -eq 1 ]
+  grep -q "I just kind of watched the dashboard" "$HERMES_MEMORY_MD"
+}
+
+@test "live-shaped spool YAML with preamble finalizes and persists" {
+  local run_id spool_dir raw proposal bad_answer
+  bad_answer='I just kind of watched the dashboard.'
+  run_id="live_shape_001"
+  spool_dir="${CROSSFIRE_RUNS_DIR}/${run_id}/spool"
+  mkdir -p "$spool_dir"
+  raw="$(cat <<EOF
+The user wants me to assess an interview Q+A pair using the crossfire-interviewer skill.
+family: this is a behavioral question about STAR elements
+I should emit propose-only YAML.
+
+family: behavioral
+missing_elements: [action, result]
+evidence:
+  kind: quote
+  value: "I just kind of watched the dashboard."
+persist_recommended: true
+question_id: q_behavioral_01
+answer_ref: <run_id>/q_behavioral_01/0
+EOF
+)"
+  proposal=$(crossfire_normalize_live_proposal "$raw" "q_behavioral_01" "$bad_answer" "$run_id" "sess_live_test")
+  [ -n "$proposal" ]
+  grep -q '^submitted_answer:' <<<"$proposal"
+  printf '%s\n' "$proposal" >"${spool_dir}/q_behavioral_01.yaml"
+  run demo_finalize_run "$run_id"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"CROSSFIRE: session one finalized"* ]]
+  grep -q "$bad_answer" "$HERMES_MEMORY_MD"
+  grep -q "sess_live_test" "$HERMES_MEMORY_MD"
 }
 
 @test "stub q_behavioral_01 bad answer persists on finalize" {
@@ -194,9 +236,10 @@ demo_finalize_run() {
 
 @test "CROSSFIRE_LIVE=1 with discovery disabled fails closed" {
   run env CROSSFIRE_LIVE=1 CROSSFIRE_HERMES_DISCOVERY=0 HERMES_HOME="$HERMES_HOME" \
+    CROSSFIRE_RUNS_DIR="$CROSSFIRE_RUNS_DIR" \
     bash "$DEMO_SCRIPT"
   [ "$status" -ne 0 ]
-  [[ "$output" == *"FAIL CLOSED"* ]] || [[ "$output" == *"not discoverable"* ]]
+  [[ "$output" == *"PREFLIGHT FAIL"* ]] || [[ "$output" == *"not discoverable"* ]]
 }
 
 @test "live skip when Hermes missing is not documented as E2E pass" {
@@ -204,9 +247,11 @@ demo_finalize_run() {
   grep -q 'fail closed' "$REPO_ROOT/skills/crossfire-interviewer/SKILL.md"
 }
 
-@test "demo_session_1.bats uses discover_hermes_bin not direct hermes exec in tests" {
-  grep -q 'discover_hermes_bin' "$BATS_TEST_FILENAME"
-  local direct
-  direct=$(grep -vE '^\s*#' "$BATS_TEST_FILENAME" | grep -E '(^|[;&|])[[:space:]]*hermes[[:space:]]' || true)
-  [ -z "$direct" ]
+@test "product scripts use discover helpers; tests never exec hermes directly" {
+  grep -q 'discover_hermes_bin' "$DEMO_COMMON"
+  grep -q 'crossfire_discover_hermes_or_fail_closed' "$DEMO_COMMON"
+  grep -q 'crossfire_discover_hermes_or_fail_closed' "$DEMO_SCRIPT"
+  local direct_in_tests
+  direct_in_tests=$(grep -vE '^\s*#' "$BATS_TEST_FILENAME" | grep -E '(^|[;&|])[[:space:]]*hermes[[:space:]]' || true)
+  [ -z "$direct_in_tests" ]
 }

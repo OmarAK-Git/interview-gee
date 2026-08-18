@@ -38,6 +38,9 @@ credentials.json
 .crossfire/runs/
 .crossfire/profiles/
 .crossfire/shared/
+.crossfire/candidate-skills/**
+!.crossfire/candidate-skills/.gitkeep
+.hermes/
 .hermes/
 HERMES_HOME/
 **/auth.json

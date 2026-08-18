@@ -2,21 +2,26 @@
 
 Projected from the plan into `.workflow/autopilot-queue.json`.
 
-## Sprint 1 — Platform proof + deterministic core (must) — GATED
+## Sprint 1 — GATED
 
-- `S1-T1` done
-- `S1-T1b` done
-- `S1-T2` done
-- `S1-T3` done
-- `S1-GE` done (pass, Grok 4.5-high)
+- `S1-T1` … `S1-GE` done
 
-## Sprint 2 — Cross-session learning (must)
+## Sprint 2 — Cross-session learning (must) — GATED
 
-- `S2-T5` pending — Hermes v0.20.2 installed; isolation probe passed; needs model config for live sessions
-- `S2-T6` pending (waits on T5)
-- `S2-T7` pending (waits on T5)
-- `S2-GE` pending
+- `S2-T5` … `S2-GE` done (pass, Grok 4.6-high)
 
-## Sprint 3–4
+## Sprint 3 — Evidence + risk beat (nice) — GATED
 
-Pending. Next technically runnable nice item: `S3-T4` (cut first under time pressure).
+- `S3-T4` done
+- `S3-T8` done
+- `S3-T9` done
+- `S3-T10` done
+- `S3-GE` done (pass, Grok 4.6-high)
+
+## Sprint 4 — Acceptance (must) — GATED
+
+- `S4-T11` done — live transcript **human_needed** (not demo blocker)
+- `S4-T12` done
+- `S4-GE` done (pass, Grok 4.6-high)
+
+Queue empty. No next runnable.

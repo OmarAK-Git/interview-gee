@@ -229,7 +229,7 @@ if is_real_hermes_home "${HERMES_HOME}"; then
   fail_closed "HERMES_HOME points at real profile: $HERMES_HOME"
 fi
 
-CROSSFIRE_RUNS_DIR="${REPO_ROOT}/.crossfire/runs"
+CROSSFIRE_RUNS_DIR="${CROSSFIRE_RUNS_DIR:-${REPO_ROOT}/.crossfire/runs}"
 CROSSFIRE_DEMO_ANSWERS="${REPO_ROOT}/tests/fixtures/demo-answers.txt"
 CROSSFIRE_SKILL_PATH="${REPO_ROOT}/skills/crossfire-interviewer"
 CROSSFIRE_LIVE_ASSESSOR_RETRIES="${CROSSFIRE_LIVE_ASSESSOR_RETRIES:-3}"
@@ -433,5 +433,417 @@ crossfire_spool_should_persist() {
 
 crossfire_spool_field() {
   local file="${1:-}" field="${2:-}"
-  grep -E "^${field}:" "$file" 2>/dev/null | head -1 | sed -E "s/^${field}:[[:space:]]*//"
+  grep -E "^${field}:" "$file" 2>/dev/null | head -1 | sed -E "s/^${field}:[[:space:]]*//" || true
+}
+
+crossfire_extract_yaml_from_live_stdout() {
+  local raw="${1:-}"
+  [ -n "$raw" ] || return 1
+  printf '%s\n' "$raw" | awk '
+    BEGIN { in_fence=0; block=""; last="" }
+    function is_family_line(line) {
+      return line ~ /^family: (behavioral|technical|product)$/
+    }
+    function is_yaml_line(line) {
+      if (line ~ /^$/) return 1
+      if (line ~ /^  /) return 1
+      if (is_family_line(line)) return 1
+      if (line ~ /^(missing_elements|evidence|persist_recommended|question_id|answer_ref|source_session_id|submitted_answer):/) return 1
+      return 0
+    }
+    function save_block() {
+      if (block != "") last=block
+      block=""
+      in_block=0
+    }
+    /^```/ {
+      if (in_fence) {
+        in_fence=0
+        if (in_block) save_block()
+        next
+      }
+      in_fence=1
+      if (in_block) save_block()
+      next
+    }
+    {
+      if (in_fence || 1) {
+        if (is_family_line($0)) {
+          if (in_block) save_block()
+          in_block=1
+          block=$0
+          next
+        }
+        if (in_block) {
+          if (is_yaml_line($0)) {
+            block=block ORS $0
+          } else {
+            save_block()
+          }
+        }
+      }
+    }
+    END {
+      if (in_block) save_block()
+      if (last != "") print last
+    }
+  '
+}
+
+crossfire_strip_spool_harness_fields() {
+  awk '
+    BEGIN { in_sub=0 }
+    /^submitted_answer:/ { in_sub=1; next }
+    in_sub {
+      if ($0 ~ /^[^ ]/) { in_sub=0 } else { next }
+    }
+    /^(question_id|answer_ref|source_session_id):/ { next }
+    { print }
+  '
+}
+
+crossfire_overlay_spool_harness_fields() {
+  local yaml="${1:-}" qid="${2:-}" answer="${3:-}" run_id="${4:-}" session_id="${5:-}"
+  local answer_ref stripped
+  [ -n "$yaml" ] || return 1
+  [ -n "$qid" ] || return 1
+  [ -n "$run_id" ] || return 1
+  answer_ref="${run_id}/${qid}/0"
+  session_id="${session_id:-sess_live}"
+  stripped=$(printf '%s\n' "$yaml" | crossfire_strip_spool_harness_fields)
+  printf '%s\n' "$stripped"
+  printf 'question_id: %s\n' "$qid"
+  printf 'answer_ref: %s\n' "$answer_ref"
+  printf 'source_session_id: %s\n' "$session_id"
+  printf 'submitted_answer: |\n'
+  printf '%s\n' "$answer" | sed 's/^/  /'
+}
+
+crossfire_normalize_live_proposal() {
+  local raw="${1:-}" qid="${2:-}" answer="${3:-}" run_id="${4:-}" session_id="${5:-}"
+  local extracted=""
+  extracted=$(crossfire_extract_yaml_from_live_stdout "$raw") || return 1
+  [ -n "$extracted" ] || return 1
+  crossfire_overlay_spool_harness_fields "$extracted" "$qid" "$answer" "$run_id" "$session_id"
+}
+
+# Session-two opener helpers (spec §9 selection, §13 directive). Requires weakness_memory.sh sourced.
+crossfire_weakness_sort_key_select() {
+  local record="$1"
+  local last_seen obs wid
+  last_seen=$(crossfire_weakness_record_field "$record" 7)
+  obs=$(crossfire_weakness_record_field "$record" 8)
+  wid=$(crossfire_weakness_record_field "$record" 1)
+  printf '%s\t%s\t%s\t%s\n' "$last_seen" "$obs" "$wid" "$record"
+}
+
+crossfire_select_newest_weakness() {
+  local memory_md="${1:-$HERMES_MEMORY_MD}"
+  local before block after record line
+  local -a records=()
+
+  [ -f "$memory_md" ] || fail_closed "MEMORY.md missing: $memory_md"
+
+  before=$(mktemp)
+  block=$(mktemp)
+  after=$(mktemp)
+
+  crossfire_weakness_split_memory_file "$memory_md" "$before" "$block" "$after"
+  while IFS= read -r line || [ -n "$line" ]; do
+    [ -n "$line" ] && records+=("$line")
+  done < <(crossfire_weakness_parse_block_records "$block")
+
+  rm -f "$before" "$block" "$after"
+
+  if [ "${#records[@]}" -eq 0 ]; then
+    fail_closed "no weaknesses in MEMORY.md block"
+  fi
+
+  record=$(
+    for line in "${records[@]}"; do
+      crossfire_weakness_sort_key_select "$line"
+    done | sort -t $'\t' -k1,1r -k2,2nr -k3,3 | head -1 | cut -f4-
+  )
+  [ -n "$record" ] || fail_closed "could not select newest weakness"
+
+  CROSSFIRE_OPENER_TARGET_SOURCE=MEMORY.md
+  CROSSFIRE_OPENER_WEAKNESS_ID=$(crossfire_weakness_record_field "$record" 1)
+  CROSSFIRE_OPENER_FAMILY=$(crossfire_weakness_record_field "$record" 2)
+  CROSSFIRE_OPENER_MISSING_CSV=$(crossfire_weakness_record_field "$record" 5)
+  CROSSFIRE_OPENER_SOURCE_SESSION_ID=$(crossfire_weakness_record_field "$record" 9)
+  export CROSSFIRE_OPENER_TARGET_SOURCE CROSSFIRE_OPENER_WEAKNESS_ID
+  export CROSSFIRE_OPENER_FAMILY CROSSFIRE_OPENER_MISSING_CSV CROSSFIRE_OPENER_SOURCE_SESSION_ID
+
+  printf 'opening_target_source=%s\n' "$CROSSFIRE_OPENER_TARGET_SOURCE"
+  printf 'weakness_id=%s\n' "$CROSSFIRE_OPENER_WEAKNESS_ID"
+  printf 'family=%s\n' "$CROSSFIRE_OPENER_FAMILY"
+  printf 'missing_elements=%s\n' "$CROSSFIRE_OPENER_MISSING_CSV"
+  printf 'source_session_id=%s\n' "$CROSSFIRE_OPENER_SOURCE_SESSION_ID"
+}
+
+crossfire_print_opener_attribution() {
+  crossfire_select_newest_weakness "$HERMES_MEMORY_MD" >/dev/null
+  printf 'opening_target_source=%s\n' "$CROSSFIRE_OPENER_TARGET_SOURCE"
+  printf 'weakness_id=%s\n' "$CROSSFIRE_OPENER_WEAKNESS_ID"
+  printf 'family=%s\n' "$CROSSFIRE_OPENER_FAMILY"
+  printf 'source_session_id=%s\n' "$CROSSFIRE_OPENER_SOURCE_SESSION_ID"
+  printf '%s\n' 'target selected by prompt memory; wording generated under stable interviewer procedure'
+}
+
+crossfire_build_opener_cmdline() {
+  local weakness_id="${1:-}" family="${2:-}" missing_csv="${3:-}"
+  local opening_target_source="${4:-MEMORY.md}"
+  local skill_ref="${5:-${CROSSFIRE_SKILL_PATH}}"
+  local qtext qqtext qskill cmd=""
+  qtext=$(printf '%s' \
+    "Session-two opener. opening_target_source=${opening_target_source} weakness_id=${weakness_id} family=${family} missing_elements=[${missing_csv// /}]. Turn this directive into one interview question that targets the missing elements for the ${family} family. Do not name weakness_id or ask the operator to pick a topic." \
+    | tr '\n' ' ')
+  qqtext=$(printf '%q' "$qtext")
+  qskill=$(printf '%q' "$skill_ref")
+  cmd="hermes chat -Q -q ${qqtext} --max-turns 1 --toolsets skills --skills ${qskill} --source tool"
+  printf '%s' "$cmd"
+}
+
+crossfire_stub_opener_question() {
+  local family="${1:-}" missing_csv="${2:-}"
+  case "$family" in
+    behavioral)
+      if [[ "$missing_csv" == *action* ]] && [[ "$missing_csv" == *result* ]]; then
+        printf '%s' 'Tell me about a time a detection you owned was wrong — specifically, what action did you take and what measurable result followed?'
+      else
+        printf '%s' "For this behavioral follow-up, cover the missing elements (${missing_csv// /, }) with concrete situation, task, action, and result."
+      fi
+      ;;
+    technical)
+      printf '%s' "Walk through the technical gap around ${missing_csv// /, }: state the problem, your approach, the tradeoffs you weighed, and how you would verify the outcome."
+      ;;
+    product)
+      printf '%s' "For the product decision gap (${missing_csv// /, }), who is the user, what constraint bound you, what did you decide, and which metric would prove it worked?"
+      ;;
+    *)
+      fail_closed "unknown opener family: $family"
+      ;;
+  esac
+}
+
+crossfire_assert_distinct_process_and_session() {
+  local s2_pid="${1:-$$}"
+  local s2_sid="${2:-}"
+  local s1_pid="${CROSSFIRE_SESSION_ONE_PID:-}"
+  local s1_sid="${CROSSFIRE_SESSION_ONE_ID:-}"
+
+  if [ -n "$s1_pid" ] && [ "$s1_pid" = "$s2_pid" ]; then
+    fail_closed "session two process ID must differ from session one (${s1_pid})"
+  fi
+  if [ -n "$s1_sid" ] && [ -n "$s2_sid" ] && [ "$s1_sid" = "$s2_sid" ]; then
+    fail_closed "session two session ID must differ from session one (${s1_sid})"
+  fi
+  printf 'session_identifiability: distinct process=%s session=%s (session_one=%s/%s)\n' \
+    "$s2_pid" "$s2_sid" "${s1_pid:-unset}" "${s1_sid:-unset}"
+}
+
+# Artifact evidence (spec §7 step 4, plan task 8): bounded waits, reviewer-facing prints.
+CROSSFIRE_WEAKNESS_BLOCK_START='<!-- CROSSFIRE-WEAKNESSES:START -->'
+CROSSFIRE_WEAKNESS_BLOCK_END='<!-- CROSSFIRE-WEAKNESSES:END -->'
+CROSSFIRE_ARTIFACT_TIMEOUT_SEC="${CROSSFIRE_ARTIFACT_TIMEOUT_SEC:-8}"
+CROSSFIRE_ARTIFACT_POLL_SEC="${CROSSFIRE_ARTIFACT_POLL_SEC:-0.2}"
+
+crossfire_artifact_memory_before_path() {
+  local run_id="${1:-}"
+  [ -n "$run_id" ] || return 1
+  printf '%s/%s/memory-before.md' "$CROSSFIRE_RUNS_DIR" "$run_id"
+}
+
+crossfire_artifact_candidate_skills_root() {
+  if declare -F crossfire_candidate_skills_root >/dev/null 2>&1; then
+    crossfire_candidate_skills_root
+  elif [ -n "${CROSSFIRE_CANDIDATE_SKILLS_ROOT:-}" ]; then
+    printf '%s' "$CROSSFIRE_CANDIDATE_SKILLS_ROOT"
+  else
+    printf '%s' "${REPO_ROOT}/.crossfire/candidate-skills"
+  fi
+}
+
+crossfire_snapshot_memory_md_before() {
+  local run_id="${1:-}" memory_md="${2:-$HERMES_MEMORY_MD}"
+  local dest run_dir
+
+  [ -n "$run_id" ] || fail_closed "run_id required for memory before-snapshot"
+  crossfire_require_isolated_hermes_home
+  run_dir="${CROSSFIRE_RUNS_DIR}/${run_id}"
+  mkdir -p "$run_dir"
+  dest=$(crossfire_artifact_memory_before_path "$run_id")
+  if [ -f "$memory_md" ]; then
+    cp -f "$memory_md" "$dest"
+  else
+    : >"$dest"
+  fi
+  printf '%s\n' "$dest"
+}
+
+crossfire_extract_weakness_block_to_file() {
+  local src="${1:-}" dest="${2:-}"
+  local start="$CROSSFIRE_WEAKNESS_BLOCK_START" end="$CROSSFIRE_WEAKNESS_BLOCK_END"
+
+  [ -n "$src" ] || return 1
+  [ -n "$dest" ] || return 1
+  : >"$dest"
+  [ -f "$src" ] || return 0
+
+  awk -v start="$start" -v end="$end" -v dest="$dest" '
+    BEGIN { in_block=0 }
+    {
+      sub(/\r$/, "")
+      if ($0 == start) { in_block=1; print > dest; next }
+      if ($0 == end) { if (in_block) print > dest; in_block=0; next }
+      if (in_block) print > dest
+    }
+  ' "$src"
+}
+
+crossfire_memory_weakness_block_changed() {
+  local before_snapshot="${1:-}" memory_md="${2:-$HERMES_MEMORY_MD}"
+  local b1 b2
+
+  [ -f "$before_snapshot" ] || return 1
+  b1=$(mktemp)
+  b2=$(mktemp)
+  crossfire_extract_weakness_block_to_file "$before_snapshot" "$b1"
+  crossfire_extract_weakness_block_to_file "$memory_md" "$b2"
+  if cmp -s "$b1" "$b2" 2>/dev/null; then
+    rm -f "$b1" "$b2"
+    return 1
+  fi
+  rm -f "$b1" "$b2"
+  return 0
+}
+
+crossfire_resolve_run_candidate_skill() {
+  local run_id="${1:-}"
+  local flag line root candidate
+
+  [ -n "$run_id" ] || return 1
+  flag="${CROSSFIRE_RUNS_DIR}/${run_id}/candidate-excluded.flag"
+  if [ -f "$flag" ]; then
+    while IFS= read -r line || [ -n "$line" ]; do
+      [ -n "$line" ] || continue
+      if [ -f "$line" ]; then
+        printf '%s' "$line"
+        return 0
+      fi
+    done <"$flag"
+    return 1
+  fi
+
+  root=$(crossfire_artifact_candidate_skills_root)
+  while IFS= read -r candidate; do
+    [ -f "$candidate" ] || continue
+    if grep -qE "^answer_ref: ${run_id}/" "$candidate" 2>/dev/null; then
+      printf '%s' "$candidate"
+      return 0
+    fi
+  done < <(find "$root" -name 'SKILL.md' -type f 2>/dev/null)
+  return 1
+}
+
+crossfire_run_candidate_skill_ready() {
+  local run_id="${1:-}"
+  local path=""
+  path=$(crossfire_resolve_run_candidate_skill "$run_id" 2>/dev/null) || return 1
+  [ -n "$path" ] && [ -f "$path" ]
+}
+
+crossfire_wait_for_artifact() {
+  local label="${1:-artifact}"
+  local timeout_sec="${2:-${CROSSFIRE_ARTIFACT_TIMEOUT_SEC:-8}}"
+  shift 2
+  local start_ts now_ts elapsed
+
+  [ "$#" -gt 0 ] || return 1
+  start_ts=$(date +%s 2>/dev/null || date -u +%s)
+  while true; do
+    if "$@"; then
+      return 0
+    fi
+    now_ts=$(date +%s 2>/dev/null || date -u +%s)
+    elapsed=$((now_ts - start_ts))
+    if [ "$elapsed" -ge "$timeout_sec" ]; then
+      echo "artifact_evidence: timeout waiting for ${label} after ${timeout_sec}s" >&2
+      return 1
+    fi
+    sleep "$CROSSFIRE_ARTIFACT_POLL_SEC"
+  done
+}
+
+crossfire_print_weakness_block_diff() {
+  local before_snapshot="${1:-}" memory_md="${2:-$HERMES_MEMORY_MD}"
+  local before_block after_block
+
+  [ -f "$before_snapshot" ] || {
+    echo "artifact_evidence: before-snapshot missing: ${before_snapshot}" >&2
+    return 1
+  }
+  before_block=$(mktemp)
+  after_block=$(mktemp)
+  crossfire_extract_weakness_block_to_file "$before_snapshot" "$before_block"
+  crossfire_extract_weakness_block_to_file "$memory_md" "$after_block"
+  printf 'artifact_evidence: MEMORY.md weakness-block diff\n'
+  if [ ! -s "$before_block" ] && [ ! -s "$after_block" ]; then
+    printf '(no weakness block in before or after)\n'
+  elif cmp -s "$before_block" "$after_block" 2>/dev/null; then
+    printf '(weakness block unchanged)\n'
+  else
+    diff -u --label 'memory-before (weakness block)' --label 'memory-after (weakness block)' \
+      "$before_block" "$after_block" || true
+  fi
+  rm -f "$before_block" "$after_block"
+}
+
+crossfire_print_candidate_artifact() {
+  local skill_path="${1:-}"
+
+  [ -n "$skill_path" ] || {
+    echo "artifact_evidence: candidate skill path required" >&2
+    return 1
+  }
+  [ -f "$skill_path" ] || {
+    echo "artifact_evidence: candidate skill missing: ${skill_path}" >&2
+    return 1
+  }
+
+  printf 'artifact_evidence: staged candidate skill\n'
+  printf 'candidate_path=%s\n' "$skill_path"
+  grep -E '^(id|name|status|weakness_id|source_session_id|answer_ref|observation_count|target_family|missing_elements):' \
+    "$skill_path" || true
+  printf '%s\n' '--- candidate SKILL.md ---'
+  cat "$skill_path"
+}
+
+crossfire_print_artifact_evidence() {
+  local run_id="${1:-}" memory_md="${2:-$HERMES_MEMORY_MD}"
+  local before_snapshot candidate_path timeout_sec
+
+  [ -n "$run_id" ] || fail_closed "run_id required for artifact evidence"
+  crossfire_require_isolated_hermes_home
+  timeout_sec="${CROSSFIRE_ARTIFACT_TIMEOUT_SEC:-8}"
+  before_snapshot=$(crossfire_artifact_memory_before_path "$run_id")
+
+  if [ ! -f "$before_snapshot" ]; then
+    echo "artifact_evidence: missing before-snapshot (call crossfire_snapshot_memory_md_before first): ${before_snapshot}" >&2
+    return 1
+  fi
+
+  if ! crossfire_wait_for_artifact "MEMORY.md weakness-block change" "$timeout_sec" \
+    crossfire_memory_weakness_block_changed "$before_snapshot" "$memory_md"; then
+    return 1
+  fi
+
+  if ! crossfire_wait_for_artifact "staged candidate SKILL.md" "$timeout_sec" \
+    crossfire_run_candidate_skill_ready "$run_id"; then
+    return 1
+  fi
+
+  candidate_path=$(crossfire_resolve_run_candidate_skill "$run_id")
+  crossfire_print_weakness_block_diff "$before_snapshot" "$memory_md"
+  crossfire_print_candidate_artifact "$candidate_path"
 }

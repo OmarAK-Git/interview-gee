@@ -67,13 +67,13 @@ answer_ref: <run_id>/q_behavioral_01/0
 
 Set `persist_recommended: true` only when `count(missing_elements) >= 2`. When exactly one element is missing, set `persist_recommended: false`. When `missing_elements` is empty, set `persist_recommended: false`.
 
-Do **not** write the delimited weakness block in `MEMORY.md`. Do **not** stage candidate skills. Emit proposals only.
+Do **not** write the delimited weakness block in `MEMORY.md`. Do **not** stage candidate skills (the session-one harness owns staging via `scripts/stage_candidate_skill.sh` on finalize). Emit proposals only.
 
 ## Forbidden behaviors
 
 - Mixed-family scoring (applying more than one family's checklist to a single answer).
 - Scoring `technical` answers with STAR element names.
-- Writing or merging into `MEMORY.md` or `.crossfire/candidate-skills/`.
+- Writing or merging into `MEMORY.md` or `.crossfire/candidate-skills/` (harness-owned staging on finalize).
 - Inventing employer facts beyond the source material (McCain Foods, Mastercard R-281517, Project Praetor, Project ALTER_EGO).
 - Treating the operator's confirmation as required for persistence.
 
@@ -113,6 +113,8 @@ Ask and assess in this order only: `q_technical_01` (technical), `q_behavioral_0
 
 During session one, emit **propose-only YAML** to stdout (live `-Q`) or accept stub proposals. The harness writes each proposal under `.crossfire/runs/<run_id>/spool/` and **does not** call `crossfire_persist_weakness` until finalize.
 
+The harness **injects** harness-known fields on every spool record before finalize: `submitted_answer`, `answer_ref`, `question_id`, and `source_session_id`. Live stdout may include reasoning preamble or fenced blocks; the harness extracts the assessment YAML document before spool write. The skill proposal shape may omit `submitted_answer`; the harness supplies it from the fixture answer.
+
 Finalize is a **harness** `/done` equivalent (Hermes has no `/done` command): the same function runs after question three or when the harness receives `/done`. Until finalize, `MEMORY.md` must remain absent or unchanged.
 
 ### Assessor invocation constraints
@@ -127,6 +129,58 @@ For the scripted bad answer (`q_behavioral_01`), the harness retries live assess
 
 When the Hermes binary is unavailable, deterministic stub assessment runs instead. **Skip is not proof** that session one ran against installed Hermes; forcing live without a discoverable binary must **fail closed**.
 
-## Session-two opener (reference)
+## Session-two opener (harness + skill wording)
 
-Opener target selection is a **harness** operation. This skill turns a typed directive (`weakness_id`, `family`, `missing_elements`, `opening_target_source`) into wording. `MEMORY.md` is the sole source of the opening target; `session_search` is allowed only after the first question of session two.
+Opener **target selection is a harness operation**, not an LLM judgment (`scripts/demo_session_2.sh`). This skill turns a typed directive into the spoken question only.
+
+### Harness directive (printed before the question)
+
+The harness selects the newest weakness from the delimited `MEMORY.md` block (spec §9: `last_seen` desc, `observation_count` desc, `weakness_id` asc) and prints **before** the question:
+
+- `opening_target_source=MEMORY.md`
+- `weakness_id`, `family`, `source_session_id`
+- Attribution: `target selected by prompt memory; wording generated under stable interviewer procedure`
+
+The harness must **not** ask the operator to name the weakness. Candidate skills under `.crossfire/candidate-skills/` must stay out of the live skill dir until after the opener.
+
+### Skill role
+
+Given `weakness_id`, `family`, `missing_elements`, and `opening_target_source`, ask **one** interview question that targets the missing elements for that family. Do **not** quote `weakness_id` in the question. Do **not** ask which weakness to revisit.
+
+| Family | Wording focus |
+| --- | --- |
+| `behavioral` | STAR gaps — especially `action` and `result` when both are missing |
+| `technical` | Problem, approach, tradeoff, verification |
+| `product` | User, constraint, decision, metric |
+
+### Invocation constraints (session two)
+
+- Fresh process — **no** `--resume` of session one.
+- `--toolsets skills` only — omit `session_search`, `memory`, `file`, and `terminal` for the opener turn.
+- When the Hermes binary is unavailable, the harness uses deterministic stub wording that still proves selection and attribution. **Skip is not proof**; `CROSSFIRE_LIVE=1` without a discoverable binary must **fail closed**.
+
+`session_search` is allowed only **after** the first question of session two.
+
+## Free-form Monday mode (non-demo)
+
+Use when the operator starts interactive Hermes against the **Monday profile** (real `~/.hermes`) without the demo harness. Demo contract above is unchanged; this section adds free-form behavior only.
+
+### Scope
+
+- **Not** the scripted 90s demo. Do not read answers from `tests/fixtures/demo-answers.txt` or narrate demo fixtures unless the operator explicitly replays the demo harness.
+- Continue **beyond three questions** when the operator keeps answering. Draw optional follow-ups from `questions.md`; never drop or reorder the three spec §11 demo questions when the demo harness is driving.
+- **No-weakness behavior:** on strong answers with fewer than two missing required elements for the declared family, emit `persist_recommended: false` and move on without asking the operator to confirm.
+- **Return-session opener:** when `MEMORY.md` already contains weaknesses, ask **one** question that targets the newest weakness’s missing elements (same family checklist as session two). Do **not** quote `weakness_id` or ask the operator to pick a topic. Do **not** use demo-only phrasing (“scripted bad answer”, fixture IDs, or session-one replay cues).
+
+### Toolsets
+
+| Turn | Allowed |
+| --- | --- |
+| Opener (first question of a return session) | `--toolsets skills` (and `memory` if in-context `MEMORY.md` is loaded). Omit `session_search`. |
+| After opener | `session_search` optional. If unavailable or errors, continue from `MEMORY.md` and the current transcript — degrade gracefully, do not fail the session. |
+
+### Assessment and exit
+
+- Emit **propose-only YAML** after each answer (same shape as session one). Do **not** write `MEMORY.md` or `.crossfire/candidate-skills/`.
+- Buffer assessments until session end. On normal exit, surface any qualifying proposals (`persist_recommended: true` or `count(missing_elements) >= 2`) so the operator or a future harness can flush them. A raw SIGKILL path is not guaranteed to flush.
+- Demo weaknesses staged under `.crossfire/profiles/stage` must **never** be treated as Monday history. Only weaknesses already in the operator’s Monday `MEMORY.md` inform opener targeting.

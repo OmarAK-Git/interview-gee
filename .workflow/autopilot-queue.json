@@ -273,7 +273,7 @@
     {
       "id": "S2-T5",
       "title": "Three-question demo mode with deferred persistence",
-      "status": "in_progress",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "must",
@@ -312,12 +312,15 @@
       "run_dir": ".workflow/S2-T5",
       "attempts": 1,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S2-T5/results/verifier-result.md",
+        ".workflow/S2-T5/results/code-reviewer-result.md"
+      ]
     },
     {
       "id": "S2-T6",
       "title": "Create and stage the unverified candidate skill",
-      "status": "pending",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "must",
@@ -353,14 +356,17 @@
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
       "run_dir": ".workflow/S2-T6",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S2-T6/results/verifier-result.md",
+        ".workflow/S2-T6/results/code-reviewer-result.md"
+      ]
     },
     {
       "id": "S2-T7",
       "title": "Fresh-process, memory-only opener",
-      "status": "pending",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "must",
@@ -397,14 +403,17 @@
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
       "run_dir": ".workflow/S2-T7",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S2-T7/results/verifier-result.md",
+        ".workflow/S2-T7/results/code-reviewer-result.md"
+      ]
     },
     {
       "id": "S2-GE",
       "title": "Gate: cross-session memory-only opener",
-      "status": "pending",
+      "status": "done",
       "tier": "T3",
       "type": "phase_exit",
       "priority": "must",
@@ -440,14 +449,17 @@
       "verification_agent": "skeptic-verifier",
       "run_mode": "in_session_grok",
       "run_dir": ".workflow/S2-GE",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S2-GE/results/test-runner-result.md",
+        ".workflow/S2-GE/results/verifier-result.md"
+      ]
     },
     {
       "id": "S3-T4",
       "title": "Question bank",
-      "status": "pending",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "nice",
@@ -479,14 +491,17 @@
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
       "run_dir": ".workflow/S3-T4",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S3-T4/results/verifier-result.md",
+        ".workflow/S3-T4/results/code-reviewer-result.md"
+      ]
     },
     {
       "id": "S3-T8",
       "title": "Artifact evidence and bounded waits",
-      "status": "pending",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "nice",
@@ -516,14 +531,17 @@
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
       "run_dir": ".workflow/S3-T8",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S3-T8/results/verifier-result.md",
+        ".workflow/S3-T8/results/code-reviewer-result.md"
+      ]
     },
     {
       "id": "S3-T9",
       "title": "Labeled unverified-learning risk beat",
-      "status": "pending",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "nice",
@@ -557,14 +575,17 @@
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
       "run_dir": ".workflow/S3-T9",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S3-T9/results/verifier-result.md",
+        ".workflow/S3-T9/results/code-reviewer-result.md"
+      ]
     },
     {
       "id": "S3-T10",
       "title": "Assemble and time the ~90-second demo",
-      "status": "pending",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "nice",
@@ -600,14 +621,17 @@
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
       "run_dir": ".workflow/S3-T10",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S3-T10/results/verifier-result.md",
+        ".workflow/S3-T10/results/code-reviewer-result.md"
+      ]
     },
     {
       "id": "S3-GE",
       "title": "Gate: evidence + risk beat",
-      "status": "pending",
+      "status": "done",
       "tier": "T3",
       "type": "phase_exit",
       "priority": "nice",
@@ -640,14 +664,17 @@
       "verification_agent": "skeptic-verifier",
       "run_mode": "in_session_grok",
       "run_dir": ".workflow/S3-GE",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S3-GE/results/test-runner-result.md",
+        ".workflow/S3-GE/results/verifier-result.md"
+      ]
     },
     {
       "id": "S4-T11",
       "title": "Free-form Monday usability",
-      "status": "pending",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "nice",
@@ -682,14 +709,17 @@
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
       "run_dir": ".workflow/S4-T11",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S4-T11/results/verifier-result.md",
+        ".workflow/S4-T11/results/code-reviewer-result.md"
+      ]
     },
     {
       "id": "S4-T12",
       "title": "Final safety and acceptance pass",
-      "status": "pending",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "must",
@@ -723,14 +753,17 @@
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
       "run_dir": ".workflow/S4-T12",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S4-T12/results/verifier-result.md",
+        ".workflow/S4-T12/results/code-reviewer-result.md"
+      ]
     },
     {
       "id": "S4-GE",
       "title": "Gate: final acceptance",
-      "status": "pending",
+      "status": "done",
       "tier": "T3",
       "type": "phase_exit",
       "priority": "must",
@@ -763,9 +796,12 @@
       "verification_agent": "skeptic-verifier",
       "run_mode": "in_session_grok",
       "run_dir": ".workflow/S4-GE",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": []
+      "evidence": [
+        ".workflow/S4-GE/results/test-runner-result.md",
+        ".workflow/S4-GE/results/verifier-result.md"
+      ]
     }
   ]
 }

@@ -79,17 +79,13 @@ crossfire_live_assess_once() {
 
   stdout=$(mktemp)
   stderr=$(mktemp)
-  trap 'rm -f "$stdout" "$stderr"' RETURN
 
   for skill_ref in "${skill_candidates[@]}"; do
     cmdline=$(crossfire_build_assessor_cmdline "$qid" "$family" "$question" "$answer" "$skill_ref")
     if crossfire_hermes_invoke "$cmdline" "$stdout" "$stderr"; then
-      proposal=$(cat "$stdout")
       session_id=$(crossfire_parse_session_id_from_stderr "$stderr")
-      if [ -n "$proposal" ]; then
-        if [ -n "$session_id" ] && ! grep -q '^source_session_id:' <<<"$proposal"; then
-          proposal="${proposal}"$'\n'"source_session_id: ${session_id}"
-        fi
+      if proposal=$(crossfire_normalize_live_proposal "$(cat "$stdout")" "$qid" "$answer" "$run_id" "$session_id"); then
+        rm -f "$stdout" "$stderr"
         printf '%s' "$proposal"
         return 0
       fi
@@ -97,6 +93,7 @@ crossfire_live_assess_once() {
   done
 
   cat "$stderr" >&2 || true
+  rm -f "$stdout" "$stderr"
   return 1
 }
 
@@ -155,7 +152,7 @@ crossfire_assess_answer() {
 crossfire_session_one_finalize() {
   local run_id="${1:-}"
   local spool_dir="${CROSSFIRE_RUNS_DIR}/${run_id}/spool"
-  local family topic missing_csv last_seen source_session_id answer_ref evidence_kind evidence_value submitted_answe
+  local family topic missing_csv last_seen source_session_id answer_ref evidence_kind evidence_value submitted_answer
   local spool_file persisted=0 now_iso qid
 
   [ -d "$spool_dir" ] || fail_closed "spool missing for run_id=${run_id}"
@@ -179,7 +176,9 @@ crossfire_session_one_finalize() {
     evidence_kind=$(awk '/^evidence:/{getline; if ($0 ~ /kind:/) {sub(/^  kind: /,""); print; exit}}' "$spool_file")
     evidence_value=$(awk '/^evidence:/{getline; getline; if ($0 ~ /value:/) {sub(/^  value: /,""); gsub(/^"/,""); gsub(/"$/,""); print; exit}}' "$spool_file")
     submitted_answer=$(awk '/^submitted_answer:/{capture=1; next} capture && /^[^ ]/{exit} capture {sub(/^  /,""); print}' "$spool_file")
-    submitted_answer=${submitted_answer:-$(crossfire_spool_field "$spool_file" evidence_value)}
+    if [ -z "$submitted_answer" ]; then
+      fail_closed "spool missing submitted_answer for ${qid}"
+    fi
     topic="${qid} demo gap"
     last_seen="$now_iso"
 
@@ -199,6 +198,7 @@ crossfire_session_one_finalize() {
     persisted=$((persisted + 1))
   done
 
+  trap - RETURN 2>/dev/null || true
   printf 'CROSSFIRE: session one finalized; %s weakness(es) persisted.\n' "$persisted"
   return 0
 }
@@ -207,7 +207,7 @@ crossfire_run_question_loop() {
   local run_id="${1:-}"
   local spool_dir="${CROSSFIRE_RUNS_DIR}/${run_id}/spool"
   local -a answers=()
-  local i entry qid family question answe
+  local i entry qid family question answer
 
   crossfire_read_demo_answers "$CROSSFIRE_DEMO_ANSWERS" answers
 
@@ -226,14 +226,12 @@ crossfire_run_question_loop() {
 crossfire_session_one_main() {
   crossfire_require_isolated_hermes_home
 
-  if [ "${CROSSFIRE_ASSESSOR:-stub}" != "stub" ]; then
-    crossfire_discover_hermes_or_fail_closed || {
-      if [ "${CROSSFIRE_LIVE:-0}" = "1" ]; then
-        echo "FAIL CLOSED: CROSSFIRE_LIVE=1 but Hermes binary not discoverable" >&2
-        exit 1
-      fi
+  if [ "${CROSSFIRE_LIVE:-0}" = "1" ]; then
+    export CROSSFIRE_ASSESSOR=live
+    crossfire_discover_hermes_or_fail_closed
+  elif [ "${CROSSFIRE_ASSESSOR:-stub}" != "stub" ]; then
+    crossfire_discover_hermes_or_fail_closed || \
       fail_closed "live assessor selected but Hermes binary not discoverable"
-    }
   fi
 
   if [ -n "${CROSSFIRE_FINALIZE_RUN_ID:-}" ]; then
@@ -258,5 +256,7 @@ crossfire_session_one_main() {
 
 if [[ "${BASH_SOURCE[0]:-}" == "${0}" ]]; then
   crossfire_session_one_main "$@"
-  exit 0
+  rc=$?
+  trap - RETURN 2>/dev/null || true
+  exit "$rc"
 fi

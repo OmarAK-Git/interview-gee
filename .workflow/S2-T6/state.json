@@ -1,0 +1,69 @@
+{
+  "goal": "A poor answer produces a visible provenance-linked candidate SKILL.md that is not loadable before session two.",
+  "success_criteria": [
+    "A poor answer produces a visible provenance-linked candidate SKILL.md.",
+    "A pre-session-two assertion proves it is not loadable.",
+    "If exclusion is impossible, the degraded path is recorded."
+  ],
+  "constraints": [
+    "Stay within S2-T6 files_allowed",
+    "Task-scoped verification",
+    "Never mutate real ~/.hermes",
+    "Do not implement session-two opener or risk-beat activation"
+  ],
+  "risks": [
+    {
+      "risk": "Hermes learning loop writes candidate into live skill dir",
+      "approval_required": false,
+      "mitigation": "Snapshot immediately then disable/move reversibly"
+    }
+  ],
+  "max_concurrent_agents": 2,
+  "max_total_agents": 6,
+  "packets": [
+    {
+      "id": "01-research",
+      "objective": "Choose authorship, staging path, and live-dir exclusion",
+      "ownership": "researcher",
+      "status": "in_progress"
+    },
+    {
+      "id": "02-implementation",
+      "objective": "Stage candidate skill + tests",
+      "ownership": "implementer",
+      "status": "pending"
+    },
+    {
+      "id": "03-review",
+      "objective": "Review code-changing implementation",
+      "ownership": "code-reviewer",
+      "status": "pending"
+    },
+    {
+      "id": "04-verify",
+      "objective": "Run task-scoped verification",
+      "ownership": "skeptic-verifier",
+      "status": "pending"
+    }
+  ],
+  "verification": [
+    {
+      "check": "stage_candidate_skill.sh exists",
+      "command": "Test-Path -LiteralPath scripts\\stage_candidate_skill.sh -PathType Leaf",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "check": "candidate_skill.bats exists",
+      "command": "Test-Path -LiteralPath tests\\candidate_skill.bats -PathType Leaf",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "check": "candidate-skills gitkeep exists",
+      "command": "Test-Path -LiteralPath .crossfire\\candidate-skills\\.gitkeep -PathType Leaf",
+      "required": true,
+      "status": "pending"
+    }
+  ]
+}

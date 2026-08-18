@@ -6,11 +6,11 @@ Run session one end-to-end in the isolated profile with exactly three questions 
 
 ## Success Criteria
 
-- [ ] E2E shows deferred automatic persistence.
-- [ ] Session one runs against installed Hermes in the isolated profile.
-- [ ] Exactly three questions; MEMORY.md unchanged until finalize after the third answer.
-- [ ] No persist confirmation prompt.
-- [ ] `scripts/demo_session_1.sh`, `tests/demo_session_1.bats`, and `tests/fixtures/demo-answers.txt` exist.
+- [x] E2E shows deferred automatic persistence.
+- [x] Session one runs against installed Hermes in the isolated profile.
+- [x] Exactly three questions; MEMORY.md unchanged until finalize after the third answer.
+- [x] No persist confirmation prompt.
+- [x] `scripts/demo_session_1.sh`, `tests/demo_session_1.bats`, and `tests/fixtures/demo-answers.txt` exist.
 
 ## Constraints
 
@@ -33,7 +33,7 @@ Run session one end-to-end in the isolated profile with exactly three questions 
 ## Agent Plan
 
 - Researcher: **run** — `needs_research: true`; ≥2 viable paths for assessment buffer (Hermes-native vs `.crossfire/runs/`), session driver (live chat vs harness-orchestrated), and test strategy (full live E2E vs deterministic + optional live).
-- Implementer: required (`composer-2.5`).
+- Implementer: required (`composer-2.5-fast` slug; queue name `composer-2.5`). Local drain resume 2026-08-18 (cloud dispatch previously failed: GitHub App missing repo).
 - Code reviewer: required after code-changing implementation (`frequent_after_implement`).
 - Skeptic verifier: required (`cursor-grok-4.6-high-fast`).
 - Test runner: skipped — not a phase gate; `verification.scope` is `task`; policy is `gates_and_major_sections`.
@@ -43,9 +43,9 @@ Run session one end-to-end in the isolated profile with exactly three questions 
 | ID | Objective | Ownership | Status |
 | --- | --- | --- | --- |
 | 01-research | Choose buffer, Hermes drive path, and test strategy | researcher | done |
-| 02-implementation | Demo session-one harness, fixtures, bats | implementer | pending |
-| 03-review | Review code-changing diff | code-reviewer | pending |
-| 04-verify | Task-scoped verification of ACs and commands | skeptic-verifier | pending |
+| 02-implementation | Demo session-one harness, fixtures, bats | implementer | done_with_concerns |
+| 03-review | Review code-changing diff | code-reviewer | done (approve after retry) |
+| 04-verify | Task-scoped verification of ACs and commands | skeptic-verifier | done |
 
 ## Verification
 

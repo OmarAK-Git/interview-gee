@@ -37,19 +37,19 @@
       "id": "02-implementation",
       "objective": "Implement session-one demo harness",
       "ownership": "implementer",
-      "status": "in_progress"
+      "status": "done"
     },
     {
       "id": "03-review",
       "objective": "Review code-changing implementation",
       "ownership": "code-reviewer",
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "04-verify",
       "objective": "Run task-scoped verification",
       "ownership": "skeptic-verifier",
-      "status": "pending"
+      "status": "in_progress"
     }
   ],
   "verification": [

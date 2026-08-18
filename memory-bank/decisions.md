@@ -27,9 +27,11 @@ Locked in `docs/b83b4a6b-e9dc-4c74-9edc-2e0b9bf9de54-spec.md` (`sparring-1.0.0`)
 3. Curator: **isolated** via disposable `HERMES_HOME` (pause/snapshot CLIs not run).
 4. Hermes executable: **verified** on WSL Ubuntu user `fish` — Hermes Agent v0.20.2 at `/home/fish/.local/bin/hermes`. Windows PATH has no `hermes`.
 5. Isolation: **verified** for profile data. `HERMES_HOME=<repo>/.crossfire/profiles/test` receives `memories/`, `sessions/`, `state.db`, `SOUL.md`. Real `/home/fish/.hermes` is the install tree (`bin`, `hermes-agent`, `node`) only. `__pycache__` under `hermes-agent/` updates when the binary runs.
+6. Session-one buffer: **harness-spool** under `.crossfire/runs/<run_id>/spool/` (S2-T5).
+7. Candidate skill authorship: **harness-relocated** into `.crossfire/candidate-skills/`; **never-write-live** (S2-T6). Snapshot-then-move is fallback only.
 
 ## Open implementation decisions (plan)
 
-- Isolation proof (`HERMES_HOME` override vs copied throwaway vs STOP/hand-script) — Task 1b.
-- Session-one buffer: Hermes-native session state vs `.crossfire/run/` session-ID-scoped buffer.
-- Candidate skill authorship: Hermes-authored, skill-authored, or harness-relocated.
+- (closed) Isolation: `HERMES_HOME` disposable profile.
+- (closed) Session-one buffer: harness-spool.
+- (closed) Candidate skill authorship: harness-relocated.

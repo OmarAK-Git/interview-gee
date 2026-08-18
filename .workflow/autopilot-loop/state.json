@@ -3,30 +3,34 @@
   "goal": "Bounded GSD autopilot loop for Hermes Interview Sparring Partner.",
   "active_run": {
     "status": "stopped",
-    "item_id": "S2-T5",
-    "next_runnable": "S2-T5",
-    "stop_reason": "commit_push_then_cloud; S2-T5 in_progress — finish implementer then review/verify",
-    "completed_this_run": ["S1-T1", "S1-T1b", "S1-T2", "S1-T3", "S1-GE"],
+    "item_id": null,
+    "next_runnable": null,
+    "stop_reason": "queue_drain",
+    "completed_this_run": [
+      "S1-T1", "S1-T1b", "S1-T2", "S1-T3", "S1-GE",
+      "S2-T5", "S2-T6", "S2-T7", "S2-GE",
+      "S3-T4", "S3-T8", "S3-T9", "S3-T10", "S3-GE",
+      "S4-T11", "S4-T12", "S4-GE"
+    ],
     "blocked": [],
-    "human_needed": [],
+    "human_needed": ["S4-T11 live free-form Hermes Q&A transcript"],
     "evidence": [
-      ".workflow/S2-T5/results/install-probe.md",
-      ".workflow/S2-T5/results/researcher-result.md",
-      ".workflow/S2-T5/HANDOFF.md"
+      ".workflow/S2-GE/results/verifier-result.md",
+      ".workflow/S3-GE/results/verifier-result.md",
+      ".workflow/S4-GE/results/verifier-result.md"
     ],
     "flags": [
-      "hermes_v0.20.2_wsl",
-      "hermes_home_profile_data_verified",
-      "nous_portal_free_tier",
-      "cloud_launch_failed_no_remote",
-      "local_drain_continue"
+      "queue_empty",
+      "gate_model_cursor-grok-4.6-high-fast",
+      "t11_human_needed_live_transcript"
     ],
-    "updated_at": "2026-08-16T16:38:00-04:00",
-    "current_packet": "02-implementation",
+    "updated_at": "2026-08-18T20:00:00-04:00",
+    "current_packet": null,
     "dispatch": {
-      "role": "implementer",
-      "model": "composer-2.5-fast",
-      "reason": "Prior implementer aborted; finish T5 within files_allowed"
+      "role": "controller",
+      "environment": "local",
+      "model": "inherit",
+      "reason": "Queue empty after S4-GE pass"
     }
   }
 }
