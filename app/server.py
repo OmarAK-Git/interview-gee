@@ -10,6 +10,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 
+from memory_view import parse_weaknesses
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = REPO_ROOT / "scripts" / "practice_session.sh"
 STATIC = Path(__file__).resolve().parent / "static"
@@ -57,8 +59,14 @@ def memory_payload() -> dict:
     home = os.environ.get("HERMES_HOME") or str(Path.home() / ".hermes")
     path = Path(home) / "memories" / "MEMORY.md"
     if not path.is_file():
-        return {"exists": False, "text": "", "path": str(path)}
-    return {"exists": True, "text": path.read_text(encoding="utf-8"), "path": str(path)}
+        return {"exists": False, "text": "", "weaknesses": [], "path": str(path)}
+    text = path.read_text(encoding="utf-8")
+    return {
+        "exists": True,
+        "text": text,
+        "weaknesses": parse_weaknesses(text),
+        "path": str(path),
+    }
 
 
 class Handler(BaseHTTPRequestHandler):

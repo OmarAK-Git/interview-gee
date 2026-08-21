@@ -1,10 +1,15 @@
 import { createTtsAdapter } from "./tts.js";
+import { createSttAdapter } from "./stt.js";
 
 const tts = createTtsAdapter();
+const stt = createSttAdapter();
 const chat = document.getElementById("chat");
 const meta = document.getElementById("meta");
 const memory = document.getElementById("memory");
 const answer = document.getElementById("answer");
+const composer = document.getElementById("composer");
+const micBtn = document.getElementById("mic");
+const micHint = document.getElementById("mic-hint");
 
 function bubble(role, text, extra = "") {
   const el = document.createElement("div");
@@ -21,9 +26,67 @@ async function api(path, opts) {
   return data;
 }
 
+function formatWhen(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+}
+
+function renderWeaknesses(data) {
+  memory.replaceChildren();
+  const records = Array.isArray(data.weaknesses) ? data.weaknesses : [];
+  if (!data.exists || records.length === 0) {
+    memory.textContent = "No weaknesses recorded yet.";
+    return;
+  }
+  for (const w of records) {
+    const card = document.createElement("article");
+    card.className = "weakness-card";
+
+    const family = document.createElement("span");
+    family.className = `family ${w.family || ""}`;
+    family.textContent = w.family || "unknown";
+    card.appendChild(family);
+
+    const title = document.createElement("h3");
+    title.textContent = w.topic || "Untitled topic";
+    card.appendChild(title);
+
+    const missing = Array.isArray(w.missing_elements) ? w.missing_elements : [];
+    if (missing.length) {
+      const list = document.createElement("div");
+      list.className = "missing";
+      for (const item of missing) {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = item;
+        list.appendChild(tag);
+      }
+      card.appendChild(list);
+    }
+
+    const metaLine = document.createElement("p");
+    metaLine.className = "weak-meta";
+    const times = Number(w.observation_count) || 1;
+    const when = formatWhen(w.last_seen);
+    metaLine.textContent = `Seen ${times} time${times === 1 ? "" : "s"}${when ? ` · ${when}` : ""}`;
+    card.appendChild(metaLine);
+
+    const ev = w.evidence || {};
+    if (ev.kind === "quote" && ev.value) {
+      const q = document.createElement("blockquote");
+      q.textContent = ev.value;
+      card.appendChild(q);
+    }
+
+    memory.appendChild(card);
+  }
+}
+
 async function refreshMemory() {
   const data = await api("/api/memory");
-  memory.textContent = data.exists ? data.text : "No MEMORY.md yet.";
+  renderWeaknesses(data);
 }
 
 function showMeta(data) {
@@ -34,8 +97,48 @@ function showMeta(data) {
   meta.innerHTML = bits.join(" ");
 }
 
+function setMicUi(on) {
+  micBtn.setAttribute("aria-pressed", on ? "true" : "false");
+  micBtn.classList.toggle("live", on);
+  micBtn.textContent = on ? "Done" : "Speak";
+}
+
+function stopVoice() {
+  stt.stop();
+  setMicUi(false);
+}
+
+function startVoice() {
+  tts.cancel();
+  const ok = stt.start({
+    onText(text) {
+      answer.value = text;
+    },
+    onEnd() {
+      setMicUi(false);
+    },
+    onError(err) {
+      setMicUi(false);
+      micHint.hidden = false;
+      micHint.textContent = `Mic: ${err}. You can still type.`;
+    },
+  });
+  if (ok) {
+    setMicUi(true);
+    micHint.hidden = true;
+  }
+}
+
+function finishVoiceAndSend() {
+  stopVoice();
+  window.setTimeout(() => {
+    if (answer.value.trim()) composer.requestSubmit();
+  }, 200);
+}
+
 document.getElementById("start").addEventListener("click", async () => {
   tts.cancel();
+  stopVoice();
   const data = await api("/api/session/start", { method: "POST", body: "{}" });
   chat.innerHTML = "";
   showMeta(data);
@@ -47,13 +150,15 @@ document.getElementById("start").addEventListener("click", async () => {
 
 document.getElementById("end").addEventListener("click", async () => {
   tts.cancel();
+  stopVoice();
   const data = await api("/api/session/end", { method: "POST", body: "{}" });
   bubble("interviewer", `Session ended. Persisted ${data.persisted_count || 0} weakness(es).`);
   await refreshMemory();
 });
 
-document.getElementById("composer").addEventListener("submit", async (e) => {
+composer.addEventListener("submit", async (e) => {
   e.preventDefault();
+  stopVoice();
   const text = answer.value.trim();
   if (!text) return;
   bubble("operator", text);
@@ -69,5 +174,28 @@ document.getElementById("composer").addEventListener("submit", async (e) => {
   tts.speak(data.tts_text || data.question);
   await refreshMemory();
 });
+
+answer.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter" || e.shiftKey) return;
+  e.preventDefault();
+  if (stt.isListening()) finishVoiceAndSend();
+  else composer.requestSubmit();
+});
+
+micBtn.addEventListener("click", () => {
+  if (!stt.supported()) {
+    micHint.hidden = false;
+    micHint.textContent = "Voice replies need Chrome or Edge on this localhost page.";
+    return;
+  }
+  if (stt.isListening()) finishVoiceAndSend();
+  else startVoice();
+});
+
+if (!stt.supported()) {
+  micBtn.disabled = true;
+  micHint.hidden = false;
+  micHint.textContent = "Voice replies need Chrome or Edge.";
+}
 
 refreshMemory().catch(() => {});

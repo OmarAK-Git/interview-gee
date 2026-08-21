@@ -14,7 +14,7 @@ body {
   background: var(--bg);
   color: var(--ink);
   display: grid;
-  grid-template-columns: 1fr 280px;
+  grid-template-columns: 1fr 320px;
   grid-template-rows: auto 1fr;
   min-height: 100vh;
 }
@@ -32,5 +32,40 @@ textarea { width: 100%; background: var(--panel); color: var(--ink); border: 1px
 button { background: var(--accent); color: #0b1020; border: 0; border-radius: 8px; padding: 0.45rem 0.9rem; font-weight: 600; cursor: pointer; }
 button[type="button"] { background: #2a3140; color: var(--ink); }
 aside { border-left: 1px solid #2a3140; padding: 1rem; overflow: auto; }
-pre { white-space: pre-wrap; font-size: 0.8rem; color: var(--muted); }
 .chip { display: inline-block; background: #2a3140; padding: 0.15rem 0.5rem; border-radius: 999px; margin-right: 0.35rem; }
+button.live, button[aria-pressed="true"] { background: #8b3a3a; color: #fff; }
+.weakness-card {
+  background: var(--panel);
+  border-radius: 10px;
+  padding: 0.75rem;
+  margin: 0.65rem 0;
+}
+.weakness-card h3 { margin: 0.35rem 0 0.5rem; font-size: 1rem; }
+.family {
+  display: inline-block;
+  font-size: 0.75rem;
+  text-transform: capitalize;
+  background: #2a3140;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+}
+.family.behavioral { background: #3a2f4a; }
+.family.technical { background: #243a4a; }
+.family.product { background: #2f3a28; }
+.missing { display: flex; flex-wrap: wrap; gap: 0.25rem; margin: 0.35rem 0; }
+.tag {
+  background: #3a3220;
+  color: var(--warn);
+  font-size: 0.75rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+}
+.weak-meta { color: var(--muted); font-size: 0.8rem; margin: 0.35rem 0; }
+.weakness-card blockquote {
+  margin: 0.4rem 0 0;
+  padding-left: 0.6rem;
+  border-left: 2px solid #3a4458;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-style: italic;
+}

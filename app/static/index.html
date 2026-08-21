@@ -15,18 +15,20 @@
   <main>
     <section id="chat" aria-live="polite"></section>
     <form id="composer">
-      <textarea id="answer" rows="4" placeholder="Type your answer…" required></textarea>
+      <textarea id="answer" rows="4" placeholder="Type or speak your answer… Enter to send, Shift+Enter for a new line" required></textarea>
       <div class="row">
         <button type="submit" id="send">Send</button>
+        <button type="button" id="mic" aria-pressed="false" title="Answer by voice. Click again when you are done to send.">Speak</button>
         <button type="button" id="start">New session</button>
         <button type="button" id="end">End session</button>
         <label class="mute"><input type="checkbox" id="mute" /> Mute TTS</label>
       </div>
+      <p class="hint" id="mic-hint" hidden></p>
     </form>
   </main>
   <aside>
     <h2>Weaknesses</h2>
-    <pre id="memory">No MEMORY.md yet.</pre>
+    <div id="memory" class="weakness-list">No weaknesses recorded yet.</div>
     <p class="hint">Unverified candidate skills stay out of the live skill dir. No promotion gate.</p>
   </aside>
   <script type="module" src="/static/app.js"></script>

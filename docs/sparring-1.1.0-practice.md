@@ -24,13 +24,16 @@ Parse failure (prose, truncated YAML, wrong family): keep the operator text, log
 
 Practice does **not** inherit demo K=3 persist retry. One model pass per answer. `persist_recommended: false` / no weakness is success.
 
-## TTS
+## Voice
 
-Web Speech API behind `app/static/tts.js`. ElevenLabs is `app/static/elevenlabs.js` (stub). Default Chrome/Windows voices will undersell; that is a one-file swap, not architecture.
+Web Speech TTS in `app/static/tts.js`. Web Speech STT in `app/static/stt.js` (Chrome/Edge on localhost). Speak toggles listening; click **Done** or press Enter to send. Starting STT cancels TTS (barge-in). ElevenLabs remains `app/static/elevenlabs.js` (stub). Default Chrome/Windows voices will undersell; that is a one-file swap, not architecture.
+
+## Composer and weaknesses panel
+
+Enter sends the answer; Shift+Enter inserts a newline. `/api/memory` still returns raw `MEMORY.md` `text` (on-disk YAML unchanged) plus a parsed `weaknesses` array. The aside renders cards (family, topic, missing elements, last seen, quote), not YAML.
 
 ## Named cuts
 
 - Session history / reread past sessions
 - Candidate-skill promotion gate
-- STT / voice agent / barge-in
 - Dual-maintaining the 90s demo theater

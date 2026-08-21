@@ -20,6 +20,7 @@ Sprint 1 complete and gated. Sprint 2 session-one harness complete. S3-GE pass. 
 - S4-T11 pass — Monday free-form procedure; live transcript human_needed
 - S4-T12 done — acceptance checklist + README + known limitations
 - S4-GE pass — gate model cursor-grok-4.6-high-fast
+- Practice UI T1 — Enter sends; weakness cards (YAML stays on disk); Web Speech STT Speak/Done
 
 ## Evidence
 

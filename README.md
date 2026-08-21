@@ -16,6 +16,8 @@ export HOME=/home/fish   # WSL user that has Hermes
 #   cp .crossfire/profiles/test/auth.json "$HOME/.hermes/"   # gitignored
 bash scripts/practice_ui.sh
 # open http://127.0.0.1:8787
+# Enter sends; Shift+Enter for a new line. Speak (Chrome/Edge) for voice replies.
+# Weaknesses panel shows cards, not the on-disk YAML.
 ```
 
 Stub harness (no live model) for tests: `CROSSFIRE_PRACTICE_STUB=1` with `HOME` pointing at a throwaway dir that owns `.hermes`.

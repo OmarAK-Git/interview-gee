@@ -6,4 +6,4 @@ Practice live UI (`sparring-1.1.0`) in progress on branch `practice-live-ui`. Sp
 
 ## Immediate next step
 
-Run `bash tests/practice_home.sh` and `bash tests/practice_session_stub.sh`, then `bash scripts/practice_ui.sh` from WSL.
+Practice UI: Enter sends, Weaknesses panel is readable cards, Speak uses Web Speech STT (stop sends). Verify with `py -3 tests/test_memory_view.py`, then `bash scripts/practice_ui.sh` from WSL.
