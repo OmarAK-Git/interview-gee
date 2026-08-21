@@ -1,6 +1,24 @@
 # Hermes Interview Sparring Partner (Crossfire)
 
-Stable Hermes skill + harness for interview sparring with weakness tracking. Spec: `sparring-1.0.0` (`docs/b83b4a6b-e9dc-4c74-9edc-2e0b9bf9de54-spec.md`).
+Stable Hermes skill + harness for interview sparring with weakness tracking.
+
+- Demo CLI: spec `sparring-1.0.0` (`docs/b83b4a6b-e9dc-4c74-9edc-2e0b9bf9de54-spec.md`)
+- Live practice UI: addendum `sparring-1.1.0` (`docs/sparring-1.1.0-practice.md`)
+
+## Live practice (WSL)
+
+Hermes interviews you in a localhost UI. Weaknesses persist to **WSL `$HOME/.hermes` only**. Windows `%USERPROFILE%\.hermes` is refused. Tests and `demo.sh` still fail-closed on any real home.
+
+```bash
+export HOME=/home/fish   # WSL user that has Hermes
+# Once: copy Nous auth from the working isolated profile if Monday has no keys
+#   cp .crossfire/profiles/test/config.yaml "$HOME/.hermes/"
+#   cp .crossfire/profiles/test/auth.json "$HOME/.hermes/"   # gitignored
+bash scripts/practice_ui.sh
+# open http://127.0.0.1:8787
+```
+
+Stub harness (no live model) for tests: `CROSSFIRE_PRACTICE_STUB=1` with `HOME` pointing at a throwaway dir that owns `.hermes`.
 
 ## Profiles
 

@@ -3,8 +3,10 @@
 set -euo pipefail
 
 _stage_dir=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" && pwd)
-# shellcheck source=scripts/demo_common.sh
-source "${_stage_dir}/demo_common.sh"
+if ! declare -F fail_closed >/dev/null 2>&1; then
+  # shellcheck source=scripts/demo_common.sh
+  source "${_stage_dir}/demo_common.sh"
+fi
 # shellcheck source=scripts/weakness_memory.sh
 source "${_stage_dir}/weakness_memory.sh"
 

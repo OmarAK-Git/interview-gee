@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Crossfire practice</title>
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <header>
+    <h1>Crossfire</h1>
+    <p class="sub">Live interview practice. Hermes asks. You answer. Memory persists.</p>
+    <div class="meta" id="meta"></div>
+  </header>
+  <main>
+    <section id="chat" aria-live="polite"></section>
+    <form id="composer">
+      <textarea id="answer" rows="4" placeholder="Type your answer…" required></textarea>
+      <div class="row">
+        <button type="submit" id="send">Send</button>
+        <button type="button" id="start">New session</button>
+        <button type="button" id="end">End session</button>
+        <label class="mute"><input type="checkbox" id="mute" /> Mute TTS</label>
+      </div>
+    </form>
+  </main>
+  <aside>
+    <h2>Weaknesses</h2>
+    <pre id="memory">No MEMORY.md yet.</pre>
+    <p class="hint">Unverified candidate skills stay out of the live skill dir. No promotion gate.</p>
+  </aside>
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>

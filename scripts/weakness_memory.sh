@@ -4,8 +4,10 @@
 set -euo pipefail
 
 _weakness_memory_dir=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" && pwd)
-# shellcheck source=scripts/demo_common.sh
-source "${_weakness_memory_dir}/demo_common.sh"
+if ! declare -F fail_closed >/dev/null 2>&1; then
+  # shellcheck source=scripts/demo_common.sh
+  source "${_weakness_memory_dir}/demo_common.sh"
+fi
 
 CROSSFIRE_WEAKNESS_START='<!-- CROSSFIRE-WEAKNESSES:START -->'
 CROSSFIRE_WEAKNESS_END='<!-- CROSSFIRE-WEAKNESSES:END -->'
@@ -516,10 +518,14 @@ crossfire_weakness_write_memory_atomic() {
   local after_file="$4"
   local tmp dir
 
-  crossfire_require_isolated_hermes_home
-  if is_real_hermes_home "$(dirname "$memory_md")"; then
-    crossfire_weakness_fail "refusing to write MEMORY.md under real profile tree"
-    return 1
+  if declare -F crossfire_require_monday_home >/dev/null 2>&1; then
+    crossfire_require_monday_home
+  else
+    crossfire_require_isolated_hermes_home
+    if is_real_hermes_home "$(dirname "$memory_md")"; then
+      crossfire_weakness_fail "refusing to write MEMORY.md under real profile tree"
+      return 1
+    fi
   fi
   dir=$(dirname "$memory_md")
   mkdir -p "$dir"
@@ -575,10 +581,18 @@ crossfire_persist_weakness() {
     return 2
   }
 
-  crossfire_require_isolated_hermes_home
-  if is_real_hermes_home "$(dirname "$memory_md")"; then
-    crossfire_weakness_fail "refusing to write MEMORY.md under real profile tree"
-    return 2
+  if declare -F crossfire_require_monday_home >/dev/null 2>&1; then
+    crossfire_require_monday_home
+    if [ "$(normalize_path "$memory_md")" != "$(normalize_path "$HERMES_MEMORY_MD")" ]; then
+      crossfire_weakness_fail "practice persist path is not Monday MEMORY.md"
+      return 2
+    fi
+  else
+    crossfire_require_isolated_hermes_home
+    if is_real_hermes_home "$(dirname "$memory_md")"; then
+      crossfire_weakness_fail "refusing to write MEMORY.md under real profile tree"
+      return 2
+    fi
   fi
 
   before=$(mktemp)
