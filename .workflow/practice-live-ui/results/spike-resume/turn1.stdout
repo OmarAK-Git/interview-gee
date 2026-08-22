@@ -1,0 +1,149 @@
+
+┌─ Reasoning ──────────────────────────────────────────────────────────────────┐
+The user is asking me to act as the Crossfire interviewer skill and ask ONE technical
+ interview question about Project Praetor. They want just the question, no session IDs mentioned
+.
+
+Based on the skill instructions, I need to follow the Crossfire interviewer skill which
+ is already preloaded. The skill says I should ask interview questions including the three demo questions
+. However, the user is asking for ONE technical interview question about Project Praetor
+ specifically.
+
+The skill mentions that for technical questions, the family is `technical` and required elements are `
+problem`, `approach`, `tradeoff`, `verification`.
+
+I should ask a technical question about Project Praetor. The skill also mentions that
+ I can draw optional follow-ups from `questions.md` in free-form Monday mode. But
+ the user is asking me to ask ONE question.
+
+Looking at the demo questions, there's `q_technical_01`: "Walk through how Praetor decides
+ not to contain. What is the advisory boundary, and how would you know the decision was wrong
+?"
+
+But the user wants me to ask ONE technical interview question about Project Praetor.
+ I could use the demo question, or I could ask a different technical question about
+ Praetor.
+
+Let me check if there's a `questions.md` file that I should reference. The skill says "
+Draw optional follow-ups from `questions.md`". I should look for this file.
+
+Actually, looking more carefully at the skill, it says for free-form Monday mode:
+ "Draw optional follow-ups from `questions.md`". But the user is asking for ONE technical
+ interview question. I should probably just ask a relevant technical question.
+
+The skill says I must ask the three demo questions in session one, but the user is asking for
+ just ONE technical question. This seems like they want me to ask a question as part of the skill
+'s normal operation.
+
+Given the constraints, I think the best approach is to ask a technical question about Project Praet
+or. The demo question `q_technical_01` is about Praetor. But maybe I should ask a
+ different one to be more natural.
+
+Wait, the user said "Ask ONE technical interview question about Project Praetor".
+ They want me to act as the interviewer and ask a question. I should just ask a technical
+ question about Praetor.
+
+Let me think about what would be a good technical question. The skill mentions Pra
+etor is an "advisory-only SOAR, never-contain list, hash-chained ledger". So I could
+ ask about any of those aspects.
+
+A good technical question might be: "How would you design the hash-chained ledger in
+ Praetor to ensure tamper-evidence while keeping advisory recommendations responsive
+?"
+
+Or: "Walk me through how Praetor's never-contain list interacts with its advisory
+-only SOAR architecture. What happens when a detection matches an indicator on that
+ list?"
+
+Or: "Describe the advisory boundary in Praetor: how does the system decide between
+ flagging for human review versus taking automated action, and what verifications
+ would you build to catch boundary errors?"
+
+Actually, looking at the skill again, it says "Ask interview questions (including the three non
+-cuttable demo questions below)." So I should include the demo questions when appropriate. But the
+ user is asking for ONE question specifically.
+
+I think the user wants me to ask a single technical question as a demonstration. I'll
+ ask a technical question about Project Praetor that covers the required elements
+.
+
+Let me craft a question:
+"How would you design Praetor's advisory boundary so it never escalates to containment
+, and what verification steps would you implement to detect when that boundary is crossed
+?"
+
+This question covers:
+- problem: designing the advisory boundary
+- approach: how to design it
+- tradeoff: implicit in the design
+- verification: what steps to detect boundary crossing
+
+Actually, I should make it more natural. Let me try:
+"In Project Praetor, how do you ensure the system stays advisory-only and never contains,
+ even when a detection matches a high-severity indicator? What verifications would you build
+ to catch a containment boundary violation?"
+
+This is good. It asks about:
+- problem: ensuring advisory-only nature
+- approach: how to ensure it
+- verification: what checks to build
+
+I think this is a solid technical question about Project Praetor.
+
+Wait, I should check if there's a questions.md file I should be drawing from. Let
+ me look for it.The user is asking me to act as the Crossfire interviewer skill and ask ONE technical interview question about Project Praetor. They want just the question, no session IDs mentioned.
+
+Based on the skill instructions, I need to follow the Crossfire interviewer skill which is already preloaded. The skill says I should ask interview questions including the three demo questions. However, the user is asking for ONE technical interview question about Project Praetor specifically.
+
+The skill mentions that for technical questions, the family is `technical` and required elements are `problem`, `approach`, `tradeoff`, `verification`.
+
+I should ask a technical question about Project Praetor. The skill also mentions that I can draw optional follow-ups from `questions.md` in free-form Monday mode. But the user is asking me to ask ONE question.
+
+Looking at the demo questions, there's `q_technical_01`: "Walk through how Praetor decides not to contain. What is the advisory boundary, and how would you know the decision was wrong?"
+
+But the user wants me to ask ONE technical interview question about Project Praetor. I could use the demo question, or I could ask a different technical question about Praetor.
+
+Let me check if there's a `questions.md` file that I should reference. The skill says "Draw optional follow-ups from `questions.md`". I should look for this file.
+
+Actually, looking more carefully at the skill, it says for free-form Monday mode: "Draw optional follow-ups from `questions.md`". But the user is asking for ONE technical interview question. I should probably just ask a relevant technical question.
+
+The skill says I must ask the three demo questions in session one, but the user is asking for just ONE technical question. This seems like they want me to ask a question as part of the skill's normal operation.
+
+Given the constraints, I think the best approach is to ask a technical question about Project Praetor. The demo question `q_technical_01` is about Praetor. But maybe I should ask a different one to be more natural.
+
+Wait, the user said "Ask ONE technical interview question about Project Praetor". They want me to act as the interviewer and ask a question. I should just ask a technical question about Praetor.
+
+Let me think about what would be a good technical question. The skill mentions Praetor is an "advisory-only SOAR, never-contain list, hash-chained ledger". So I could ask about any of those aspects.
+
+A good technical question might be: "How would you design the hash-chained ledger in Praetor to ensure tamper-evidence while keeping advisory recommendations responsive?"
+
+Or: "Walk me through how Praetor's never-contain list interacts with its advisory-only SOAR architecture. What happens when a detection matches an indicator on that list?"
+
+Or: "Describe the advisory boundary in Praetor: how does the system decide between flagging for human review versus taking automated action, and what verifications would you build to catch boundary errors?"
+
+Actually, looking at the skill again, it says "Ask interview questions (including the three non-cuttable demo questions below)." So I should include the demo questions when appropriate. But the user is asking for ONE question specifically.
+
+I think the user wants me to ask a single technical question as a demonstration. I'll ask a technical question about Project Praetor that covers the required elements.
+
+Let me craft a question:
+"How would you design Praetor's advisory boundary so it never escalates to containment, and what verification steps would you implement to detect when that boundary is crossed?"
+
+This question covers:
+- problem: designing the advisory boundary
+- approach: how to design it
+- tradeoff: implicit in the design
+- verification: what steps to detect boundary crossing
+
+Actually, I should make it more natural. Let me try:
+"In Project Praetor, how do you ensure the system stays advisory-only and never contains, even when a detection matches a high-severity indicator? What verifications would you build to catch a containment boundary violation?"
+
+This is good. It asks about:
+- problem: ensuring advisory-only nature
+- approach: how to ensure it
+- verification: what checks to build
+
+I think this is a solid technical question about Project Praetor.
+
+Wait, I should check if there's a questions.md file I should be drawing from. Let me look for it.
+⚠️  Reached maximum iterations (1). Requesting summary...
+Walk me through a time you changed how Praetor's never-contain list or hash-chained ledger worked. What problem were you solving, what approach did you take, what tradeoffs did you accept, and how did you verify the change was correct?

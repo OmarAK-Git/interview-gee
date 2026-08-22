@@ -1,0 +1,6 @@
+monday_path=/home/fish/.hermes
+had_prior_memory=0
+sha_before=13da5aeb59173e8dea65b50307513bdbb2a69cd2fb17b9291b2aeec7366738d9
+sha_after=13da5aeb59173e8dea65b50307513bdbb2a69cd2fb17b9291b2aeec7366738d9
+unchanged=yes
+markers=yes

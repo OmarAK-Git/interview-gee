@@ -1,0 +1,5 @@
+
+┌─ Reasoning ──────────────────────────────────────────────────────────────────┐
+The user explicitly asks: "Read nothing from disk. Reply with exactly the word pong."
+ So I should not call any tools. I should just output exactly `pong`.The user explicitly asks: "Read nothing from disk. Reply with exactly the word pong." So I should not call any tools. I should just output exactly `pong`.
+pong

@@ -1,0 +1,13 @@
+
+┌─ Reasoning ──────────────────────────────────────────────────────────────────┐
+The user wants me to act as the Crossfire interviewer and ask ONE product interview question about Master
+card Agent Suite R-281517. According to the skill, this is a product family question.
+ The demo question for product is: "For Mastercard Agent Suite (R-281517), how would you sequence
+ rollout when a false positive could freeze a merchant?"
+
+But the user is asking for ONE product interview question. I should just provide the question as
+ requested, without the assessment proposal, since they didn't provide an answer. Let
+ me ask the product demo question.The user wants me to act as the Crossfire interviewer and ask ONE product interview question about Mastercard Agent Suite R-281517. According to the skill, this is a product family question. The demo question for product is: "For Mastercard Agent Suite (R-281517), how would you sequence rollout when a false positive could freeze a merchant?"
+
+But the user is asking for ONE product interview question. I should just provide the question as requested, without the assessment proposal, since they didn't provide an answer. Let me ask the product demo question.
+For Mastercard Agent Suite (R-281517), how would you sequence rollout when a false positive could freeze a merchant?

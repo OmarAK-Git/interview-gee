@@ -1,0 +1,4 @@
+stdout_bytes=1475
+has_reasoning_box=1
+has_yaml=0
+session_id=20260821_155813_040988

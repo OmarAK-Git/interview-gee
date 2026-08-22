@@ -1,0 +1,7 @@
+[33m⚠ Deprecated .env settings detected:[0m
+  [33m⚠[0m TERMINAL_CWD=/mnt/c/Users/oalan/interview-gee found in .env — this is deprecated.
+  [2mMove to config.yaml instead:  terminal:\n    cwd: /your/project/path[0m
+  [2mThen remove the old entries from /mnt/c/Users/oalan/interview-gee/.crossfire/profiles/test/.env[0m
+
+
+session_id: 20260821_155613_95c208
