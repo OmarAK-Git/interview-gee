@@ -21,6 +21,12 @@
         <button type="button" id="mic" aria-pressed="false" title="Answer by voice. Click again when you are done to send.">Speak</button>
         <button type="button" id="start">New session</button>
         <button type="button" id="end">End session</button>
+        <label class="inference">Inference
+          <select id="inference" title="Applies on New session. Hermes stays the harness.">
+            <option value="nous">Nous</option>
+            <option value="codex">Codex</option>
+          </select>
+        </label>
         <label class="mute"><input type="checkbox" id="mute" /> Mute TTS</label>
       </div>
       <p class="hint" id="mic-hint" hidden></p>

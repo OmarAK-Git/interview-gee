@@ -32,6 +32,17 @@ Web Speech TTS in `app/static/tts.js`. Web Speech STT in `app/static/stt.js` (Ch
 
 Enter sends the answer; Shift+Enter inserts a newline. `/api/memory` still returns raw `MEMORY.md` `text` (on-disk YAML unchanged) plus a parsed `weaknesses` array. The aside renders cards (family, topic, missing elements, last seen, quote), not YAML.
 
+## Inference (Nous / Codex)
+
+The interviewer is still Hermes (`hermes chat --resume`). The UI **Inference** control chooses the model provider for the next **New session** only:
+
+| Choice | Hermes flags | Pays |
+| --- | --- | --- |
+| Nous (default) | `--provider nous --model stepfun/step-3.7-flash:free` | Nous Portal |
+| Codex | `--provider openai-codex --model gpt-5.4` | ChatGPT / Codex subscription |
+
+Override models with `CROSSFIRE_NOUS_MODEL` / `CROSSFIRE_CODEX_MODEL`. Does **not** rewrite `config.yaml`. Codex needs `hermes auth add openai-codex` (or imported `~/.codex/auth.json`) on the Monday `HERMES_HOME`.
+
 ## Named cuts
 
 - Session history / reread past sessions

@@ -30,6 +30,12 @@ Locked in `docs/b83b4a6b-e9dc-4c74-9edc-2e0b9bf9de54-spec.md` (`sparring-1.0.0`)
 6. Session-one buffer: **harness-spool** under `.crossfire/runs/<run_id>/spool/` (S2-T5).
 7. Candidate skill authorship: **harness-relocated** into `.crossfire/candidate-skills/`; **never-write-live** (S2-T6). Snapshot-then-move is fallback only.
 
+## Practice inference (2026-08-22)
+
+- Hermes remains the harness. Practice may pass `--provider nous` or `--provider openai-codex` on `hermes chat`.
+- Toggle applies on New session only. Session state stores `CROSSFIRE_INFERENCE`.
+- Not a Cursor API / SDK path. Not an xAI path.
+
 ## Open implementation decisions (plan)
 
 - (closed) Isolation: `HERMES_HOME` disposable profile.

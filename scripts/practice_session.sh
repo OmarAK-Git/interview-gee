@@ -32,6 +32,7 @@ CROSSFIRE_RUN_ID=${CROSSFIRE_RUN_ID}
 CROSSFIRE_SESSION_ID=${CROSSFIRE_SESSION_ID:-}
 CROSSFIRE_TURN=${CROSSFIRE_TURN:-0}
 HERMES_HOME=${HERMES_HOME}
+CROSSFIRE_INFERENCE=${CROSSFIRE_INFERENCE:-nous}
 EOF
 }
 
@@ -62,6 +63,8 @@ crossfire_practice_start() {
   local stdout stderr sid
 
   crossfire_require_monday_home
+  CROSSFIRE_INFERENCE=$(crossfire_practice_resolve_inference)
+  export CROSSFIRE_INFERENCE
   CROSSFIRE_RUN_ID=$(crossfire_allocate_run_id)
   CROSSFIRE_TURN=0
   CROSSFIRE_SESSION_ID=""
@@ -95,6 +98,7 @@ crossfire_practice_start() {
     else
       cmdline="hermes chat -Q --reasoning none --max-turns 3 --toolsets skills --skills $(printf '%q' "${HERMES_SKILLS_DIR}/crossfire-interviewer") --source tool -q $(printf '%q' "You are the Crossfire interviewer. Ask ONE interview question from the McCain / Mastercard / Praetor / ALTER_EGO source material. Reply with the question only.")"
     fi
+    cmdline=$(crossfire_practice_inject_inference "$cmdline")
     if ! crossfire_hermes_invoke "$cmdline" "$stdout" "$stderr"; then
       rm -f "$stdout" "$stderr"
       fail_closed "practice start: Hermes invoke failed"
@@ -114,6 +118,7 @@ crossfire_practice_start() {
   crossfire_practice_kv run_id "$CROSSFIRE_RUN_ID"
   crossfire_practice_kv session_id "$CROSSFIRE_SESSION_ID"
   crossfire_practice_kv opening_target_source "$target_source"
+  crossfire_practice_kv inference "$CROSSFIRE_INFERENCE"
   printf '%s\n' "$attribution" | sed 's/^/attribution_line=/'
   crossfire_practice_kv question "$question"
   crossfire_practice_kv tts_text "$question"
@@ -127,6 +132,8 @@ crossfire_practice_answer() {
   [ -n "$answer" ] || fail_closed "empty answer"
   : "${CROSSFIRE_RUN_ID:?}"
   crossfire_practice_load_state
+  CROSSFIRE_INFERENCE=$(crossfire_practice_resolve_inference)
+  export CROSSFIRE_INFERENCE
   crossfire_require_monday_home
   CROSSFIRE_TURN=$((CROSSFIRE_TURN + 1))
   qid="q_live_$(printf '%02d' "$CROSSFIRE_TURN")"
@@ -168,6 +175,7 @@ EOF
     cmdline="hermes chat -Q --resume $(printf '%q' "$CROSSFIRE_SESSION_ID") --reasoning none --max-turns 3 --toolsets skills --skills $(printf '%q' "$skill") --source tool -q $(printf '%q' "Operator answer: ${answer}
 
 Assess against exactly one family checklist. Emit propose-only YAML (family, missing_elements, evidence, persist_recommended) then ask ONE follow-up interview question. One model pass. Do not ask the operator to confirm persistence. Do not write MEMORY.md.")"
+    cmdline=$(crossfire_practice_inject_inference "$cmdline")
     if ! crossfire_hermes_invoke "$cmdline" "$stdout" "$stderr"; then
       # Keep the user text; skip assessment; continue.
       status="skipped"

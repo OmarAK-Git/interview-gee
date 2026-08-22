@@ -10,6 +10,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 
+from inference import normalize_inference
 from memory_view import parse_weaknesses
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -21,6 +22,7 @@ PORT = int(os.environ.get("CROSSFIRE_UI_PORT", "8787"))
 SESSION = {
     "run_id": None,
     "session_id": None,
+    "inference": "nous",
 }
 
 
@@ -102,7 +104,15 @@ class Handler(BaseHTTPRequestHandler):
             self._json(200, memory_payload())
             return
         if path == "/api/health":
-            self._json(200, {"ok": True, "run_id": SESSION["run_id"]})
+            self._json(
+                200,
+                {
+                    "ok": True,
+                    "run_id": SESSION["run_id"],
+                    "inference": SESSION["inference"],
+                    "inference_choices": ["nous", "codex"],
+                },
+            )
             return
         self._json(404, {"error": "not found"})
 
@@ -117,13 +127,23 @@ class Handler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/session/start":
-            code, out, err = run_practice(["start"])
+            try:
+                inference = normalize_inference(payload.get("inference"))
+            except ValueError as exc:
+                self._json(400, {"error": str(exc)})
+                return
+            code, out, err = run_practice(
+                ["start"],
+                extra_env={"CROSSFIRE_INFERENCE": inference},
+            )
             parsed = kv_parse(out)
             if code != 0:
                 self._json(500, {"error": err or out, "stdout": out})
                 return
             SESSION["run_id"] = parsed.get("run_id")
             SESSION["session_id"] = parsed.get("session_id")
+            SESSION["inference"] = parsed.get("inference") or inference
+            parsed["inference"] = SESSION["inference"]
             self._json(200, parsed)
             return
 

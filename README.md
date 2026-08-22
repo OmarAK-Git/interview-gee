@@ -18,6 +18,8 @@ bash scripts/practice_ui.sh
 # open http://127.0.0.1:8787
 # Enter sends; Shift+Enter for a new line. Speak (Chrome/Edge) for voice replies.
 # Weaknesses panel shows cards, not the on-disk YAML.
+# Inference toggle: Nous (default) or Codex. Codex: hermes auth add openai-codex
+# on WSL $HOME/.hermes first. Choice applies on New session.
 ```
 
 Stub harness (no live model) for tests: `CROSSFIRE_PRACTICE_STUB=1` with `HOME` pointing at a throwaway dir that owns `.hermes`.

@@ -90,6 +90,38 @@ crossfire_extract_spoken_question() {
   printf '%s' "$line"
 }
 
+crossfire_practice_resolve_inference() {
+  local v
+  v=$(printf '%s' "${CROSSFIRE_INFERENCE:-nous}" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
+  case "$v" in
+    "" | nous) printf '%s' "nous" ;;
+    codex | openai-codex) printf '%s' "codex" ;;
+    *) fail_closed "CROSSFIRE_INFERENCE must be nous or codex (got ${CROSSFIRE_INFERENCE:-})" ;;
+  esac
+}
+
+crossfire_practice_inference_flags() {
+  local kind provider model
+  kind=$(crossfire_practice_resolve_inference)
+  case "$kind" in
+    nous)
+      provider="nous"
+      model="${CROSSFIRE_NOUS_MODEL:-stepfun/step-3.7-flash:free}"
+      ;;
+    *)
+      provider="openai-codex"
+      model="${CROSSFIRE_CODEX_MODEL:-gpt-5.4}"
+      ;;
+  esac
+  printf -- '--provider %s --model %s' "$provider" "$model"
+}
+
+crossfire_practice_inject_inference() {
+  local cmd="${1:-}" flags
+  flags=$(crossfire_practice_inference_flags)
+  printf '%s' "${cmd/hermes chat/hermes chat ${flags}}"
+}
+
 # Practice never inherits demo K=3 persist retry.
 CROSSFIRE_LIVE_ASSESSOR_RETRIES=1
 export CROSSFIRE_LIVE_ASSESSOR_RETRIES

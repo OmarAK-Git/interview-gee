@@ -10,6 +10,24 @@ const answer = document.getElementById("answer");
 const composer = document.getElementById("composer");
 const micBtn = document.getElementById("mic");
 const micHint = document.getElementById("mic-hint");
+const inferenceSel = document.getElementById("inference");
+
+function selectedInference() {
+  const v = inferenceSel?.value === "codex" ? "codex" : "nous";
+  try {
+    localStorage.setItem("crossfire-inference", v);
+  } catch {
+    /* ignore */
+  }
+  return v;
+}
+
+try {
+  const saved = localStorage.getItem("crossfire-inference");
+  if (saved === "codex" || saved === "nous") inferenceSel.value = saved;
+} catch {
+  /* ignore */
+}
 
 function bubble(role, text, extra = "") {
   const el = document.createElement("div");
@@ -92,6 +110,7 @@ async function refreshMemory() {
 function showMeta(data) {
   const bits = [];
   if (data.session_id) bits.push(`<span class="chip">session ${data.session_id}</span>`);
+  if (data.inference) bits.push(`<span class="chip">${data.inference}</span>`);
   if (data.opening_target_source) bits.push(`<span class="chip">${data.opening_target_source}</span>`);
   if (data.assessment_status === "skipped") bits.push(`<span class="chip">assessment skipped</span>`);
   meta.innerHTML = bits.join(" ");
@@ -139,7 +158,11 @@ function finishVoiceAndSend() {
 document.getElementById("start").addEventListener("click", async () => {
   tts.cancel();
   stopVoice();
-  const data = await api("/api/session/start", { method: "POST", body: "{}" });
+  const data = await api("/api/session/start", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ inference: selectedInference() }),
+  });
   chat.innerHTML = "";
   showMeta(data);
   if (data.attribution) bubble("interviewer", data.attribution);

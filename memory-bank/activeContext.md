@@ -6,4 +6,4 @@ Practice live UI (`sparring-1.1.0`) in progress on branch `practice-live-ui`. Sp
 
 ## Immediate next step
 
-Practice UI: Enter sends, Weaknesses panel is readable cards, Speak uses Web Speech STT (stop sends). Verify with `py -3 tests/test_memory_view.py`, then `bash scripts/practice_ui.sh` from WSL.
+Practice UI inference toggle: Nous vs Codex on New session (Hermes `--provider`). Verify `py -3 tests/test_inference.py` and `bash tests/practice_inference.sh`.
