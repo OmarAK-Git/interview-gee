@@ -12,10 +12,12 @@ from urllib.parse import urlparse
 
 from inference import normalize_inference
 from memory_view import parse_weaknesses
+from packs import list_source_packs, start_session_args
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = REPO_ROOT / "scripts" / "practice_session.sh"
 STATIC = Path(__file__).resolve().parent / "static"
+PACKS = REPO_ROOT / "skills" / "crossfire-interviewer" / "sources"
 HOST = os.environ.get("CROSSFIRE_UI_HOST", "127.0.0.1")
 PORT = int(os.environ.get("CROSSFIRE_UI_PORT", "8787"))
 
@@ -103,6 +105,18 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/memory":
             self._json(200, memory_payload())
             return
+        if path == "/api/packs":
+            packs = list_source_packs(PACKS)
+            self._json(
+                200,
+                {
+                    "packs": [
+                        {k: p[k] for k in ("id", "employer", "role", "requisition", "families")}
+                        for p in packs
+                    ]
+                },
+            )
+            return
         if path == "/api/health":
             self._json(
                 200,
@@ -128,13 +142,21 @@ class Handler(BaseHTTPRequestHandler):
 
         if path == "/api/session/start":
             try:
-                inference = normalize_inference(payload.get("inference"))
+                args = start_session_args(payload, sources_dir=PACKS)
             except ValueError as exc:
                 self._json(400, {"error": str(exc)})
                 return
             code, out, err = run_practice(
                 ["start"],
-                extra_env={"CROSSFIRE_INFERENCE": inference},
+                extra_env={
+                    "CROSSFIRE_INFERENCE": args["inference"],
+                    "CROSSFIRE_JD_KIND": args["kind"],
+                    "CROSSFIRE_JD_SOURCE_ID": args["source_id"],
+                    "CROSSFIRE_JD_SOURCE_LABEL": args["source_label"],
+                    "CROSSFIRE_JD_CONTEXT": args["context_text"],
+                    "CROSSFIRE_PERSONA": args["persona"],
+                    "CROSSFIRE_TEMPERATURE": str(args["temperature"]),
+                },
             )
             parsed = kv_parse(out)
             if code != 0:
@@ -142,8 +164,14 @@ class Handler(BaseHTTPRequestHandler):
                 return
             SESSION["run_id"] = parsed.get("run_id")
             SESSION["session_id"] = parsed.get("session_id")
-            SESSION["inference"] = parsed.get("inference") or inference
+            SESSION["inference"] = parsed.get("inference") or args["inference"]
             parsed["inference"] = SESSION["inference"]
+            parsed["source_id"] = args["source_id"]
+            parsed["source_label"] = args["source_label"]
+            parsed["jd_kind"] = args["kind"]
+            parsed["temperature"] = str(args["temperature"])
+            parsed["persona"] = args["persona"]
+            parsed["context_text"] = args["context_text"]
             self._json(200, parsed)
             return
 

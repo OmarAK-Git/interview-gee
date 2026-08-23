@@ -33,7 +33,15 @@ CROSSFIRE_SESSION_ID=${CROSSFIRE_SESSION_ID:-}
 CROSSFIRE_TURN=${CROSSFIRE_TURN:-0}
 HERMES_HOME=${HERMES_HOME}
 CROSSFIRE_INFERENCE=${CROSSFIRE_INFERENCE:-nous}
+CROSSFIRE_JD_KIND=${CROSSFIRE_JD_KIND:-}
+CROSSFIRE_JD_SOURCE_ID=${CROSSFIRE_JD_SOURCE_ID:-}
+CROSSFIRE_JD_SOURCE_LABEL=$(printf '%q' "${CROSSFIRE_JD_SOURCE_LABEL:-}")
+CROSSFIRE_TEMPERATURE=${CROSSFIRE_TEMPERATURE:-2}
+CROSSFIRE_PERSONA=$(printf '%q' "${CROSSFIRE_PERSONA:-}")
 EOF
+  if [ -n "${CROSSFIRE_JD_CONTEXT:-}" ]; then
+    printf '%s\n' "$CROSSFIRE_JD_CONTEXT" >"${dir}/jd-context.md"
+  fi
 }
 
 crossfire_practice_ensure_skill() {
@@ -67,6 +75,13 @@ crossfire_practice_start() {
   local stdout stderr sid
 
   crossfire_require_monday_home
+  if [ -z "${CROSSFIRE_JD_KIND:-}" ] || [ -z "${CROSSFIRE_JD_CONTEXT:-}" ]; then
+    fail_closed "practice start requires a session JD (pack or paste)"
+  fi
+  CROSSFIRE_TEMPERATURE="${CROSSFIRE_TEMPERATURE:-2}"
+  CROSSFIRE_PERSONA="${CROSSFIRE_PERSONA:-}"
+  export CROSSFIRE_JD_KIND CROSSFIRE_JD_CONTEXT CROSSFIRE_JD_SOURCE_ID CROSSFIRE_JD_SOURCE_LABEL
+  export CROSSFIRE_TEMPERATURE CROSSFIRE_PERSONA
   CROSSFIRE_INFERENCE=$(crossfire_practice_resolve_inference)
   export CROSSFIRE_INFERENCE
   CROSSFIRE_RUN_ID=$(crossfire_allocate_run_id)
@@ -123,6 +138,10 @@ crossfire_practice_start() {
   crossfire_practice_kv session_id "$CROSSFIRE_SESSION_ID"
   crossfire_practice_kv opening_target_source "$target_source"
   crossfire_practice_kv inference "$CROSSFIRE_INFERENCE"
+  crossfire_practice_kv source_id "${CROSSFIRE_JD_SOURCE_ID:-}"
+  crossfire_practice_kv source_label "${CROSSFIRE_JD_SOURCE_LABEL:-}"
+  crossfire_practice_kv jd_kind "${CROSSFIRE_JD_KIND:-}"
+  crossfire_practice_kv temperature "${CROSSFIRE_TEMPERATURE:-2}"
   printf '%s\n' "$attribution" | sed 's/^/attribution_line=/'
   crossfire_practice_kv question "$question"
   crossfire_practice_kv tts_text "$question"

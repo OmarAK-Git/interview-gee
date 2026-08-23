@@ -79,6 +79,24 @@ class TemperatureAndJdTest(unittest.TestCase):
         self.assertEqual(got["context_text"], text.strip())
         self.assertEqual(slug_paste(""), "pasted-jd")
 
+    def test_require_pack_rejects_path_traversal(self) -> None:
+        with self.assertRaises(ValueError):
+            require_session_jd("pack", "../SKILL", None, sources_dir=SOURCES)
+
+    def test_start_session_args_requires_jd(self) -> None:
+        from packs import start_session_args
+
+        with self.assertRaises(ValueError):
+            start_session_args({"inference": "nous"}, sources_dir=SOURCES)
+        got = start_session_args(
+            {"inference": "codex", "jd_kind": "pack", "pack_id": "praetor", "temperature": "3"},
+            sources_dir=SOURCES,
+        )
+        self.assertEqual(got["inference"], "codex")
+        self.assertEqual(got["temperature"], 3)
+        self.assertEqual(got["source_id"], "praetor")
+        self.assertEqual(got["persona"], "")
+
 
 if __name__ == "__main__":
     unittest.main()

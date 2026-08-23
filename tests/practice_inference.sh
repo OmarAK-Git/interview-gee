@@ -55,6 +55,10 @@ export CROSSFIRE_RUNS_DIR="$home/runs"
 
 start_out=$(HOME="$HOME" HERMES_HOME="$HERMES_HOME" CROSSFIRE_PRACTICE_STUB=1 \
   CROSSFIRE_RUNS_DIR="$CROSSFIRE_RUNS_DIR" CROSSFIRE_INFERENCE=codex \
+  CROSSFIRE_JD_KIND=pack \
+  CROSSFIRE_JD_SOURCE_ID=praetor \
+  CROSSFIRE_JD_SOURCE_LABEL='Project Praetor' \
+  CROSSFIRE_JD_CONTEXT='Project Praetor advisory-only never-contain' \
   bash "$REPO_ROOT/scripts/practice_session.sh" start) || {
   bad "codex stub start failed"
   echo "$start_out"

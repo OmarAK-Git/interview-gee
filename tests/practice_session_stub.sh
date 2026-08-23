@@ -17,6 +17,10 @@ export CROSSFIRE_RUNS_DIR="$home/runs"
 export PATH="/usr/bin:/bin:${PATH:-}"
 
 start_out=$(HOME="$HOME" HERMES_HOME="$HERMES_HOME" CROSSFIRE_PRACTICE_STUB=1 CROSSFIRE_RUNS_DIR="$CROSSFIRE_RUNS_DIR" \
+  CROSSFIRE_JD_KIND=pack \
+  CROSSFIRE_JD_SOURCE_ID=praetor \
+  CROSSFIRE_JD_SOURCE_LABEL='Project Praetor' \
+  CROSSFIRE_JD_CONTEXT='Project Praetor advisory-only never-contain' \
   bash "$REPO_ROOT/scripts/practice_session.sh" start) || {
   echo "$start_out"
   bad "start failed"
@@ -63,11 +67,19 @@ else
 fi
 
 start2=$(HOME="$HOME" HERMES_HOME="$HERMES_HOME" CROSSFIRE_PRACTICE_STUB=1 CROSSFIRE_RUNS_DIR="$CROSSFIRE_RUNS_DIR" \
+  CROSSFIRE_JD_KIND=pack \
+  CROSSFIRE_JD_SOURCE_ID=praetor \
+  CROSSFIRE_JD_SOURCE_LABEL='Project Praetor' \
+  CROSSFIRE_JD_CONTEXT='Project Praetor advisory-only never-contain' \
   bash "$REPO_ROOT/scripts/practice_session.sh" start)
 echo "$start2" | grep -q 'opening_target_source=MEMORY.md' && ok "session two memory opener" || bad "session two opener: $start2"
 
 # Strong answer should not require retry / not force persist
 start3=$(HOME="$HOME" HERMES_HOME="$HERMES_HOME" CROSSFIRE_PRACTICE_STUB=1 CROSSFIRE_RUNS_DIR="$CROSSFIRE_RUNS_DIR" \
+  CROSSFIRE_JD_KIND=pack \
+  CROSSFIRE_JD_SOURCE_ID=praetor \
+  CROSSFIRE_JD_SOURCE_LABEL='Project Praetor' \
+  CROSSFIRE_JD_CONTEXT='Project Praetor advisory-only never-contain' \
   bash "$REPO_ROOT/scripts/practice_session.sh" start) || true
 run2=$(printf '%s\n' "$start3" | awk -F= '/^run_id=/{print $2; exit}')
 strong=$(HOME="$HOME" HERMES_HOME="$HERMES_HOME" CROSSFIRE_PRACTICE_STUB=1 \

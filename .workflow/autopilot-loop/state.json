@@ -3,28 +3,25 @@
   "goal": "Bounded GSD autopilot loop for Hermes Interview Sparring Partner.",
   "active_run": {
     "status": "running",
-    "item_id": "S5-T3",
-    "next_runnable": "S5-T3",
+    "item_id": "S5-T4",
+    "next_runnable": "S5-T4",
     "stop_reason": null,
-    "completed_this_run": ["S5-T1", "S5-T2"],
+    "completed_this_run": ["S5-T1", "S5-T2", "S5-T3"],
     "blocked": [],
     "human_needed": ["S4-T11 live free-form Hermes Q&A transcript"],
     "evidence": [
       ".workflow/S5-T1/results/verifier-result.md",
-      ".workflow/S5-T2/results/verifier-result.md"
+      ".workflow/S5-T2/results/verifier-result.md",
+      ".workflow/S5-T3/results/verifier-result.md"
     ],
-    "flags": [
-      "draining_sprint_5",
-      "gate_model_cursor-grok-4.6-high-fast",
-      "pack_id_sanitize_for_s5t3"
-    ],
-    "updated_at": "2026-08-23T13:25:00-04:00",
+    "flags": ["draining_sprint_5", "gate_model_cursor-grok-4.6-high-fast"],
+    "updated_at": "2026-08-23T13:55:00-04:00",
     "current_packet": null,
     "dispatch": {
       "role": "controller",
       "environment": "local",
       "model": "inherit",
-      "reason": "S5-T2 verifier survives; next S5-T3"
+      "reason": "S5-T3 verifier survives; next S5-T4"
     }
   }
 }

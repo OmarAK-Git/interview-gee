@@ -961,7 +961,7 @@
       "run_dir": ".workflow/S5-T2"
     },
     {
-      "status": "in_progress",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "must",
@@ -973,7 +973,11 @@
       "verification_agent": "skeptic-verifier",
       "attempts": 1,
       "max_retries": 1,
-      "evidence": [],
+      "evidence": [
+        ".workflow/S5-T3/results/verifier-result.md",
+        ".workflow/S5-T3/results/code-reviewer-result.md",
+        ".workflow/S5-T3/results/code-reviewer-rereview.md"
+      ],
       "id": "S5-T3",
       "title": "Require one JD on session start",
       "depends_on": [
