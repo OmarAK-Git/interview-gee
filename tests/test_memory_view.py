@@ -90,6 +90,16 @@ class UiContractTest(unittest.TestCase):
         self.assertIn('e.key !== "Enter"', js)
         self.assertIn("finishVoiceAndSend", js)
         self.assertIn("renderWeaknesses", js)
+        self.assertIn('id="jd-kind"', html)
+        self.assertIn('id="pack-id"', html)
+        self.assertIn('id="jd-paste"', html)
+        self.assertIn('id="persona"', html)
+        self.assertIn('id="temperature"', html)
+        self.assertIn('id="jd-context"', html)
+        self.assertIn('id="skip"', html)
+        self.assertIn("/api/packs", js)
+        self.assertIn("jd_kind", js)
+        self.assertIn("/api/session/skip", js)
 
 
 class HttpSmokeTest(unittest.TestCase):

@@ -33,12 +33,12 @@ Spec: `docs/superpowers/specs/2026-08-23-practice-interviewer-design.md`
 - `S5-T2` done — practice interviewer skill procedure (verifier survives)
 - `S5-T3` done — one JD required on start (verifier survives)
 - `S5-T4` done — preamble + Skip + mid-session temperature (verifier survives)
-- `S5-T5` pending — UI chrome (depends T3, T4)
+- `S5-T5` done — JD/persona/temp/Skip UI (verifier survives; no browser MCP, HTTP+contract used)
 - `S5-T6` pending — End report + family buckets (depends T4, T5)
 - `S5-T7` pending — docs; live Luna pass is a manual check (depends T6)
 - `S5-GE` pending — phase exit, Grok in-session (depends T7)
 
-Next runnable: `S5-T5`.
+Next runnable: `S5-T6`.
 
 Parked for S5-T3: sanitize `pack_id` before joining to a filesystem path (`app/packs.py` `require_session_jd`). Reviewer minor; local-only until HTTP.
 

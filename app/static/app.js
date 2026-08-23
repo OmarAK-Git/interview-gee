@@ -11,6 +11,13 @@ const composer = document.getElementById("composer");
 const micBtn = document.getElementById("mic");
 const micHint = document.getElementById("mic-hint");
 const inferenceSel = document.getElementById("inference");
+const jdKind = document.getElementById("jd-kind");
+const packWrap = document.getElementById("pack-wrap");
+const pasteWrap = document.getElementById("paste-wrap");
+const packSel = document.getElementById("pack-id");
+const tempInput = document.getElementById("temperature");
+const tempVal = document.getElementById("temperature-val");
+const jdContext = document.getElementById("jd-context");
 
 function selectedInference() {
   const v = inferenceSel?.value === "codex" ? "codex" : "nous";
@@ -111,9 +118,39 @@ function showMeta(data) {
   const bits = [];
   if (data.session_id) bits.push(`<span class="chip">session ${data.session_id}</span>`);
   if (data.inference) bits.push(`<span class="chip">${data.inference}</span>`);
+  if (data.source_label) bits.push(`<span class="chip">${data.source_label}</span>`);
+  if (data.temperature) bits.push(`<span class="chip">temp ${data.temperature}</span>`);
   if (data.opening_target_source) bits.push(`<span class="chip">${data.opening_target_source}</span>`);
   if (data.assessment_status === "skipped") bits.push(`<span class="chip">assessment skipped</span>`);
   meta.innerHTML = bits.join(" ");
+}
+
+function syncJdKind() {
+  const isPack = jdKind.value === "pack";
+  packWrap.hidden = !isPack;
+  pasteWrap.hidden = isPack;
+}
+
+jdKind.addEventListener("change", syncJdKind);
+syncJdKind();
+
+tempInput.addEventListener("input", () => {
+  tempVal.textContent = tempInput.value;
+});
+
+async function loadPacks() {
+  try {
+    const data = await api("/api/packs");
+    packSel.replaceChildren();
+    for (const p of data.packs || []) {
+      const opt = document.createElement("option");
+      opt.value = p.id;
+      opt.textContent = `${p.employer} · ${p.role}`;
+      packSel.appendChild(opt);
+    }
+  } catch {
+    /* packs unavailable */
+  }
 }
 
 function setMicUi(on) {
@@ -156,11 +193,13 @@ function finishVoiceAndSend() {
 }
 
 const sendBtn = document.getElementById("send");
+const skipBtn = document.getElementById("skip");
 const startBtn = document.getElementById("start");
 const endBtn = document.getElementById("end");
 
 function setBusy(on) {
   sendBtn.disabled = on;
+  skipBtn.disabled = on;
   startBtn.disabled = on;
   endBtn.disabled = on;
   answer.disabled = on;
@@ -184,17 +223,34 @@ async function withWait(label, fn) {
 document.getElementById("start").addEventListener("click", async () => {
   tts.cancel();
   stopVoice();
-  const data = await withWait("Interviewer is thinking…", () => api("/api/session/start", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ inference: selectedInference() }),
-  }));
-  chat.innerHTML = "";
-  showMeta(data);
-  if (data.attribution) bubble("interviewer", data.attribution);
-  bubble("interviewer", data.question || data.tts_text || "(no question)");
-  tts.speak(data.tts_text || data.question);
-  await refreshMemory();
+  try {
+    const data = await withWait("Interviewer is thinking…", () => api("/api/session/start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        inference: selectedInference(),
+        jd_kind: jdKind.value,
+        pack_id: packSel.value,
+        paste: document.getElementById("jd-paste").value,
+        persona: document.getElementById("persona").value,
+        temperature: tempInput.value,
+      }),
+    }));
+    chat.innerHTML = "";
+    showMeta(data);
+    if (data.context_text) {
+      jdContext.textContent = data.context_text;
+      jdContext.hidden = false;
+    } else {
+      jdContext.hidden = true;
+    }
+    if (data.attribution) bubble("interviewer", data.attribution);
+    bubble("interviewer", data.question || data.tts_text || "(no question)");
+    tts.speak(data.tts_text || data.question);
+    await refreshMemory();
+  } catch (err) {
+    bubble("interviewer", err.message || "Need a job description");
+  }
 });
 
 document.getElementById("end").addEventListener("click", async () => {
@@ -218,7 +274,7 @@ composer.addEventListener("submit", async (e) => {
     api("/api/session/answer", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({ text, temperature: tempInput.value }),
     }),
   );
   showMeta(data);
@@ -245,6 +301,21 @@ micBtn.addEventListener("click", () => {
   else startVoice();
 });
 
+skipBtn.addEventListener("click", async () => {
+  tts.cancel();
+  stopVoice();
+  const data = await withWait("Interviewer is thinking…", () =>
+    api("/api/session/skip", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ temperature: tempInput.value }),
+    }),
+  );
+  showMeta(data);
+  bubble("interviewer", data.question || data.tts_text, "skipped");
+  tts.speak(data.tts_text || data.question);
+});
+
 if (!stt.supported()) {
   micBtn.disabled = true;
   micHint.hidden = false;
@@ -252,3 +323,4 @@ if (!stt.supported()) {
 }
 
 refreshMemory().catch(() => {});
+loadPacks();

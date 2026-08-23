@@ -1061,7 +1061,7 @@
       "run_dir": ".workflow/S5-T4"
     },
     {
-      "status": "pending",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "must",
@@ -1071,9 +1071,12 @@
       "code_review_policy": "frequent_after_implement",
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": [],
+      "evidence": [
+        ".workflow/S5-T5/results/verifier-result.md",
+        ".workflow/S5-T5/results/code-reviewer-result.md"
+      ],
       "id": "S5-T5",
       "title": "Practice UI: JD, persona, temperature, Skip",
       "depends_on": [
@@ -1105,7 +1108,7 @@
       "run_dir": ".workflow/S5-T5"
     },
     {
-      "status": "pending",
+      "status": "in_progress",
       "tier": "T2",
       "type": "task",
       "priority": "must",
@@ -1115,7 +1118,7 @@
       "code_review_policy": "frequent_after_implement",
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
       "evidence": [],
       "id": "S5-T6",

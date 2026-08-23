@@ -78,3 +78,12 @@ button.live, button[aria-pressed="true"] { background: #8b3a3a; color: #fff; }
   font-size: 0.85rem;
   font-style: italic;
 }
+.setup { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.75rem; align-items: flex-end; }
+.setup label { color: var(--muted); font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.25rem; }
+.setup input, .setup select, .setup textarea {
+  background: var(--panel); color: var(--ink); border: 1px solid #2a3140; border-radius: 8px; padding: 0.3rem 0.45rem;
+}
+.context {
+  max-height: 8rem; overflow: auto; white-space: pre-wrap;
+  background: var(--panel); border-radius: 8px; padding: 0.6rem; margin-top: 0.6rem; font-size: 0.85rem; color: var(--muted);
+}
