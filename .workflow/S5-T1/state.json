@@ -1,0 +1,70 @@
+{
+  "goal": "Ship four spec-section-4 JD packs and a stdlib parser used by practice start.",
+  "success_criteria": [
+    "Four packs exist and parse (id, facts, 4-6 competencies, core and edge, one family each).",
+    "Cross-pack leak check passes.",
+    "require_session_jd rejects missing JD; pack and paste paths return source_id, source_label, context_text.",
+    "normalize_temperature defaults to 2 and rejects 0 and 6."
+  ],
+  "constraints": [
+    "Stay within task scope and files_allowed",
+    "Task-scoped verification",
+    "Never mutate real ~/.hermes",
+    "Do not change SKILL.md demo questions, practice UI, or persist topics"
+  ],
+  "risks": [
+    {
+      "risk": "Cross-pack fact leak",
+      "approval_required": false,
+      "mitigation": "source_packs.sh leak regexes"
+    }
+  ],
+  "max_concurrent_agents": 2,
+  "max_total_agents": 6,
+  "packets": [
+    {
+      "id": "01-research",
+      "objective": "Resolve multi-path opportunity cost when triggered",
+      "ownership": "researcher",
+      "status": "skipped"
+    },
+    {
+      "id": "02-implementation",
+      "objective": "Implement the scoped queue item",
+      "ownership": "implementer",
+      "status": "pending"
+    },
+    {
+      "id": "03-review",
+      "objective": "Review code-changing implementation",
+      "ownership": "code-reviewer",
+      "status": "pending"
+    },
+    {
+      "id": "04-verify",
+      "objective": "Run task-scoped verification",
+      "ownership": "skeptic-verifier",
+      "status": "pending"
+    }
+  ],
+  "verification": [
+    {
+      "check": "praetor pack exists",
+      "command": "Test-Path -LiteralPath skills\\crossfire-interviewer\\sources\\praetor.md -PathType Leaf",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "check": "packs.py exists",
+      "command": "Test-Path -LiteralPath app\\packs.py -PathType Leaf",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "check": "unittest test_packs",
+      "command": "py -3 -m unittest tests.test_packs",
+      "required": true,
+      "status": "pending"
+    }
+  ]
+}

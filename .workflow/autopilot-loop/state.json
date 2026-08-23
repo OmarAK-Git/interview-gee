@@ -2,36 +2,29 @@
   "queue_path": ".workflow/autopilot-queue.json",
   "goal": "Bounded GSD autopilot loop for Hermes Interview Sparring Partner.",
   "active_run": {
-    "status": "stopped",
-    "item_id": null,
-    "next_runnable": "S5-T1",
-    "stop_reason": "sprint_5_loaded",
-    "completed_this_run": [
-      "S1-T1", "S1-T1b", "S1-T2", "S1-T3", "S1-GE",
-      "S2-T5", "S2-T6", "S2-T7", "S2-GE",
-      "S3-T4", "S3-T8", "S3-T9", "S3-T10", "S3-GE",
-      "S4-T11", "S4-T12", "S4-GE"
-    ],
+    "status": "running",
+    "item_id": "S5-T2",
+    "next_runnable": "S5-T2",
+    "stop_reason": null,
+    "completed_this_run": ["S5-T1"],
     "blocked": [],
     "human_needed": ["S4-T11 live free-form Hermes Q&A transcript"],
     "evidence": [
-      ".workflow/S2-GE/results/verifier-result.md",
-      ".workflow/S3-GE/results/verifier-result.md",
-      ".workflow/S4-GE/results/verifier-result.md"
+      ".workflow/S5-T1/results/verifier-result.md"
     ],
     "flags": [
-      "sprint_5_loaded",
-      "next_runnable_S5-T1",
+      "draining_sprint_5",
       "gate_model_cursor-grok-4.6-high-fast",
-      "t11_human_needed_live_transcript"
+      "s5t1_done",
+      "pack_id_sanitize_for_s5t3"
     ],
-    "updated_at": "2026-08-23T12:43:00-04:00",
+    "updated_at": "2026-08-23T13:05:00-04:00",
     "current_packet": null,
     "dispatch": {
       "role": "controller",
       "environment": "local",
       "model": "inherit",
-      "reason": "Sprint 5 practice interviewer plan loaded; loop not drained"
+      "reason": "S5-T1 verifier survives; next S5-T2"
     }
   }
 }

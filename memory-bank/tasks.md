@@ -24,12 +24,12 @@ Projected from the plan into `.workflow/autopilot-queue.json`.
 - `S4-T12` done
 - `S4-GE` done (pass, Grok 4.6-high)
 
-## Sprint 5 — Practice interviewer (must) — PENDING
+## Sprint 5 — Practice interviewer (must) — IN PROGRESS
 
 Plan: `docs/superpowers/plans/2026-08-23-practice-interviewer.md`
 Spec: `docs/superpowers/specs/2026-08-23-practice-interviewer-design.md`
 
-- `S5-T1` pending — four source packs + parser
+- `S5-T1` done — four source packs + stdlib parser (verifier survives)
 - `S5-T2` pending — skill procedure (depends T1)
 - `S5-T3` pending — require one JD on start (depends T1, T2)
 - `S5-T4` pending — prompt injection + Skip (depends T3)
@@ -38,4 +38,6 @@ Spec: `docs/superpowers/specs/2026-08-23-practice-interviewer-design.md`
 - `S5-T7` pending — docs; live Luna pass is a manual check (depends T6)
 - `S5-GE` pending — phase exit, Grok in-session (depends T7)
 
-Next runnable: `S5-T1`.
+Next runnable: `S5-T2`.
+
+Parked for S5-T3: sanitize `pack_id` before joining to a filesystem path (`app/packs.py` `require_session_jd`). Reviewer minor; local-only until HTTP.
