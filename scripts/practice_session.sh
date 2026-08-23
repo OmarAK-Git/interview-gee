@@ -350,9 +350,7 @@ crossfire_practice_end() {
       continue
     fi
     family=$(crossfire_spool_field "$f" family)
-    topic=$(crossfire_spool_field "$f" question_id)
-    [ -n "$topic" ] || topic="$family"
-    topic="${topic} practice gap"
+    topic="${CROSSFIRE_JD_SOURCE_LABEL:-practice} · ${family}"
     missing=$(crossfire_spool_field "$f" missing_elements)
     missing=${missing//[\[\]]/}
     missing=${missing// /}
@@ -361,6 +359,9 @@ crossfire_practice_end() {
     answer_ref=$(crossfire_spool_field "$f" answer_ref)
     ev_kind=$(awk '/^evidence:/{getline; if ($0 ~ /kind:/) {sub(/^  kind: /,""); print; exit}}' "$f")
     ev_val=$(awk '/^evidence:/{getline; getline; if ($0 ~ /value:/) {sub(/^  value: /,""); gsub(/^"/,""); gsub(/"$/,""); print; exit}}' "$f")
+    if [ ${#ev_val} -gt 180 ]; then
+      ev_val="${ev_val:0:180}"
+    fi
     submitted=$(awk '/^submitted_answer:/{capture=1; next} capture && /^[^ ]/{exit} capture {sub(/^  /,""); print}' "$f")
     if crossfire_persist_weakness \
       "$HERMES_MEMORY_MD" "$family" "$topic" "$missing" "$last_seen" \
@@ -379,6 +380,26 @@ crossfire_practice_end() {
     trap - RETURN 2>/dev/null || true
   done
   shopt -u nullglob
+
+  weak=""
+  strong=""
+  for f in "${spool_dir}"/*.yaml; do
+    [ -f "$f" ] || continue
+    fam=$(crossfire_spool_field "$f" family)
+    miss=$(crossfire_spool_field "$f" missing_elements)
+    if crossfire_spool_should_persist "$f"; then
+      weak="${weak};${fam}:${miss}"
+    else
+      strong="${strong};${fam}"
+    fi
+  done
+  weak="${weak#;}"
+  strong="${strong#;}"
+  report_text="Weak: ${weak:-none}
+Strong: ${strong:-none}"
+  crossfire_practice_kv report_weak "$weak"
+  crossfire_practice_kv report_strong "$strong"
+  printf '%s\n' "$report_text" | sed 's/^/report_line=/'
 
   crossfire_practice_kv event end
   crossfire_practice_kv persisted_count "$persisted"

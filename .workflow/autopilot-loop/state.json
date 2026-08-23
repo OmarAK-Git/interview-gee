@@ -3,27 +3,31 @@
   "goal": "Bounded GSD autopilot loop for Hermes Interview Sparring Partner.",
   "active_run": {
     "status": "running",
-    "item_id": "S5-T6",
-    "next_runnable": "S5-T6",
+    "item_id": "S5-T7",
+    "next_runnable": "S5-T7",
     "stop_reason": null,
-    "completed_this_run": ["S5-T1", "S5-T2", "S5-T3", "S5-T4", "S5-T5"],
+    "completed_this_run": ["S5-T1", "S5-T2", "S5-T3", "S5-T4", "S5-T5", "S5-T6"],
     "blocked": [],
-    "human_needed": ["S4-T11 live free-form Hermes Q&A transcript"],
+    "human_needed": [
+      "S4-T11 live free-form Hermes Q&A transcript",
+      "S5-T7 live Codex/Luna practice pass"
+    ],
     "evidence": [
       ".workflow/S5-T1/results/verifier-result.md",
       ".workflow/S5-T2/results/verifier-result.md",
       ".workflow/S5-T3/results/verifier-result.md",
       ".workflow/S5-T4/results/verifier-result.md",
-      ".workflow/S5-T5/results/verifier-result.md"
+      ".workflow/S5-T5/results/verifier-result.md",
+      ".workflow/S5-T6/results/verifier-result.md"
     ],
-    "flags": ["draining_sprint_5", "t5_no_browser_mcp"],
-    "updated_at": "2026-08-23T14:45:00-04:00",
+    "flags": ["draining_sprint_5", "s5t7_live_pass_human_needed"],
+    "updated_at": "2026-08-23T15:10:00-04:00",
     "current_packet": null,
     "dispatch": {
       "role": "controller",
       "environment": "local",
       "model": "inherit",
-      "reason": "S5-T5 verifier survives; next S5-T6"
+      "reason": "S5-T6 verifier survives; next S5-T7 docs"
     }
   }
 }

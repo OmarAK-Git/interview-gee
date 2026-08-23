@@ -100,6 +100,8 @@ class UiContractTest(unittest.TestCase):
         self.assertIn("/api/packs", js)
         self.assertIn("jd_kind", js)
         self.assertIn("/api/session/skip", js)
+        self.assertIn("report_text", js)
+        self.assertNotIn("Persisted ${data.persisted_count", js)
 
 
 class HttpSmokeTest(unittest.TestCase):

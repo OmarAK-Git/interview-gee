@@ -259,7 +259,8 @@ document.getElementById("end").addEventListener("click", async () => {
   const data = await withWait("Wrapping up…", () =>
     api("/api/session/end", { method: "POST", body: "{}" }),
   );
-  bubble("interviewer", `Session ended. Persisted ${data.persisted_count || 0} weakness(es).`);
+  const report = data.report_text || "No assessments this session.";
+  bubble("interviewer", report);
   await refreshMemory();
 });
 

@@ -58,5 +58,30 @@ spool_count=$(find "$CROSSFIRE_RUNS_DIR/$run_id/spool" -name '*.yaml' 2>/dev/nul
 grep -q 'CROSSFIRE_TEMPERATURE=4' "$CROSSFIRE_RUNS_DIR/$run_id/practice.state" \
   && ok "skip saved temperature 4" || bad "skip saved temperature 4"
 
+dash_out=$(HOME="$HOME" HERMES_HOME="$HERMES_HOME" CROSSFIRE_PRACTICE_STUB=1 \
+  CROSSFIRE_RUNS_DIR="$CROSSFIRE_RUNS_DIR" CROSSFIRE_RUN_ID="$run_id" \
+  bash "$REPO_ROOT/scripts/practice_session.sh" answer "I just kind of watched the dashboard.")
+echo "$dash_out" | grep -q 'persist_recommended=true' && ok "dash persist rec" || bad "dash persist rec"
+
+end_out=$(HOME="$HOME" HERMES_HOME="$HERMES_HOME" CROSSFIRE_PRACTICE_STUB=1 \
+  CROSSFIRE_RUNS_DIR="$CROSSFIRE_RUNS_DIR" CROSSFIRE_RUN_ID="$run_id" \
+  bash "$REPO_ROOT/scripts/practice_session.sh" end) || {
+  bad "end failed: $end_out"
+}
+echo "$end_out" | grep -q 'report_weak=' && ok "report_weak kv" || bad "report_weak kv: $end_out"
+echo "$end_out" | grep -q 'report_strong=' && ok "report_strong kv" || bad "report_strong"
+echo "$end_out" | grep -q 'Weak:' && ok "report_text Weak" || bad "report_text Weak: $end_out"
+echo "$end_out" | grep -q 'Strong:' && ok "report_text Strong" || bad "report_text Strong"
+if grep -q 'q_live_01 practice gap' "$HERMES_HOME/memories/MEMORY.md"; then
+  bad "old practice-gap topic"
+else
+  ok "no q_live practice-gap topic"
+fi
+if grep -q 'Project Praetor' "$HERMES_HOME/memories/MEMORY.md" || grep -q 'praetor' "$HERMES_HOME/memories/MEMORY.md"; then
+  ok "topic uses source label"
+else
+  bad "topic missing source label"
+fi
+
 echo "practice_jd: passed=$pass failed=$fail"
 [ "$fail" -eq 0 ]

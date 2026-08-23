@@ -31,16 +31,21 @@ SESSION = {
 def kv_parse(text: str) -> dict[str, str]:
     out: dict[str, str] = {}
     attr_lines: list[str] = []
+    report_lines: list[str] = []
     for line in text.splitlines():
         if "=" not in line:
             continue
         key, val = line.split("=", 1)
         if key == "attribution_line":
             attr_lines.append(val)
+        elif key == "report_line":
+            report_lines.append(val)
         else:
             out[key] = val
     if attr_lines:
         out["attribution"] = "\n".join(attr_lines)
+    if report_lines:
+        out["report_text"] = "\n".join(report_lines)
     return out
 
 
