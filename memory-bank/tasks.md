@@ -41,3 +41,14 @@ Spec: `docs/superpowers/specs/2026-08-23-practice-interviewer-design.md`
 Next runnable: `S5-T2`.
 
 Parked for S5-T3: sanitize `pack_id` before joining to a filesystem path (`app/packs.py` `require_session_jd`). Reviewer minor; local-only until HTTP.
+
+## Sprint 6 — Practice weave (must) — QUEUED AFTER S5-GE
+
+Addendum: `docs/superpowers/specs/2026-08-23-practice-weave-addendum.md`
+
+Do not start while Sprint 5 is in progress. The other chat owns S5-T2…S5-GE.
+
+- `S6-T1` pending — JD owns the first question; MEMORY.md biases follow-ups only (depends S5-GE; needs research)
+- `S6-GE` pending — phase exit, Grok in-session (depends T1)
+
+Supersedes practice design §5 “opener may target the newest gap” and plan Task 4 “Ask ONE question that targets those missing elements.” Leaves `sparring-1.0.0` §13 demo opener locked.
