@@ -18,6 +18,7 @@ printf '%s\n' "$flags" | grep -q -- '--model' && ok "nous model flag" || bad "no
 CROSSFIRE_INFERENCE=codex
 flags=$(crossfire_practice_inference_flags)
 printf '%s\n' "$flags" | grep -q -- '--provider openai-codex' && ok "codex provider flag" || bad "codex provider flag: $flags"
+printf '%s\n' "$flags" | grep -q -- 'gpt-5.6-luna' && ok "codex default luna" || bad "codex default model: $flags"
 
 CROSSFIRE_INFERENCE=openai-codex
 [ "$(crossfire_practice_resolve_inference)" = "codex" ] && ok "alias openai-codex" || bad "alias openai-codex"
@@ -32,6 +33,12 @@ cmd="hermes chat -Q --reasoning none --max-turns 3 --toolsets skills -q hi"
 injected=$(crossfire_practice_inject_inference "$cmd")
 printf '%s\n' "$injected" | grep -q 'hermes chat --provider' && ok "inject after hermes chat" || bad "inject: $injected"
 printf '%s\n' "$injected" | grep -q -- '--max-turns 1' && ok "force max-turns 1" || bad "max-turns: $injected"
+printf '%s\n' "$injected" | grep -q -- '--reasoning low' && ok "reasoning low" || bad "reasoning: $injected"
+if printf '%s\n' "$injected" | grep -q -- '--reasoning none'; then
+  bad "should not keep reasoning none: $injected"
+else
+  ok "drop reasoning none"
+fi
 if printf '%s\n' "$injected" | grep -q -- '--toolsets'; then
   bad "toolsets should be stripped: $injected"
 else

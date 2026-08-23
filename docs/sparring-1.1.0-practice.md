@@ -39,11 +39,11 @@ The interviewer is still Hermes (`hermes chat --resume`). The UI **Inference** c
 | Choice | Hermes flags | Pays |
 | --- | --- | --- |
 | Nous (default) | `--provider nous --model stepfun/step-3.7-flash:free` | Nous Portal |
-| Codex | `--provider openai-codex --model gpt-5.4` | ChatGPT / Codex subscription |
+| Codex | `--provider openai-codex --model gpt-5.6-luna` | ChatGPT / Codex subscription |
 
 Override models with `CROSSFIRE_NOUS_MODEL` / `CROSSFIRE_CODEX_MODEL`. Does **not** rewrite `config.yaml`. Codex needs `hermes auth add openai-codex` (or imported `~/.codex/auth.json`) on the Monday `HERMES_HOME`.
 
-Practice invokes use `--max-turns 1`, `--reasoning none`, and no `--toolsets` so Codex does not spend extra rounds reading skill files. The UI still waits for the full `hermes chat -Q` (no token stream). A faster Codex id is `CROSSFIRE_CODEX_MODEL` (default `gpt-5.4`).
+Practice invokes use `--max-turns 1`, `--reasoning low`, and no `--toolsets`. Luna is the light GPT-5.6 Codex tier; low reasoning stays on so assessment can think without stacked tool rounds. Override with `CROSSFIRE_CODEX_MODEL` / `CROSSFIRE_REASONING`. The UI still waits for the full `hermes chat -Q`.
 
 ## Named cuts
 

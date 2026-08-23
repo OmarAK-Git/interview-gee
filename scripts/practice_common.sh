@@ -110,7 +110,7 @@ crossfire_practice_inference_flags() {
       ;;
     *)
       provider="openai-codex"
-      model="${CROSSFIRE_CODEX_MODEL:-gpt-5.4}"
+      model="${CROSSFIRE_CODEX_MODEL:-gpt-5.6-luna}"
       ;;
   esac
   printf -- '--provider %s --model %s' "$provider" "$model"
@@ -125,9 +125,8 @@ crossfire_practice_speed_tune() {
   else
     cmd="${cmd/hermes chat/hermes chat --max-turns 1}"
   fi
-  if ! printf '%s' "$cmd" | grep -q -- '--reasoning'; then
-    cmd="${cmd/hermes chat/hermes chat --reasoning none}"
-  fi
+  cmd=$(printf '%s' "$cmd" | sed -E 's/ --reasoning[[:space:]]+[^[:space:]]+//g')
+  cmd="${cmd/hermes chat/hermes chat --reasoning ${CROSSFIRE_REASONING:-low}}"
   printf '%s' "$cmd"
 }
 
