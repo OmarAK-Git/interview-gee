@@ -915,7 +915,7 @@
       "run_dir": ".workflow/S5-T1"
     },
     {
-      "status": "verifying",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "must",
@@ -927,7 +927,10 @@
       "verification_agent": "skeptic-verifier",
       "attempts": 1,
       "max_retries": 1,
-      "evidence": [],
+      "evidence": [
+        ".workflow/S5-T2/results/verifier-result.md",
+        ".workflow/S5-T2/results/code-reviewer-result.md"
+      ],
       "id": "S5-T2",
       "title": "Practice interviewer procedure in the skill",
       "depends_on": [

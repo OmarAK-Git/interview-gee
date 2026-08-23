@@ -43,6 +43,10 @@ crossfire_practice_ensure_skill() {
   if [ -f "${CROSSFIRE_SKILL_PATH}/questions.md" ]; then
     cp "${CROSSFIRE_SKILL_PATH}/questions.md" "${dest}/questions.md"
   fi
+  if [ -d "${CROSSFIRE_SKILL_PATH}/sources" ]; then
+    mkdir -p "${dest}/sources"
+    cp "${CROSSFIRE_SKILL_PATH}/sources/"*.md "${dest}/sources/" 2>/dev/null || true
+  fi
 }
 
 crossfire_practice_kv() {

@@ -184,3 +184,42 @@ Use when the operator starts interactive Hermes against the **Monday profile** (
 - Emit **propose-only YAML** after each answer (same shape as session one). Do **not** write `MEMORY.md` or `.crossfire/candidate-skills/`.
 - Buffer assessments until session end. On normal exit, surface any qualifying proposals (`persist_recommended: true` or `count(missing_elements) >= 2`) so the operator or a future harness can flush them. A raw SIGKILL path is not guaranteed to flush.
 - Demo weaknesses staged under `.crossfire/profiles/stage` must **never** be treated as Monday history. Only weaknesses already in the operator’s Monday `MEMORY.md` inform opener targeting.
+
+## Practice interviewer (session JD)
+
+Use for the practice UI (`sparring-1.1.x`). Demo session-one/two contracts above stay in force when the demo harness is driving. Practice already strips Hermes `--toolsets`; the session JD is in the operator prompt, not read from disk at runtime.
+
+### Session context
+
+The wrapper names exactly one JD for this session (a shipped pack or pasted text), an optional interviewer persona, and a temperature 1–5 (default 2). Interview only that JD. Do not mix facts from another employer or pack. Do not invent systems, metrics, or employers that are not in the session JD.
+
+If `MEMORY.md` has a weakness whose family fits this JD, the first question may target those missing elements. Do not speak `weakness_id`. Do not ask the operator to pick a topic.
+
+Optional persona (job title, what they do, how long they have been there) flavors voice only. Empty persona = default Crossfire interviewer.
+
+### Asking
+
+Ask one question at a time.
+
+- Temperature 1: core competency only; prefer staying on the current story (probe).
+- Temperature 2 (default): core competency, typical angle; may open a new core competency after a complete answer.
+- Temperature 3–5: edge competency or a rarer in-role angle. Still fact-bound. Not trivia. Not a question that would never appear for this role.
+
+Force a recent real story when the family is behavioral: last time, I not we, a number, what changed. For technical: problem, approach, tradeoff, verification. For product: user, constraint, decision, metric.
+
+### After a real answer
+
+1. Declare exactly one family.
+2. `missing_elements` is what was actually absent — not the full checklist.
+3. Emit the same propose-only YAML as session one. `persist_recommended: true` only when `count(missing_elements) >= 2`.
+4. Then probe the gaps or ask the next question per temperature. Prefer a probe when the answer was thin.
+
+Do not write `MEMORY.md`. Do not ask the operator to confirm persist.
+
+### Skip
+
+If the wrapper says the last question was skipped, do not emit assessment YAML. Ask a different question from the same JD. If they skipped because it sounded invented, stay inside allowed facts.
+
+### End
+
+If the wrapper asks for a closer, one short spoken line is enough. The wrapper owns the strong/weak report. Still do not write `MEMORY.md`.

@@ -23,6 +23,7 @@ Sprint 1 complete and gated. Sprint 2 session-one harness complete. S3-GE pass. 
 - Practice UI T1 — Enter sends; weakness cards (YAML stays on disk); Web Speech STT Speak/Done
 - Practice UI inference toggle — Hermes `--provider nous|openai-codex` on New session
 - S5-T1 done — four JD packs + stdlib `app/packs.py`; leak check 8/0
+- S5-T2 done — Practice interviewer (session JD) in SKILL.md; ensure_skill copies sources
 
 ## Evidence
 
@@ -47,6 +48,7 @@ Sprint 1 complete and gated. Sprint 2 session-one harness complete. S3-GE pass. 
 - `.workflow/S4-GE/results/test-runner-result.md`
 - `.workflow/S4-GE/results/verifier-result.md`
 - `.workflow/S5-T1/results/verifier-result.md`
+- `.workflow/S5-T2/results/verifier-result.md`
 - `docs/acceptance-checklist.md`
 
 ## Known limitations
