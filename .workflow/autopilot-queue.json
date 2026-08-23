@@ -21,7 +21,7 @@
     "verification_agent": "skeptic-verifier",
     "test_runner_agent": "test-runner",
     "test_runner_policy": "gates_and_major_sections",
-    "active_sprint": "sprint-1"
+    "active_sprint": "sprint-5"
   },
   "status_values": [
     "pending",
@@ -37,9 +37,12 @@
     "spec": "docs/b83b4a6b-e9dc-4c74-9edc-2e0b9bf9de54-spec.md",
     "plan": "docs/b83b4a6b-e9dc-4c74-9edc-2e0b9bf9de54-plan.md",
     "spec_version": "sparring-1.0.0",
-    "ship_target": "S2-GE",
+    "ship_target": "S5-GE",
     "execution_order": "research? -> implement -> code-review? -> skeptic-verify",
-    "cut_order": "T4 question-bank, T11 free-form, T9 risk beat, T8 artifact polish; never isolation, process separation, or memory-only opener"
+    "cut_order": "T4 question-bank, T11 free-form, T9 risk beat, T8 artifact polish; never isolation, process separation, or memory-only opener",
+    "practice_spec": "docs/superpowers/specs/2026-08-23-practice-interviewer-design.md",
+    "practice_plan": "docs/superpowers/plans/2026-08-23-practice-interviewer.md",
+    "practice_authority": "sparring-1.1.0 + 2026-08-23 practice interviewer design; 1.0.0 demo contract unchanged"
   },
   "items": [
     {
@@ -97,7 +100,9 @@
       "tier": "T2",
       "type": "task",
       "priority": "must",
-      "depends_on": ["S1-T1"],
+      "depends_on": [
+        "S1-T1"
+      ],
       "goal": "Prove an automated run leaves real Hermes state unchanged.",
       "scope": "Sprint 1 task 1b only: isolation env and tests. BUILD-BLOCKING. If isolation cannot be achieved, STOP automating against Hermes and record the hand-script decision; do not implement later Hermes-touching tasks.",
       "description": "Assert that setting the isolation mechanism (HERMES_HOME override or existing scripts/start-wsl-isolated.sh) makes Hermes read/write a disposable directory, and that a marker file written to the real ~/.hermes is never touched by a test run. Every subsequent script and test sources the isolation env. If no override exists, tests run against a copied throwaway ~/.hermes; automation NEVER points at the real one.",
@@ -143,7 +148,10 @@
       "tier": "T2",
       "type": "task",
       "priority": "must",
-      "depends_on": ["S1-T1", "S1-T1b"],
+      "depends_on": [
+        "S1-T1",
+        "S1-T1b"
+      ],
       "goal": "Ship a deterministic MEMORY.md weakness-block merge with schema, dedup, cap, and failure-safety tests passing.",
       "scope": "Sprint 1 task 2 only: harness-owned delimited block + atomic update. No fuzzy semantic merge. Do not implement demo sessions or candidate skills.",
       "description": "Strict TDD on deterministic shell logic: insert complete record; reject missing fields; merge same topic/family; dedup identical source_session_id+answer_ref; increment only on new observation; preserve first_seen, update last_seen; evict oldest on 4th topic; preserve unrelated MEMORY.md content; leave original intact on validation failure. Write into the delimited block form confirmed survivable in Task 1.",
@@ -189,7 +197,9 @@
       "tier": "T2",
       "type": "task",
       "priority": "must",
-      "depends_on": ["S1-T1b"],
+      "depends_on": [
+        "S1-T1b"
+      ],
       "goal": "Make family selection and persist decisions hold within the fixture-eval tolerance.",
       "scope": "Sprint 1 task 3 only: stable interviewer assessment contract and fixture eval. Do not implement session harness or MEMORY.md writes beyond proposing assessments.",
       "description": "Tolerance eval, not strict equality. Strong/weak fixtures per family; assert correct family selected; weakness proposed only when >=2 required elements missing; output names missing elements + concise evidence; technical answers not scored with STAR; one missing element does not persist. Run each case N times; require it to hold in the large majority, and flag flakiness rather than hard-failing a single off-run. Spec: N=5, pass if >=4 runs match persist decision.",
@@ -232,7 +242,12 @@
       "tier": "T3",
       "type": "phase_exit",
       "priority": "must",
-      "depends_on": ["S1-T1", "S1-T1b", "S1-T2", "S1-T3"],
+      "depends_on": [
+        "S1-T1",
+        "S1-T1b",
+        "S1-T2",
+        "S1-T3"
+      ],
       "goal": "Confirm the platform contract is known, isolation is enforced, and core logic is testable.",
       "scope": "Verify-only Sprint 1 phase exit; do not implement features.",
       "description": "Sprint 1 exit: platform contract known, isolation enforced, core logic testable. Do not start session-one harness work in this item.",
@@ -277,7 +292,11 @@
       "tier": "T2",
       "type": "task",
       "priority": "must",
-      "depends_on": ["S1-GE", "S1-T2", "S1-T3"],
+      "depends_on": [
+        "S1-GE",
+        "S1-T2",
+        "S1-T3"
+      ],
       "goal": "Run session one end-to-end in the isolated profile with exactly three questions and deferred automatic persistence.",
       "scope": "Sprint 2 task 5 only: demo session one harness. Do not implement session two opener or candidate activation.",
       "description": "E2E against the isolated profile: exactly three questions; answers read from the scripted input file; assessments buffered; MEMORY.md unchanged before the third answer completes; session completion writes qualifying observations; no confirmation; concise output. Prefer Hermes-native session state if verified, else session-ID-scoped buffer under .crossfire/run/; commit only on explicit session-complete path. After the third answer the harness invokes /done (same finalize path as typing /done).",
@@ -324,7 +343,12 @@
       "tier": "T2",
       "type": "task",
       "priority": "must",
-      "depends_on": ["S1-T1", "S1-T1b", "S1-T2", "S2-T5"],
+      "depends_on": [
+        "S1-T1",
+        "S1-T1b",
+        "S1-T2",
+        "S2-T5"
+      ],
       "goal": "A poor answer produces a visible provenance-linked candidate SKILL.md that is not loadable before session two.",
       "scope": "Sprint 2 task 6 only: stage candidate outside the live skill dir and snapshot immediately. Do not load it for the opener.",
       "description": "Candidate created/patched after completion; status: unverified; contains weakness_id, source_session_id, answer_ref, observation_count; reuses one provenance key; lands outside the loaded skill dir; snapshotted immediately on creation before any Curator window; survives to the risk beat under the chosen Curator strategy. Prefer the verified learning-loop mechanism; if Hermes writes into the live dir, snapshot immediately then disable/move the live copy reversibly. Document whether the artifact is Hermes-authored, skill-authored, or harness-relocated.",
@@ -370,7 +394,13 @@
       "tier": "T2",
       "type": "task",
       "priority": "must",
-      "depends_on": ["S1-T1", "S1-T1b", "S1-T2", "S2-T5", "S2-T6"],
+      "depends_on": [
+        "S1-T1",
+        "S1-T1b",
+        "S1-T2",
+        "S2-T5",
+        "S2-T6"
+      ],
       "goal": "Session two targets the persisted weakness with no naming prompt, no loaded candidate (or disclosed degraded path), and no pre-opener search.",
       "scope": "Sprint 2 task 7 only: session-two opener. This is the demo's minimum success bar. Do not implement the risk beat.",
       "description": "Integration: end process one; start process two with a different session ID; fail if any candidate skill is in the live dir (unless degraded path recorded); select newest weakness deterministically; print opening_target_source=MEMORY.md, weakness ID, source session before the question; ask a matching opener; detect and fail on any pre-opener session_search. Encode deterministic selection; add process/session evidence; instrument tool-call logging if supported, else structure the opener path so no archive-search action is available until selection returns.",
@@ -417,7 +447,11 @@
       "tier": "T3",
       "type": "phase_exit",
       "priority": "must",
-      "depends_on": ["S2-T5", "S2-T6", "S2-T7"],
+      "depends_on": [
+        "S2-T5",
+        "S2-T6",
+        "S2-T7"
+      ],
       "goal": "Confirm the deliverable demo: memory-only opener works across separate processes with candidate exclusion (or recorded degraded path).",
       "scope": "Verify-only Sprint 2 phase exit; do not implement the risk beat or timed demo assembly.",
       "description": "This is the deliverable demo gate. Do not start the risk beat until this passes.",
@@ -463,7 +497,9 @@
       "tier": "T2",
       "type": "task",
       "priority": "nice",
-      "depends_on": ["S1-T3"],
+      "depends_on": [
+        "S1-T3"
+      ],
       "goal": "Add a statically validated broader question bank without inventing employer facts.",
       "scope": "Sprint 3 slot for plan Task 4. CUT FIRST under time pressure. Do not change the three never-cut demo questions.",
       "description": "Static validation: covers McCain/Mastercard/Praetor/ALTER_EGO and all three families; every question has stable ID + declared family; demo questions concise; no invented employer facts. Three demo questions live in session-one fixtures and are never cut.",
@@ -505,7 +541,11 @@
       "tier": "T2",
       "type": "task",
       "priority": "nice",
-      "depends_on": ["S2-T5", "S2-T6", "S2-T7"],
+      "depends_on": [
+        "S2-T5",
+        "S2-T6",
+        "S2-T7"
+      ],
       "goal": "A reviewer sees durable artifacts without filesystem navigation, with bounded timeouts.",
       "scope": "Sprint 3 task 8 only: evidence display helpers. Cut after T4/T11/T9 if time-constrained; never wait indefinitely.",
       "description": "Before-snapshot of MEMORY.md; print only the relevant diff after completion; print candidate skill + metadata; time out with nonzero status and useful message when an artifact is missing; never wait indefinitely.",
@@ -545,7 +585,11 @@
       "tier": "T2",
       "type": "task",
       "priority": "nice",
-      "depends_on": ["S2-T6", "S2-T7", "S3-T8"],
+      "depends_on": [
+        "S2-T6",
+        "S2-T7",
+        "S3-T8"
+      ],
       "goal": "Show the generated skill shaping a later turn without contaminating opener attribution.",
       "scope": "Sprint 3 task 9 only. Cut if time-constrained; the opener demo stands alone. Do not start this until S2-GE would pass.",
       "description": "Activation cannot occur before the opener completes; UNVERIFIED LEARNING RISK DEMO label + warning appear before candidate influence; candidate installs to a namespaced live path; new process started if loading is startup-only; active candidate keeps unverified metadata; candidate available in a later session unless cleaned up.",
@@ -589,9 +633,13 @@
       "tier": "T2",
       "type": "task",
       "priority": "nice",
-      "depends_on": ["S2-T7", "S3-T8", "S3-T9"],
+      "depends_on": [
+        "S2-T7",
+        "S3-T8",
+        "S3-T9"
+      ],
       "goal": "Compose a full-sequence smoke that completes within 90 seconds after pre-warm.",
-      "scope": "Sprint 3 task 10 only: compose existing scripts. Do not duplicate session logic. If measured time exceeds 90s, drop one extra question-bank item before touching process separation or attribution — never drop the three demo questions.",
+      "scope": "Sprint 3 task 10 only: compose existing scripts. Do not duplicate session logic. If measured time exceeds 90s, drop one extra question-bank item before touching process separation or attribution \u2014 never drop the three demo questions.",
       "description": "Full-sequence smoke: preflight passes; session one, restart, memory-only opener, evidence display, risk beat all complete; distinct IDs + layer labels appear; total <=90s after pre-warm; any failure exits early with a recovery instruction. Scripted bad answer unambiguously missing >=2 elements. Narrow, explicit reset/prep command that never deletes unrelated Hermes state.",
       "code_changing": true,
       "needs_research": false,
@@ -635,7 +683,11 @@
       "tier": "T3",
       "type": "phase_exit",
       "priority": "nice",
-      "depends_on": ["S3-T8", "S3-T9", "S3-T10"],
+      "depends_on": [
+        "S3-T8",
+        "S3-T9",
+        "S3-T10"
+      ],
       "goal": "Confirm the audience sees what was learned, which layer caused each behavior, and why ungated learning is dangerous.",
       "scope": "Verify-only Sprint 3 phase exit. Cuttable with the sprint. Task 4 is not required to pass this gate.",
       "description": "Sprint 3 exit. Do not implement Monday free-form or the final acceptance checklist here.",
@@ -678,7 +730,13 @@
       "tier": "T2",
       "type": "task",
       "priority": "nice",
-      "depends_on": ["S1-T3", "S2-T5", "S2-T6", "S2-T7", "S3-T8"],
+      "depends_on": [
+        "S1-T3",
+        "S2-T5",
+        "S2-T6",
+        "S2-T7",
+        "S3-T8"
+      ],
       "goal": "Record a manual free-form run that is useful without editing prompts or files.",
       "scope": "Sprint 4 task 11 only. Cut second under time pressure. Do not auto-copy stage-demo weaknesses into real ~/.hermes.",
       "description": "Non-demo run: agent continues beyond three questions; sensible no-weakness behavior; targets an existing weakness without demo-only chatter; optional session_search only after the opener and degrades gracefully; exit still flushes buffered qualifying observations.",
@@ -723,7 +781,9 @@
       "tier": "T2",
       "type": "task",
       "priority": "must",
-      "depends_on": ["S2-GE"],
+      "depends_on": [
+        "S2-GE"
+      ],
       "goal": "Record demo-blocking acceptance evidence and known limitations for anything cut.",
       "scope": "Sprint 4 task 12: full suite in the isolated profile plus a read-only audit. Do not point checks at real ~/.hermes. Optional sprint items are logged as known limitations if cut, not treated as blockers.",
       "description": "Full suite in the isolated profile, then a read-only audit: real MEMORY.md has no malformed/duplicate section; candidate and stable skill namespaces cannot collide; no fixture leaked into live Hermes state; Curator handling matches the compatibility note; every demo-blocking acceptance criterion has recorded evidence.",
@@ -767,7 +827,9 @@
       "tier": "T3",
       "type": "phase_exit",
       "priority": "must",
-      "depends_on": ["S4-T12"],
+      "depends_on": [
+        "S4-T12"
+      ],
       "goal": "Confirm demo-blocking acceptance criteria have recorded evidence and the demo is operable from a clean terminal.",
       "scope": "Verify-only final plan gate. Cuttable sprint-4 polish must not be inferred as required if logged as known limitations.",
       "description": "Final gate. Gate model is cursor-grok-4.6-high-fast; never Opus.",
@@ -802,6 +864,367 @@
         ".workflow/S4-GE/results/test-runner-result.md",
         ".workflow/S4-GE/results/verifier-result.md"
       ]
+    },
+    {
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "must",
+      "code_changing": true,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": [],
+      "id": "S5-T1",
+      "title": "Source packs and parser",
+      "depends_on": [],
+      "goal": "Ship four spec-section-4 JD packs and a stdlib parser used by practice start.",
+      "scope": "Sprint 5 task 1 only. Create sources/*.md, app/packs.py, and parser tests. Do not change SKILL.md demo questions, practice UI, or persist topics.",
+      "description": "Implement plan Task 1. Packs: mccain-cyber-defense, mastercard-r-281517, praetor, alter-ego. Functions: parse_pack_file, list_source_packs, normalize_temperature, slug_paste, require_session_jd. Cross-pack leak check in tests/source_packs.sh. No pre-written tail question lists.",
+      "files_allowed": [
+        "skills/crossfire-interviewer/sources/",
+        "app/packs.py",
+        "tests/test_packs.py",
+        "tests/source_packs.sh",
+        "memory-bank/"
+      ],
+      "acceptance_criteria": [
+        "Four packs exist and parse (id, facts, 4-6 competencies, core and edge, one family each).",
+        "Cross-pack leak check passes.",
+        "require_session_jd rejects missing JD; pack and paste paths return source_id, source_label, context_text.",
+        "normalize_temperature defaults to 2 and rejects 0 and 6."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Test-Path -LiteralPath skills\\crossfire-interviewer\\sources\\praetor.md -PathType Leaf",
+          "Test-Path -LiteralPath app\\packs.py -PathType Leaf",
+          "py -3 -m unittest tests.test_packs"
+        ],
+        "manual_checks": []
+      },
+      "run_dir": ".workflow/S5-T1"
+    },
+    {
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "must",
+      "code_changing": true,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": [],
+      "id": "S5-T2",
+      "title": "Practice interviewer procedure in the skill",
+      "depends_on": [
+        "S5-T1"
+      ],
+      "goal": "Add a practice interviewer section that uses one session JD, temperature, probes, and Skip.",
+      "scope": "Sprint 5 task 2 only. Append to SKILL.md after Free-form Monday mode. Copy sources/ in ensure_skill. Do not edit the three demo question strings or demo harness scripts.",
+      "description": "Implement plan Task 2. Section title: Practice interviewer (session JD). Temperature 1 stay/core, 2 typical core, 3-5 rarer in-role. Propose-only YAML unchanged. Demo q_technical_01 / q_behavioral_01 / q_product_01 stay verbatim.",
+      "files_allowed": [
+        "skills/crossfire-interviewer/SKILL.md",
+        "scripts/practice_session.sh",
+        "tests/source_packs.sh",
+        "memory-bank/"
+      ],
+      "acceptance_criteria": [
+        "SKILL.md contains the Practice interviewer (session JD) heading plus temperature and Skip.",
+        "Three demo question strings remain verbatim.",
+        "ensure_skill copies sources/*.md into the live skill dir."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Select-String -Path skills\\crossfire-interviewer\\SKILL.md -Pattern 'Practice interviewer' | Measure-Object | Select-Object -ExpandProperty Count",
+          "Select-String -Path skills\\crossfire-interviewer\\SKILL.md -Pattern 'Walk through how Praetor decides not to contain' | Measure-Object | Select-Object -ExpandProperty Count"
+        ],
+        "manual_checks": []
+      },
+      "run_dir": ".workflow/S5-T2"
+    },
+    {
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "must",
+      "code_changing": true,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": [],
+      "id": "S5-T3",
+      "title": "Require one JD on session start",
+      "depends_on": [
+        "S5-T1",
+        "S5-T2"
+      ],
+      "goal": "New session cannot start without exactly one JD (pack or paste).",
+      "scope": "Sprint 5 task 3 only. start_session_args, GET /api/packs, start env + fail-closed, update stub starts to pass a pack. Do not add Skip UI or change persist topic yet.",
+      "description": "Implement plan Task 3. Env: CROSSFIRE_JD_KIND, CROSSFIRE_JD_SOURCE_ID, CROSSFIRE_JD_SOURCE_LABEL, CROSSFIRE_JD_CONTEXT, CROSSFIRE_PERSONA, CROSSFIRE_TEMPERATURE. Server merges context_text into start JSON. Persona optional empty allowed. Missing JD is HTTP 400 and wrapper fail_closed.",
+      "files_allowed": [
+        "app/packs.py",
+        "app/server.py",
+        "scripts/practice_session.sh",
+        "tests/test_packs.py",
+        "tests/practice_jd.sh",
+        "tests/practice_session_stub.sh",
+        "tests/practice_inference.sh",
+        "memory-bank/"
+      ],
+      "acceptance_criteria": [
+        "start_session_args raises without jd_kind/pack/paste.",
+        "GET /api/packs lists the four shipped packs.",
+        "Wrapper start without JD fail-closes; start with pack prints source_id and temperature.",
+        "Existing stub session and inference starts still pass when given pack env."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "py -3 -m unittest tests.test_packs",
+          "Test-Path -LiteralPath tests\\practice_jd.sh -PathType Leaf"
+        ],
+        "manual_checks": []
+      },
+      "run_dir": ".workflow/S5-T3"
+    },
+    {
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "must",
+      "code_changing": true,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": [],
+      "id": "S5-T4",
+      "title": "Prompt injection, mid-session temperature, Skip",
+      "depends_on": [
+        "S5-T3"
+      ],
+      "goal": "Every Hermes turn sees the session JD; Skip asks again without persist.",
+      "scope": "Sprint 5 task 4 only. Preamble helper, rewrite start/answer/opener -q, add skip command and POST /api/session/skip. Keep inject_inference (max-turns 1, reasoning low). Do not build UI chrome yet.",
+      "description": "Implement plan Task 4. Practice strips toolsets so JD must be in the prompt. Skip writes no spool YAML. Temperature on answer/skip updates practice.state and applies to the next question.",
+      "files_allowed": [
+        "scripts/practice_session.sh",
+        "app/server.py",
+        "tests/practice_jd.sh",
+        "memory-bank/"
+      ],
+      "acceptance_criteria": [
+        "crossfire_practice_interviewer_preamble exists and start/answer prompts name the session JD.",
+        "practice_session.sh skip emits skipped=true persist_recommended=false and writes no spool yaml.",
+        "POST /api/session/skip exists and requires an active session."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Select-String -Path scripts\\practice_session.sh -Pattern 'crossfire_practice_interviewer_preamble' | Measure-Object | Select-Object -ExpandProperty Count",
+          "Select-String -Path app\\server.py -Pattern '/api/session/skip' | Measure-Object | Select-Object -ExpandProperty Count"
+        ],
+        "manual_checks": []
+      },
+      "run_dir": ".workflow/S5-T4"
+    },
+    {
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "must",
+      "code_changing": true,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": [],
+      "id": "S5-T5",
+      "title": "Practice UI: JD, persona, temperature, Skip",
+      "depends_on": [
+        "S5-T3",
+        "S5-T4"
+      ],
+      "goal": "Operator can pick or paste one JD, set optional persona and temperature, see context, and Skip.",
+      "scope": "Sprint 5 task 5 only. index.html, app.js, app.css, UI contract tests. Do not change persist topic or End report copy yet.",
+      "description": "Implement plan Task 5. New session body includes jd_kind, pack_id, paste, persona, temperature. Visible jd-context. Skip button calls /api/session/skip. Live temperature sent on next Send/Skip. Inference toggle unchanged (New session only).",
+      "files_allowed": [
+        "app/static/index.html",
+        "app/static/app.js",
+        "app/static/app.css",
+        "tests/test_memory_view.py",
+        "memory-bank/"
+      ],
+      "acceptance_criteria": [
+        "HTML has jd-kind, pack-id, jd-paste, persona, temperature, jd-context, skip.",
+        "app.js fetches /api/packs and posts jd_kind on start.",
+        "Start without a JD is rejected in the UI (400 surfaced)."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "py -3 -m unittest tests.test_memory_view.UiContractTest"
+        ],
+        "manual_checks": []
+      },
+      "run_dir": ".workflow/S5-T5"
+    },
+    {
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "must",
+      "code_changing": true,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": [],
+      "id": "S5-T6",
+      "title": "End report and family-bucket weaknesses",
+      "depends_on": [
+        "S5-T4",
+        "S5-T5"
+      ],
+      "goal": "End session shows Weak and Strong; MEMORY.md topics are {source} \u00b7 {family}, not q_live practice gap.",
+      "scope": "Sprint 5 task 6 only. Persist topic, short evidence quote, report kv, UI End bubble. Do not change the persist rule (>=2 missing). Do not write a second memory store.",
+      "description": "Implement plan Task 6. Merge key is source_id + family via existing topic_key. Truncate evidence to 180 chars. kv_parse joins report_line into report_text. Remove Persisted N as the only End line.",
+      "files_allowed": [
+        "scripts/practice_session.sh",
+        "app/server.py",
+        "app/static/app.js",
+        "tests/practice_jd.sh",
+        "tests/test_memory_view.py",
+        "memory-bank/"
+      ],
+      "acceptance_criteria": [
+        "End kv includes report_weak, report_strong, and report_text with Weak: and Strong:.",
+        "MEMORY.md topic is not q_live_01 practice gap.",
+        "UI shows report_text on End."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Select-String -Path scripts\\practice_session.sh -Pattern 'report_weak' | Measure-Object | Select-Object -ExpandProperty Count",
+          "Select-String -Path app\\static\\app.js -Pattern 'report_text' | Measure-Object | Select-Object -ExpandProperty Count"
+        ],
+        "manual_checks": []
+      },
+      "run_dir": ".workflow/S5-T6"
+    },
+    {
+      "status": "pending",
+      "tier": "T2",
+      "type": "task",
+      "priority": "must",
+      "code_changing": true,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": [],
+      "id": "S5-T7",
+      "title": "Docs and static close-out of Sprint 5",
+      "depends_on": [
+        "S5-T6"
+      ],
+      "goal": "Document one-JD practice sessions. Live Luna pass is recorded as a manual check, not an automated Monday-home test.",
+      "scope": "Sprint 5 task 7 only. Update sparring-1.1.0-practice.md, README, optional interactive_smoke.md. Do not point automated tests at real ~/.hermes. Do not change 1.0.0 demo scripts.",
+      "description": "Implement plan Task 7 docs half. Automated tests stay isolated. Live Codex/Luna demo (pack, paste, temperature, Skip, End report) is a manual_check and may remain human_needed until the operator records it.",
+      "files_allowed": [
+        "docs/sparring-1.1.0-practice.md",
+        "README.md",
+        "tests/interactive_smoke.md",
+        "docs/superpowers/specs/2026-08-23-practice-interviewer-design.md",
+        "memory-bank/"
+      ],
+      "acceptance_criteria": [
+        "Practice addendum states JD is required (pack or paste), persona optional, temperature 1-5 default 2, Skip, End report.",
+        "README practice UI bullets match.",
+        "No new automated test writes real ~/.hermes."
+      ],
+      "verification": {
+        "scope": "task",
+        "commands": [
+          "Select-String -Path docs\\sparring-1.1.0-practice.md -Pattern 'Session JD' | Measure-Object | Select-Object -ExpandProperty Count",
+          "py -3 -m unittest tests.test_packs tests.test_memory_view"
+        ],
+        "manual_checks": [
+          "Live practice UI on Codex/Luna: one pack session, one paste session, mid-session temperature, one Skip, End shows Weak and Strong, panel title is {source} \u00b7 {family}."
+        ]
+      },
+      "run_dir": ".workflow/S5-T7"
+    },
+    {
+      "status": "pending",
+      "tier": "T3",
+      "type": "phase_exit",
+      "priority": "must",
+      "code_changing": false,
+      "needs_research": false,
+      "researcher_policy": "multi_path_opportunity_cost",
+      "code_review_policy": "frequent_after_implement",
+      "implementation_agent": "implementer",
+      "verification_agent": "skeptic-verifier",
+      "attempts": 0,
+      "max_retries": 1,
+      "evidence": [],
+      "id": "S5-GE",
+      "title": "Gate: practice interviewer close-out",
+      "depends_on": [
+        "S5-T7"
+      ],
+      "goal": "Confirm Sprint 5 tasks meet the 2026-08-23 design: one JD, skill-steered questions, Skip, strong/weak report, family buckets. 1.0.0 demo untouched.",
+      "scope": "Verify-only sprint-5 gate. Live Luna demo is a manual check; do not treat stub as proof. Gate model is cursor-grok-4.6-high-fast; never Opus.",
+      "description": "Plan Task 7 live bar plus static suite. Isolation fail-closed still required. Do not infer 90s demo theater work.",
+      "files_allowed": [
+        ".workflow/S5-GE/",
+        "memory-bank/"
+      ],
+      "acceptance_criteria": [
+        "S5-T1 through S5-T7 are done with verifier evidence.",
+        "Four packs and skill procedure exist; demo three questions still verbatim.",
+        "Start requires a JD; Skip and End report exist in code.",
+        "Automated tests do not target real ~/.hermes."
+      ],
+      "verification": {
+        "scope": "phase_exit",
+        "commands": [
+          "py -3 -m unittest tests.test_packs tests.test_memory_view",
+          "Test-Path -LiteralPath skills\\crossfire-interviewer\\sources\\mastercard-r-281517.md -PathType Leaf",
+          "Select-String -Path skills\\crossfire-interviewer\\SKILL.md -Pattern 'q_technical_01' | Measure-Object | Select-Object -ExpandProperty Count"
+        ],
+        "manual_checks": [
+          "Operator live pass recorded or explicitly left human_needed."
+        ]
+      },
+      "run_mode": "in_session_grok",
+      "run_dir": ".workflow/S5-GE"
     }
   ]
 }

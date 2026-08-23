@@ -2,8 +2,8 @@
 
 ## Current state
 
-Practice live UI (`sparring-1.1.0`) in progress on branch `practice-live-ui`. Spikes done: `--resume` verified; isolated MEMORY.md block survived; Monday needs Nous auth copied from the test profile.
+Sprint 5 (practice interviewer) is loaded in `.workflow/autopilot-queue.json`. Design and plan are written. 1.0.0 demo queue is fully gated. Branch `practice-live-ui`.
 
 ## Immediate next step
 
-Practice UI inference toggle: Nous vs Codex on New session (Hermes `--provider`). Verify `py -3 tests/test_inference.py` and `bash tests/practice_inference.sh`.
+Drain GSD autopilot from `S5-T1` (source packs + parser). Do not start without running the loop protocol. Live Luna demo stays a manual check on `S5-T7` / `S5-GE`; automated tests must not target real `~/.hermes`.

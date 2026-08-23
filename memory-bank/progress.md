@@ -22,6 +22,7 @@ Sprint 1 complete and gated. Sprint 2 session-one harness complete. S3-GE pass. 
 - S4-GE pass — gate model cursor-grok-4.6-high-fast
 - Practice UI T1 — Enter sends; weakness cards (YAML stays on disk); Web Speech STT Speak/Done
 - Practice UI inference toggle — Hermes `--provider nous|openai-codex` on New session
+- Sprint 5 queued (not started) — one-JD practice interviewer from `docs/superpowers/plans/2026-08-23-practice-interviewer.md`
 
 ## Evidence
 
