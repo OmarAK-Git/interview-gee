@@ -67,5 +67,33 @@ class FormatSessionReportTest(unittest.TestCase):
         self.assertIn("what you did", out["report_text"])
 
 
+class FormatWeaknessWhyTest(unittest.TestCase):
+    def test_names_required_frame_and_what_was_skipped(self) -> None:
+        from report import format_weakness_why
+
+        text = format_weakness_why("behavioral", ["action", "result"])
+        self.assertIn("behavioral", text.lower())
+        self.assertIn("situation", text.lower())
+        self.assertIn("task", text.lower())
+        self.assertIn("what you did", text.lower())
+        self.assertIn("what changed", text.lower())
+        self.assertIn("skipped", text.lower())
+        self.assertNotIn("[", text)
+        self.assertNotIn("action", text)
+
+    def test_technical_all_missing_is_still_prose(self) -> None:
+        from report import format_weakness_why
+
+        text = format_weakness_why(
+            "technical",
+            ["problem", "approach", "tradeoff", "verification"],
+        )
+        self.assertIn("technical", text.lower())
+        self.assertIn("problem", text.lower())
+        self.assertIn("verify", text.lower())
+        self.assertIn("all of them", text.lower())
+        self.assertNotIn(":[", text)
+
+
 if __name__ == "__main__":
     unittest.main()

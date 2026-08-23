@@ -5,6 +5,8 @@ import ast
 import re
 from typing import Any
 
+from report import format_weakness_why
+
 START = "<!-- CROSSFIRE-WEAKNESSES:START -->"
 END = "<!-- CROSSFIRE-WEAKNESSES:END -->"
 
@@ -100,4 +102,8 @@ def _coerce(val: str) -> Any:
 
 def _public(record: dict[str, Any]) -> dict[str, Any]:
     out = {k: v for k, v in record.items() if k not in _DROP}
+    missing = out.get("missing_elements")
+    if not isinstance(missing, list):
+        missing = []
+    out["why"] = format_weakness_why(str(out.get("family") or ""), missing)
     return out

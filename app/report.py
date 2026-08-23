@@ -18,6 +18,12 @@ ELEMENT_PHRASE = {
     "metric": "the metric",
 }
 
+FAMILY_REQUIRED = {
+    "behavioral": ["situation", "task", "action", "result"],
+    "technical": ["problem", "approach", "tradeoff", "verification"],
+    "product": ["user", "constraint", "decision", "metric"],
+}
+
 _NUMBER = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight"}
 
 
@@ -31,6 +37,19 @@ def format_session_report(weak: str, strong: str) -> str:
     if strong_fams:
         sentences.append(_strong_sentence(strong_fams))
     return " ".join(sentences)
+
+
+def format_weakness_why(family: str, missing: list[str] | None) -> str:
+    fam = (family or "").strip().lower()
+    skipped = [e.strip() for e in (missing or []) if str(e).strip()]
+    missed = _join_phrases([_element_phrase(e) for e in skipped]) or "required pieces"
+    needed = FAMILY_REQUIRED.get(fam)
+    if needed:
+        frame = _join_phrases([_element_phrase(e) for e in needed])
+        if {e.lower() for e in skipped} == {e.lower() for e in needed}:
+            return f"A {fam} answer has to cover {frame}. This one skipped all of them."
+        return f"A {fam} answer has to cover {frame}. This one skipped {missed}."
+    return f"This answer was weak because it skipped {missed}."
 
 
 def apply_end_report(parsed: dict) -> dict:

@@ -61,14 +61,7 @@ button.live, button[aria-pressed="true"] { background: #8b3a3a; color: #fff; }
 .family.behavioral { background: #3a2f4a; }
 .family.technical { background: #243a4a; }
 .family.product { background: #2f3a28; }
-.missing { display: flex; flex-wrap: wrap; gap: 0.25rem; margin: 0.35rem 0; }
-.tag {
-  background: #3a3220;
-  color: var(--warn);
-  font-size: 0.75rem;
-  padding: 0.1rem 0.4rem;
-  border-radius: 999px;
-}
+.why { margin: 0.4rem 0 0.2rem; font-size: 0.9rem; }
 .weak-meta { color: var(--muted); font-size: 0.8rem; margin: 0.35rem 0; }
 .weakness-card blockquote {
   margin: 0.4rem 0 0;

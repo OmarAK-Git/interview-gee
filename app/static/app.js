@@ -74,17 +74,11 @@ function renderWeaknesses(data) {
     title.textContent = w.topic || "Untitled topic";
     card.appendChild(title);
 
-    const missing = Array.isArray(w.missing_elements) ? w.missing_elements : [];
-    if (missing.length) {
-      const list = document.createElement("div");
-      list.className = "missing";
-      for (const item of missing) {
-        const tag = document.createElement("span");
-        tag.className = "tag";
-        tag.textContent = item;
-        list.appendChild(tag);
-      }
-      card.appendChild(list);
+    if (w.why) {
+      const why = document.createElement("p");
+      why.className = "why";
+      why.textContent = w.why;
+      card.appendChild(why);
     }
 
     const metaLine = document.createElement("p");

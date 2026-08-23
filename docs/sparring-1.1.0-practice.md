@@ -30,7 +30,7 @@ Web Speech TTS in `app/static/tts.js`. Web Speech STT in `app/static/stt.js` (Ch
 
 ## Composer and weaknesses panel
 
-Enter sends the answer; Shift+Enter inserts a newline. `/api/memory` still returns raw `MEMORY.md` `text` (on-disk YAML unchanged) plus a parsed `weaknesses` array. The aside renders cards (family, topic, missing elements, last seen, quote), not YAML.
+Enter sends the answer; Shift+Enter inserts a newline. `/api/memory` still returns raw `MEMORY.md` `text` (on-disk YAML unchanged) plus a parsed `weaknesses` array. The aside renders cards (family, topic, a prose why naming the required frame and what was skipped, last seen, quote), not YAML or rubric-token tags.
 
 ## Inference (Nous / Codex)
 

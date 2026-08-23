@@ -27,6 +27,10 @@ class ParseWeaknessesTest(unittest.TestCase):
         self.assertEqual(first["evidence"]["kind"], "quote")
         self.assertEqual(first["evidence"]["value"], "watched the dashboard")
         self.assertEqual(first["last_seen"], "2026-08-10T10:00:00Z")
+        self.assertIn("why", first)
+        self.assertIn("what you did", first["why"])
+        self.assertIn("what changed", first["why"])
+        self.assertNotIn("[", first["why"])
         self.assertEqual(records[1]["family"], "technical")
         self.assertEqual(records[1]["missing_elements"], ["tradeoff", "verification"])
         self.assertNotIn("topic_key", first)
@@ -104,6 +108,10 @@ class UiContractTest(unittest.TestCase):
         self.assertIn("/api/session/skip", js)
         self.assertIn("report_text", js)
         self.assertNotIn("Persisted ${data.persisted_count", js)
+        self.assertIn("w.why", js)
+        self.assertNotIn('className = "tag"', js)
+        self.assertNotIn("promotion gate", html.lower())
+        self.assertNotIn("skill dir", html.lower())
 
 
 class HttpSmokeTest(unittest.TestCase):

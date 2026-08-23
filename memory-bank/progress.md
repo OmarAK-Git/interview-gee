@@ -32,6 +32,7 @@ Sprint 1 complete and gated. Sprint 2 session-one harness complete. S3-GE pass. 
 - S5-GE pass — gate model cursor-grok-4.6-high-fast
 - S6-T1 done — practice weave: JD owns first question
 - S6-GE pass — gate model cursor-grok-4.6-high-fast
+- Practice UI T1 — weakness cards explain the required frame and what was skipped; footer is plain language, not demo jargon
 
 ## Evidence
 
