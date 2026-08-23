@@ -40,6 +40,8 @@ Spec: `docs/superpowers/specs/2026-08-23-practice-interviewer-design.md`
 
 Next runnable: none (queue drained).
 
+T1 (2026-08-23): Practice UI is paste-only; New session must use the pasted JD (stale server was ignoring it).
+
 ## Sprint 6 — Practice weave (must) — GATED
 
 - `S6-T1` done — JD owns Q1; MEMORY seasons follow-ups (verifier survives)

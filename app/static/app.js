@@ -11,10 +11,6 @@ const composer = document.getElementById("composer");
 const micBtn = document.getElementById("mic");
 const micHint = document.getElementById("mic-hint");
 const inferenceSel = document.getElementById("inference");
-const jdKind = document.getElementById("jd-kind");
-const packWrap = document.getElementById("pack-wrap");
-const pasteWrap = document.getElementById("paste-wrap");
-const packSel = document.getElementById("pack-id");
 const tempInput = document.getElementById("temperature");
 const tempVal = document.getElementById("temperature-val");
 const jdContext = document.getElementById("jd-context");
@@ -125,33 +121,9 @@ function showMeta(data) {
   meta.innerHTML = bits.join(" ");
 }
 
-function syncJdKind() {
-  const isPack = jdKind.value === "pack";
-  packWrap.hidden = !isPack;
-  pasteWrap.hidden = isPack;
-}
-
-jdKind.addEventListener("change", syncJdKind);
-syncJdKind();
-
 tempInput.addEventListener("input", () => {
   tempVal.textContent = tempInput.value;
 });
-
-async function loadPacks() {
-  try {
-    const data = await api("/api/packs");
-    packSel.replaceChildren();
-    for (const p of data.packs || []) {
-      const opt = document.createElement("option");
-      opt.value = p.id;
-      opt.textContent = `${p.employer} · ${p.role}`;
-      packSel.appendChild(opt);
-    }
-  } catch {
-    /* packs unavailable */
-  }
-}
 
 function setMicUi(on) {
   micBtn.setAttribute("aria-pressed", on ? "true" : "false");
@@ -229,8 +201,6 @@ document.getElementById("start").addEventListener("click", async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         inference: selectedInference(),
-        jd_kind: jdKind.value,
-        pack_id: packSel.value,
         paste: document.getElementById("jd-paste").value,
         persona: document.getElementById("persona").value,
         temperature: tempInput.value,
@@ -324,4 +294,3 @@ if (!stt.supported()) {
 }
 
 refreshMemory().catch(() => {});
-loadPacks();

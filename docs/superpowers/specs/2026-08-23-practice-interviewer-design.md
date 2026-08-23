@@ -17,7 +17,7 @@ The operator will demo the **live** path. Stub practice is not the acceptance ba
 | Runtime | Hermes Agent is the harness. We write a skill, source packs, and thin practice UI chrome. We do not add a competency picker or a second memory store. |
 | Memory | Hermes `MEMORY.md` remains the store. Weaknesses stay in the existing delimited block. This increment does not change who writes that block. |
 | Session JD | Every new session requires **exactly one** job description. Hot path. |
-| JD source | Pick a shipped pack **or** paste JD text. Paste is in scope. |
+| JD source | Live chrome pastes JD text. Shipped packs stay on disk for tests/CLI; the UI has no pack picker. |
 | Persona | Optional free text (title, what they do, tenure). Not schema-enforced. Empty = default Crossfire voice. |
 | Question wording | Skill-generated from the session JD. No pre-written tail question list. |
 | Temperature | 1–5, default **2**. Mid-session change applies to the **next** question. Selection entropy only (rare-but-plausible, still in-role). |
@@ -32,7 +32,7 @@ The operator will demo the **live** path. Stub practice is not the acceptance ba
 
 ```text
 Practice UI (chrome)
-  ├── New session: required JD (pack | paste) + optional persona + temperature + inference
+  ├── New session: required pasted JD + optional persona + temperature + inference
   ├── Visible context of that one JD
   ├── Mid-session temperature + Skip
   └── End: show report; refresh weakness buckets
@@ -82,10 +82,8 @@ Cross-pack leaks are forbidden (Praetor “advisory-only” must not appear on a
 
 Operator sets:
 
-1. **Job description (required, exactly one)**
-   - **Pick pack:** one of the four shipped packs (or a later library file), or
-   - **Paste:** raw JD text for this session only. Not written into the repo unless the operator later adds a pack by hand.
-2. **Visible context** before the first question: employer/role/requisition and competencies for a pack; the pasted text (scrollable) for a paste.
+1. **Job description (required, exactly one)** — paste raw JD text for this session only. Not written into the repo unless the operator later adds a pack by hand. Shipped packs remain files under `sources/` for tests/CLI.
+2. **Visible context** after start: the pasted text (scrollable).
 3. **Interviewer persona (optional):** free text. Passed through to the skill.
 4. **Temperature:** default 2, 1–5, changeable later.
 5. **Inference:** existing Nous / Codex toggle (Codex → Luna). Applies on New session only.

@@ -97,6 +97,17 @@ class TemperatureAndJdTest(unittest.TestCase):
         self.assertEqual(got["source_id"], "praetor")
         self.assertEqual(got["persona"], "")
 
+    def test_start_session_args_paste_only(self) -> None:
+        from packs import start_session_args
+
+        got = start_session_args(
+            {"inference": "nous", "paste": "Acme SWE\nBuild the payments API."},
+            sources_dir=SOURCES,
+        )
+        self.assertEqual(got["kind"], "paste")
+        self.assertEqual(got["source_id"], "pasted-acme-swe")
+        self.assertIn("payments API", got["context_text"])
+
 
 if __name__ == "__main__":
     unittest.main()

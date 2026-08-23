@@ -47,7 +47,7 @@ Practice invokes use `--max-turns 1`, `--reasoning low`, and no `--toolsets`. Lu
 
 ## Session JD (required)
 
-Every New session needs exactly one job description: pick a shipped pack under `skills/crossfire-interviewer/sources/` or paste JD text. Optional persona flavors interviewer voice. Temperature 1–5 (default 2) changes the next question only. Skip asks again without assessing.
+Every New session needs exactly one pasted job description. Optional persona flavors interviewer voice. Temperature 1–5 (default 2) changes the next question only. Skip asks again without assessing.
 
 **S6 weave:** the first spoken question is always a normal in-role JD question. When `MEMORY.md` has weaknesses, they season follow-ups (at most one in-story probe per gap, then move on); attribution kv may still print but must not force Q1 to be the drill.
 

@@ -13,7 +13,7 @@ Design spec: `docs/superpowers/specs/2026-08-23-practice-interviewer-design.md`.
 
 **Practice UI (one session = one JD):**
 
-- **Required JD** — pick a shipped pack under `skills/crossfire-interviewer/sources/` or paste JD text before New session.
+- **Required JD** — paste one job description before New session.
 - **Optional persona** — free-text interviewer voice flavor (title, tenure, style); empty uses default Crossfire voice.
 - **Temperature 1–5** (default 2) — mid-session change applies to the **next** question only.
 - **Skip** — ask a different question from the same JD; no assess, no persist, no report line.

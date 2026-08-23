@@ -110,7 +110,7 @@ def require_session_jd(
     *,
     sources_dir: Path,
 ) -> dict:
-    k = (kind or "").strip().lower()
+    k = (kind or "").strip().lower() or "paste"
     if k == "pack":
         if not pack_id:
             raise ValueError("pack_id required")

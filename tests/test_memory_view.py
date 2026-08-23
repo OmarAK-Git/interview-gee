@@ -90,15 +90,17 @@ class UiContractTest(unittest.TestCase):
         self.assertIn('e.key !== "Enter"', js)
         self.assertIn("finishVoiceAndSend", js)
         self.assertIn("renderWeaknesses", js)
-        self.assertIn('id="jd-kind"', html)
-        self.assertIn('id="pack-id"', html)
+        self.assertNotIn('id="jd-kind"', html)
+        self.assertNotIn('id="pack-id"', html)
+        self.assertNotIn("Shipped pack", html)
         self.assertIn('id="jd-paste"', html)
         self.assertIn('id="persona"', html)
         self.assertIn('id="temperature"', html)
         self.assertIn('id="jd-context"', html)
         self.assertIn('id="skip"', html)
-        self.assertIn("/api/packs", js)
-        self.assertIn("jd_kind", js)
+        self.assertNotIn("/api/packs", js)
+        self.assertNotIn("jd_kind", js)
+        self.assertIn('getElementById("jd-paste")', js)
         self.assertIn("/api/session/skip", js)
         self.assertIn("report_text", js)
         self.assertNotIn("Persisted ${data.persisted_count", js)
@@ -111,6 +113,7 @@ class HttpSmokeTest(unittest.TestCase):
         import shutil
         import tempfile
         import threading
+        import urllib.error
         import urllib.request
         from http.server import ThreadingHTTPServer
 
@@ -134,8 +137,22 @@ class HttpSmokeTest(unittest.TestCase):
             self.assertEqual(len(mem["weaknesses"]), 3)
             self.assertEqual(mem["weaknesses"][0]["topic"], "alpha story")
             self.assertIn('id="mic"', home)
+            self.assertIn('id="jd-paste"', home)
+            self.assertNotIn('id="jd-kind"', home)
             self.assertNotIn("<pre", home)
             self.assertIn("SpeechRecognition", stt)
+            req = urllib.request.Request(
+                f"{base}/api/session/start",
+                data=b'{"inference":"nous"}',
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            with self.assertRaises(urllib.error.HTTPError) as raised:
+                urllib.request.urlopen(req, timeout=3)
+            self.assertEqual(raised.exception.code, 400)
+            err_body = json.loads(raised.exception.read().decode())
+            self.assertIn("paste", err_body["error"])
+            self.assertNotIn("PREFLIGHT", err_body["error"])
         finally:
             if httpd is not None:
                 httpd.shutdown()
