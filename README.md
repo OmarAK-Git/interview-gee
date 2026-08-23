@@ -14,7 +14,7 @@ Design spec: `docs/superpowers/specs/2026-08-23-practice-interviewer-design.md`.
 **Practice UI (one session = one JD):**
 
 - **Required JD** — paste one job description before New session.
-- **Optional persona** — free-text interviewer voice flavor (title, tenure, style); empty uses default Crossfire voice.
+- **Optional persona** — free-text lens on the session JD (title, tenure, stance); changes voice and question window. Empty uses default Crossfire interviewer. Not a second JD.
 - **Temperature 1–5** (default 2) — mid-session change applies to the **next** question only.
 - **Skip** — ask a different question from the same JD; no assess, no persist, no report line.
 - **End session** — Weak and Strong report for this session; right panel shows `{source} · {family}` buckets, not transcript cards.

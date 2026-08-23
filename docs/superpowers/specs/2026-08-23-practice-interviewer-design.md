@@ -18,7 +18,7 @@ The operator will demo the **live** path. Stub practice is not the acceptance ba
 | Memory | Hermes `MEMORY.md` remains the store. Weaknesses stay in the existing delimited block. This increment does not change who writes that block. |
 | Session JD | Every new session requires **exactly one** job description. Hot path. |
 | JD source | Live chrome pastes JD text. Shipped packs stay on disk for tests/CLI; the UI has no pack picker. |
-| Persona | Optional free text (title, what they do, tenure). Not schema-enforced. Empty = default Crossfire voice. |
+| Persona | Optional free text (title, what they do, tenure). A **lens** on the session JD: voice and question window. Domain knowledge implied by the persona is allowed. Not a second JD — do not invent this employer's tools, metrics, or systems. Empty = default Crossfire interviewer. |
 | Question wording | Skill-generated from the session JD. No pre-written tail question list. |
 | Temperature | 1–5, default **2**. Mid-session change applies to the **next** question. Selection entropy only (rare-but-plausible, still in-role). |
 | Skip | First-class control. No assess, no persist, no report line. Ask a different question from the same JD. |
@@ -88,7 +88,7 @@ Operator sets:
 4. **Temperature:** default 2, 1–5, changeable later.
 5. **Inference:** existing Nous / Codex toggle (Codex → Luna). Applies on New session only.
 
-Allowlist for the session is **this JD only**. A paste is not bound to spec §4. A shipped pack is. Do not mix a second employer’s facts into the same session.
+Employer facts for the session come from **this JD only**. A paste is not bound to spec §4. A shipped pack is. Do not mix a second employer’s facts into the same session. Persona may supply stance and implied domain knowledge.
 
 If `MEMORY.md` already has weaknesses, the first spoken question is still a normal in-role question from **this JD**. Weaknesses may season follow-ups (at most one in-story probe, then move on); they do not become the session subject. Do not speak `weakness_id`. Do not ask the operator to name the weakness.
 
@@ -96,7 +96,7 @@ If `MEMORY.md` already has weaknesses, the first spoken question is still a norm
 
 Practice section of `skills/crossfire-interviewer/SKILL.md` (demo contracts above it stay as-is).
 
-**Start.** One question from this JD. Core competency at temperature 2. Persona flavors voice if present. Do not invent facts beyond the JD.
+**Start.** One question from this JD. Core competency at temperature 2. Persona, if present, is a lens (voice and question window). Do not invent this employer's tools, metrics, or systems.
 
 **After a real answer.**
 

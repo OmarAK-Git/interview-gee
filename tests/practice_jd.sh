@@ -44,6 +44,25 @@ grep -q 'crossfire_practice_interviewer_preamble' "$REPO_ROOT/scripts/practice_s
   && ok "preamble helper exists" || bad "preamble helper exists"
 grep -q 'Practice session JD' "$REPO_ROOT/scripts/practice_session.sh" \
   && ok "prompt names session JD" || bad "prompt names session JD"
+if grep -q 'flavor only' "$REPO_ROOT/scripts/practice_session.sh"; then
+  bad "preamble still flavor only"
+else
+  ok "preamble not flavor only"
+fi
+if grep -q 'only allowed facts' "$REPO_ROOT/scripts/practice_session.sh"; then
+  bad "preamble still only-allowed-facts"
+else
+  ok "preamble not only-allowed-facts"
+fi
+if grep -q 'that are not in the session JD' "$REPO_ROOT/scripts/practice_session.sh"; then
+  bad "preamble still JD-only invent lock"
+else
+  ok "preamble invent lock is employer-scoped"
+fi
+grep -q 'lens on this JD' "$REPO_ROOT/scripts/practice_session.sh" \
+  && ok "preamble persona is lens" || bad "preamble persona is lens"
+grep -q 'Domain knowledge implied by the persona is allowed' "$REPO_ROOT/scripts/practice_session.sh" \
+  && ok "preamble allows persona domain" || bad "preamble allows persona domain"
 
 skip_out=$(HOME="$HOME" HERMES_HOME="$HERMES_HOME" CROSSFIRE_PRACTICE_STUB=1 \
   CROSSFIRE_RUNS_DIR="$CROSSFIRE_RUNS_DIR" CROSSFIRE_RUN_ID="$run_id" \

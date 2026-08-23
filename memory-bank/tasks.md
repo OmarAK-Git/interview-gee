@@ -46,6 +46,8 @@ T1 (2026-08-23): End-session summary is prose (not `family:[elements]` tag dump)
 
 T1 (2026-08-23): Weakness cards explain what was missed in prose; drop rubric-token tags and demo-jargon footer.
 
+T1 (2026-08-23): Persona is a lens on the session JD (voice + question window), not voice-only.
+
 ## Sprint 6 — Practice weave (must) — GATED
 
 - `S6-T1` done — JD owns Q1; MEMORY seasons follow-ups (verifier survives)

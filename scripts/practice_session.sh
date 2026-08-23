@@ -32,15 +32,16 @@ crossfire_practice_load_state() {
 crossfire_practice_interviewer_preamble() {
   cat <<EOF
 You are the Crossfire interviewer for a practice session.
-Practice session JD (only allowed facts):
+Practice session JD (employer facts only):
 ${CROSSFIRE_JD_CONTEXT}
 
 Source: ${CROSSFIRE_JD_SOURCE_LABEL} (${CROSSFIRE_JD_SOURCE_ID})
 Temperature: ${CROSSFIRE_TEMPERATURE:-2} (1=stay on story/core; 2=typical core; 3-5=rarer in-role, still in this JD).
-Interviewer persona (optional, flavor only): ${CROSSFIRE_PERSONA:-}
+Interviewer persona (optional, lens on this JD): ${CROSSFIRE_PERSONA:-}
+Persona flavors voice and question window. Same JD competencies; that interviewer's stance. Domain knowledge implied by the persona is allowed. Do not invent this employer's tools, metrics, products, or systems.
 Follow the Practice interviewer (session JD) section of the crossfire-interviewer skill.
 The first spoken question is a normal in-role JD competency question. MEMORY.md may season follow-ups only; do not speak weakness_id.
-Do not invent employers or systems that are not in the session JD.
+Do not invent this employer's tools, metrics, products, or systems.
 Do not write MEMORY.md.
 EOF
 }

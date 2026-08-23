@@ -36,6 +36,11 @@ grep -q 'Skip' "$SKILL" && ok "skill mentions Skip" || bad "skill mentions Skip"
 grep -Fq 'Tell me more about that' "$SKILL" && ok "skill probe: short answer" || bad "skill probe: short answer"
 grep -Fq 'What was the hardest part of that for you personally?' "$SKILL" && ok "skill probe: rehearsed" || bad "skill probe: rehearsed"
 grep -q 'Forbidden interviewer moves' "$SKILL" && ok "skill forbids coaching" || bad "skill forbids coaching"
+grep -Fq 'flavors voice only' "$SKILL" && bad "skill persona still voice-only" || ok "skill persona not voice-only"
+grep -Fq 'that are not in the session JD' "$SKILL" && bad "skill still JD-only invent lock" || ok "skill invent lock is employer-scoped"
+grep -q 'lens on this JD' "$SKILL" && ok "skill persona is lens" || bad "skill persona is lens"
+grep -Fq 'Domain knowledge implied by the persona is allowed' "$SKILL" && ok "skill allows persona domain" || bad "skill allows persona domain"
+grep -Fq "not a second JD" "$SKILL" && ok "skill persona not second JD" || bad "skill persona not second JD"
 
 echo "source_packs: passed=$pass failed=$fail"
 [ "$fail" -eq 0 ]

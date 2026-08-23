@@ -115,7 +115,7 @@ Run on Monday WSL `HERMES_HOME` with Codex / `gpt-5.6-luna` (`bash scripts/pract
 | 4 | Skip once. No new weakness from the skipped question. | pending | |
 | 5 | Answer well on one family (strong) and poorly on another (weak). | pending | |
 | 6 | End. Report lists Weak and Strong. Panel title is `Project Praetor · …`, tags are only missing elements, quote is short. | pending | |
-| 7 | New session, **paste** a different JD. Questions do not leak Praetor tokens. Optional persona fill once to confirm voice flavor. | pending | |
+| 7 | New session, **paste** a different JD. Questions do not leak Praetor tokens. Same JD twice: OT plant engineer vs HR — detection questions from different windows. | pending | |
 
 ### Placeholder for live transcript
 
@@ -131,5 +131,5 @@ Run on Monday WSL `HERMES_HOME` with Codex / `gpt-5.6-luna` (`bash scripts/pract
 # end report weak/strong:
 # panel bucket titles ({source} · {family}):
 # paste-JD session (no Praetor leak):
-# persona flavor (optional):
+# persona lens (OT vs HR windows):
 ```
