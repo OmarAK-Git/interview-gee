@@ -2,8 +2,12 @@
 
 ## Current state
 
-Sprint 5 is gated. `S5-T1`–`S5-GE` done. Branch `practice-live-ui`. Queue drained.
+Sprints 1–6 are gated. Queue drained. Branch `practice-live-ui`.
 
 ## Immediate next step
 
-Drain continues: `S6-T1` practice weave (JD owns the first question). Live Luna pass remains **human_needed**. Automated tests must not target real `~/.hermes`.
+Operator live Codex/Luna practice-UI pass:
+1. Session JD (pack + paste), temperature, Skip, End Weak/Strong, panel `{source} · {family}` (`S5-T7`).
+2. New session with an existing weakness opens on the JD, not the gap (`S6-GE`).
+
+Record in `tests/interactive_smoke.md`. Automated tests must not target real `~/.hermes`.

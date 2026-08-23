@@ -849,14 +849,7 @@ Ask ONE interview question from this JD only. Reply with the question only."
 
 (`crossfire_practice_inject_inference` will force `--max-turns 1` and `--reasoning low` and strip toolsets.)
 
-Memory-opener branch (`target_source=MEMORY.md`): do **not** call `crossfire_build_opener_cmdline` as-is (it does not know about the session JD). Build the same `hermes chat -Q` command as the fresh-start branch, with `-q` set to:
-
-```bash
-      prompt="$(crossfire_practice_interviewer_preamble)
-Session-two style opener. opening_target_source=MEMORY.md weakness_id=${CROSSFIRE_OPENER_WEAKNESS_ID} family=${CROSSFIRE_OPENER_FAMILY} missing_elements=[${CROSSFIRE_OPENER_MISSING_CSV}]. Ask ONE question that targets those missing elements and stays inside this session JD. Do not name weakness_id. Reply with the question only."
-```
-
-Keep printing opener attribution kv as today.
+Memory-opener branch (`target_source=MEMORY.md`): keep printing opener attribution kv as today. **Do not** use a Session-two memory-opener `-q` for the first spoken question (S6-T1). Start always uses the same fresh JD prompt as a session with no memory; MEMORY.md seasons follow-ups on the answer turn only.
 
 Replace the answer `-q` with:
 

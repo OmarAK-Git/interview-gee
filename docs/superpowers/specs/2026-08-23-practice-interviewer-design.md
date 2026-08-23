@@ -92,7 +92,7 @@ Operator sets:
 
 Allowlist for the session is **this JD only**. A paste is not bound to spec §4. A shipped pack is. Do not mix a second employer’s facts into the same session.
 
-If `MEMORY.md` already has weaknesses, the opener may target the newest gap that fits **this** JD’s families. Do not speak `weakness_id`. Do not ask the operator to name the weakness.
+If `MEMORY.md` already has weaknesses, the first spoken question is still a normal in-role question from **this JD**. Weaknesses may season follow-ups (at most one in-story probe, then move on); they do not become the session subject. Do not speak `weakness_id`. Do not ask the operator to name the weakness.
 
 ## 6. Interviewer procedure
 

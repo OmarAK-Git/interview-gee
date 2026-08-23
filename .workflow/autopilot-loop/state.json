@@ -2,33 +2,38 @@
   "queue_path": ".workflow/autopilot-queue.json",
   "goal": "Bounded GSD autopilot loop for Hermes Interview Sparring Partner.",
   "active_run": {
-    "status": "running",
-    "item_id": "S6-T1",
-    "next_runnable": "S6-T1",
-    "stop_reason": null,
+    "status": "stopped",
+    "item_id": null,
+    "next_runnable": null,
+    "stop_reason": "queue_drain",
     "completed_this_run": [
-      "S5-T1", "S5-T2", "S5-T3", "S5-T4", "S5-T5", "S5-T6", "S5-T7", "S5-GE"
+      "S5-T1", "S5-T2", "S5-T3", "S5-T4", "S5-T5",
+      "S5-T6", "S5-T7", "S5-GE", "S6-T1", "S6-GE"
     ],
     "blocked": [],
     "human_needed": [
       "S4-T11 live free-form Hermes Q&A transcript",
-      "S5-T7 live Codex/Luna practice pass"
+      "S5-T7 live Codex/Luna practice pass",
+      "S6-GE live New session JD-first with existing weakness"
     ],
     "evidence": [
-      ".workflow/S5-GE/results/verifier-result.md"
+      ".workflow/S5-GE/results/verifier-result.md",
+      ".workflow/S6-T1/results/verifier-result.md",
+      ".workflow/S6-GE/results/verifier-result.md"
     ],
     "flags": [
+      "queue_drained",
+      "gate_model_cursor-grok-4.6-high-fast",
       "s5_ge_pass",
-      "next_s6t1",
-      "gate_model_cursor-grok-4.6-high-fast"
+      "s6_ge_pass"
     ],
-    "updated_at": "2026-08-23T15:32:00-04:00",
+    "updated_at": "2026-08-23T16:00:00-04:00",
     "current_packet": null,
     "dispatch": {
       "role": "controller",
       "environment": "local",
       "model": "inherit",
-      "reason": "S5-GE pass; queue has S6-T1"
+      "reason": "Queue empty after S6-GE pass"
     }
   }
 }

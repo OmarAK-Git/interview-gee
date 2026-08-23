@@ -1256,7 +1256,7 @@
       "run_dir": ".workflow/S5-GE"
     },
     {
-      "status": "pending",
+      "status": "done",
       "tier": "T2",
       "type": "task",
       "priority": "must",
@@ -1266,9 +1266,13 @@
       "code_review_policy": "frequent_after_implement",
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": [],
+      "evidence": [
+        ".workflow/S6-T1/results/verifier-result.md",
+        ".workflow/S6-T1/results/code-reviewer-result.md",
+        ".workflow/S6-T1/results/researcher-result.md"
+      ],
       "id": "S6-T1",
       "title": "Practice weave: JD owns the first question",
       "depends_on": [
@@ -1311,7 +1315,7 @@
       "run_dir": ".workflow/S6-T1"
     },
     {
-      "status": "pending",
+      "status": "done",
       "tier": "T3",
       "type": "phase_exit",
       "priority": "must",
@@ -1321,9 +1325,12 @@
       "code_review_policy": "frequent_after_implement",
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
-      "evidence": [],
+      "evidence": [
+        ".workflow/S6-GE/results/test-runner-result.md",
+        ".workflow/S6-GE/results/verifier-result.md"
+      ],
       "id": "S6-GE",
       "title": "Gate: practice weave close-out",
       "depends_on": [

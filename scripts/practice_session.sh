@@ -39,6 +39,7 @@ Source: ${CROSSFIRE_JD_SOURCE_LABEL} (${CROSSFIRE_JD_SOURCE_ID})
 Temperature: ${CROSSFIRE_TEMPERATURE:-2} (1=stay on story/core; 2=typical core; 3-5=rarer in-role, still in this JD).
 Interviewer persona (optional, flavor only): ${CROSSFIRE_PERSONA:-}
 Follow the Practice interviewer (session JD) section of the crossfire-interviewer skill.
+The first spoken question is a normal in-role JD competency question. MEMORY.md may season follow-ups only; do not speak weakness_id.
 Do not invent employers or systems that are not in the session JD.
 Do not write MEMORY.md.
 EOF
@@ -63,6 +64,15 @@ CROSSFIRE_PERSONA=$(printf '%q' "${CROSSFIRE_PERSONA:-}")
 EOF
   if [ -n "${CROSSFIRE_JD_CONTEXT:-}" ]; then
     printf '%s\n' "$CROSSFIRE_JD_CONTEXT" >"${dir}/jd-context.md"
+  fi
+  if [ -n "${CROSSFIRE_OPENING_TARGET_SOURCE:-}" ]; then
+    cat >>"$f" <<EOF
+CROSSFIRE_OPENING_TARGET_SOURCE=${CROSSFIRE_OPENING_TARGET_SOURCE}
+CROSSFIRE_OPENER_FAMILY=${CROSSFIRE_OPENER_FAMILY:-}
+CROSSFIRE_OPENER_MISSING_CSV=${CROSSFIRE_OPENER_MISSING_CSV:-}
+CROSSFIRE_OPENER_WEAKNESS_ID=${CROSSFIRE_OPENER_WEAKNESS_ID:-}
+CROSSFIRE_MEMORY_PROBE_USED=${CROSSFIRE_MEMORY_PROBE_USED:-0}
+EOF
   fi
 }
 
@@ -116,30 +126,23 @@ crossfire_practice_start() {
   if [ -f "$HERMES_MEMORY_MD" ] && grep -q 'CROSSFIRE-WEAKNESSES:START' "$HERMES_MEMORY_MD" \
     && grep -q 'weakness_id:' "$HERMES_MEMORY_MD"; then
     attribution=$(crossfire_print_opener_attribution)
-    # $(...) is a subshell — re-select so stub wording sees opener fields
+    # $(...) is a subshell — re-select so opener fields persist for follow-up bias
     crossfire_select_newest_weakness "$HERMES_MEMORY_MD" >/dev/null
     target_source="${CROSSFIRE_OPENER_TARGET_SOURCE:-MEMORY.md}"
+    CROSSFIRE_OPENING_TARGET_SOURCE="$target_source"
+    CROSSFIRE_MEMORY_PROBE_USED=0
+    export CROSSFIRE_OPENING_TARGET_SOURCE CROSSFIRE_MEMORY_PROBE_USED
   fi
 
   if [ "${CROSSFIRE_PRACTICE_STUB:-0}" = "1" ]; then
     CROSSFIRE_SESSION_ID="sess_stub_practice"
-    if [ "$target_source" = "MEMORY.md" ]; then
-      question=$(crossfire_stub_opener_question "${CROSSFIRE_OPENER_FAMILY}" "${CROSSFIRE_OPENER_MISSING_CSV}")
-    else
-      question="Walk through how Praetor decides not to contain. What is the advisory boundary, and how would you know the decision was wrong?"
-    fi
+    question="Walk through how Praetor decides not to contain. What is the advisory boundary, and how would you know the decision was wrong?"
   else
     stdout=$(mktemp)
     stderr=$(mktemp)
-    if [ "$target_source" = "MEMORY.md" ]; then
-      prompt="$(crossfire_practice_interviewer_preamble)
-Session-two style opener. opening_target_source=MEMORY.md weakness_id=${CROSSFIRE_OPENER_WEAKNESS_ID} family=${CROSSFIRE_OPENER_FAMILY} missing_elements=[${CROSSFIRE_OPENER_MISSING_CSV}]. Ask ONE question that targets those missing elements and stays inside this session JD. Do not name weakness_id. Reply with the question only."
-      cmdline="hermes chat -Q --reasoning none --max-turns 3 --toolsets skills --skills $(printf '%q' "${HERMES_SKILLS_DIR}/crossfire-interviewer") --source tool -q $(printf '%q' "$prompt")"
-    else
-      prompt="$(crossfire_practice_interviewer_preamble)
+    prompt="$(crossfire_practice_interviewer_preamble)
 Ask ONE interview question from this JD only. Reply with the question only."
-      cmdline="hermes chat -Q --reasoning none --max-turns 3 --toolsets skills --skills $(printf '%q' "${HERMES_SKILLS_DIR}/crossfire-interviewer") --source tool -q $(printf '%q' "$prompt")"
-    fi
+    cmdline="hermes chat -Q --reasoning none --max-turns 3 --toolsets skills --skills $(printf '%q' "${HERMES_SKILLS_DIR}/crossfire-interviewer") --source tool -q $(printf '%q' "$prompt")"
     cmdline=$(crossfire_practice_inject_inference "$cmdline")
     if ! crossfire_hermes_invoke "$cmdline" "$stdout" "$stderr"; then
       rm -f "$stdout" "$stderr"
@@ -230,8 +233,17 @@ EOF
     echo "session_id: ${CROSSFIRE_SESSION_ID}" >>"$stderr"
   else
     [ -n "$CROSSFIRE_SESSION_ID" ] || fail_closed "missing session_id"
+    local memory_bias=""
+    if [ "${CROSSFIRE_OPENING_TARGET_SOURCE:-}" = "MEMORY.md" ] \
+      && [ "${CROSSFIRE_MEMORY_PROBE_USED:-0}" != "1" ]; then
+      memory_bias="
+Known weakness from MEMORY.md (season follow-ups only, not the session subject): family=${CROSSFIRE_OPENER_FAMILY} missing_elements=[${CROSSFIRE_OPENER_MISSING_CSV}]. You may ask at most ONE follow-up that listens for a missing element inside the current story, then move on. Do not restart the same drill. Do not speak weakness_id. Do not ask the operator to name the weakness."
+      CROSSFIRE_MEMORY_PROBE_USED=1
+      export CROSSFIRE_MEMORY_PROBE_USED
+    fi
     prompt="$(crossfire_practice_interviewer_preamble)
 Operator answer: ${answer}
+${memory_bias}
 
 Assess against exactly one family checklist. missing_elements = what was actually absent, not the full checklist. Emit propose-only YAML (family, missing_elements, evidence, persist_recommended) then ask ONE follow-up interview question per temperature. One model pass. Do not ask the operator to confirm persistence. Do not write MEMORY.md."
     cmdline="hermes chat -Q --resume $(printf '%q' "$CROSSFIRE_SESSION_ID") --reasoning none --max-turns 3 --toolsets skills --skills $(printf '%q' "$skill") --source tool -q $(printf '%q' "$prompt")"
@@ -314,7 +326,7 @@ crossfire_practice_skip() {
     stdout=$(mktemp)
     stderr=$(mktemp)
     prompt="$(crossfire_practice_interviewer_preamble)
-The operator skipped the last question (it may have sounded invented). Do not emit assessment YAML. Ask ONE different interview question from the same JD only. Reply with the question only."
+The operator skipped the last question (it may have sounded invented). Do not emit assessment YAML. Ask ONE different interview question from the same JD only — a new JD question, not hesitation about the same MEMORY.md gap. Reply with the question only."
     cmdline="hermes chat -Q --resume $(printf '%q' "$CROSSFIRE_SESSION_ID") --reasoning none --max-turns 3 --toolsets skills --skills $(printf '%q' "${HERMES_SKILLS_DIR}/crossfire-interviewer") --source tool -q $(printf '%q' "$prompt")"
     cmdline=$(crossfire_practice_inject_inference "$cmdline")
     if ! crossfire_hermes_invoke "$cmdline" "$stdout" "$stderr"; then

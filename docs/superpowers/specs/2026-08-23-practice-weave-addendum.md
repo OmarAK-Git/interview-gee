@@ -1,7 +1,7 @@
 # Practice weave (addendum)
 
 **Date:** 2026-08-23  
-**Status:** queued after Sprint 5 close-out. Do not implement during S5-T2…S5-GE.  
+**Status:** implemented in S6-T1 (2026-08-23). Live practice UI behavior below is authoritative.  
 **Authority:** the live practice UI (`bash scripts/practice_ui.sh`, `http://127.0.0.1:8787`). That is the session you run and show. Amends `docs/superpowers/specs/2026-08-23-practice-interviewer-design.md` §5 opener sentence.
 
 The old scripted theater (`scripts/demo.sh`, `demo_session_2.sh`, `sparring-1.0.0` §13) is **legacy**. S6 does not spend time on it and does not rewrite it. It is not the Monday live path.

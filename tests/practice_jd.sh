@@ -83,5 +83,50 @@ else
   bad "topic missing source label"
 fi
 
+# S6-T1: with MEMORY.md present, Q1 is JD competency — not the memory-opener drill
+if grep -q 'targets those missing elements' "$REPO_ROOT/scripts/practice_session.sh"; then
+  bad "start still targets missing elements in -q"
+else
+  ok "start -q no memory drill wording"
+fi
+
+start2=$(HOME="$HOME" HERMES_HOME="$HERMES_HOME" CROSSFIRE_PRACTICE_STUB=1 \
+  CROSSFIRE_RUNS_DIR="$CROSSFIRE_RUNS_DIR" \
+  CROSSFIRE_JD_KIND=pack \
+  CROSSFIRE_JD_SOURCE_ID=praetor \
+  CROSSFIRE_JD_SOURCE_LABEL='Project Praetor' \
+  CROSSFIRE_JD_CONTEXT='Project Praetor advisory-only never-contain' \
+  bash "$REPO_ROOT/scripts/practice_session.sh" start) || {
+  bad "session two start failed: $start2"
+}
+echo "$start2" | grep -q 'opening_target_source=MEMORY.md' \
+  && ok "session two attribution MEMORY.md" || bad "session two attribution: $start2"
+q2=$(printf '%s\n' "$start2" | awk -F= '/^question=/{sub(/^question=/,""); print; exit}')
+if printf '%s' "$q2" | grep -qi 'what action did you take and what measurable result'; then
+  bad "session two spoken Q is behavioral drill"
+else
+  ok "session two not behavioral drill"
+fi
+if printf '%s' "$q2" | grep -qi 'technical gap around'; then
+  bad "session two spoken Q is technical drill"
+else
+  ok "session two not technical drill"
+fi
+if printf '%s' "$q2" | grep -qi 'product decision gap'; then
+  bad "session two spoken Q is product drill"
+else
+  ok "session two not product drill"
+fi
+if printf '%s' "$q2" | grep -qi 'Praetor.*advisory\|advisory boundary\|decides not to contain'; then
+  ok "session two spoken Q is JD stub"
+else
+  bad "session two spoken Q not JD stub: $q2"
+fi
+
+grep -q 'season follow-ups' "$REPO_ROOT/scripts/practice_session.sh" \
+  && ok "answer seasons MEMORY follow-ups" || bad "answer memory follow-up bias missing"
+grep -q 'not hesitation about the same' "$REPO_ROOT/scripts/practice_session.sh" \
+  && ok "skip new JD not same gap" || bad "skip same-gap guard missing"
+
 echo "practice_jd: passed=$pass failed=$fail"
 [ "$fail" -eq 0 ]

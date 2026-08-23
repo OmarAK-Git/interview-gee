@@ -38,12 +38,12 @@ Spec: `docs/superpowers/specs/2026-08-23-practice-interviewer-design.md`
 - `S5-T7` done — docs; live Luna pass **human_needed**
 - `S5-GE` done (pass, Grok 4.6-high-fast) — live Luna **human_needed**
 
-Next runnable: `S6-T1` (practice weave; depends S5-GE).
+Next runnable: none (queue drained).
 
-## Sprint 6 — Practice weave (must) — PENDING
+## Sprint 6 — Practice weave (must) — GATED
 
-- `S6-T1` pending — JD owns the first question (depends S5-GE; needs research)
-- `S6-GE` pending — phase exit, Grok in-session (depends T1)
+- `S6-T1` done — JD owns Q1; MEMORY seasons follow-ups (verifier survives)
+- `S6-GE` done (pass, Grok 4.6-high-fast) — live JD-first New session **human_needed**
 
 Parked for S5-T3: sanitize `pack_id` before joining to a filesystem path (`app/packs.py` `require_session_jd`). Reviewer minor; local-only until HTTP.
 
