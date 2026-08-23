@@ -25,6 +25,7 @@ Sprint 1 complete and gated. Sprint 2 session-one harness complete. S3-GE pass. 
 - S5-T1 done — four JD packs + stdlib `app/packs.py`; leak check 8/0
 - S5-T2 done — Practice interviewer (session JD) in SKILL.md; ensure_skill copies sources
 - S5-T3 done — start requires one JD; GET /api/packs; pack_id sanitized
+- S5-T4 done — JD preamble on every turn; Skip without persist; inbound temp survives load_state
 
 ## Evidence
 
@@ -51,6 +52,7 @@ Sprint 1 complete and gated. Sprint 2 session-one harness complete. S3-GE pass. 
 - `.workflow/S5-T1/results/verifier-result.md`
 - `.workflow/S5-T2/results/verifier-result.md`
 - `.workflow/S5-T3/results/verifier-result.md`
+- `.workflow/S5-T4/results/verifier-result.md`
 - `docs/acceptance-checklist.md`
 
 ## Known limitations

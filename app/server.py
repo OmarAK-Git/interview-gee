@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 
 from inference import normalize_inference
 from memory_view import parse_weaknesses
-from packs import list_source_packs, start_session_args
+from packs import list_source_packs, normalize_temperature, start_session_args
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = REPO_ROOT / "scripts" / "practice_session.sh"
@@ -183,12 +183,45 @@ class Handler(BaseHTTPRequestHandler):
             if not SESSION["run_id"]:
                 self._json(409, {"error": "no active session"})
                 return
+            extra_env: dict[str, str] = {"CROSSFIRE_RUN_ID": SESSION["run_id"]}
+            if "temperature" in payload:
+                try:
+                    extra_env["CROSSFIRE_TEMPERATURE"] = str(
+                        normalize_temperature(payload.get("temperature"))
+                    )
+                except ValueError as exc:
+                    self._json(400, {"error": str(exc)})
+                    return
             code, out, err = run_practice(
                 ["answer", text],
-                extra_env={"CROSSFIRE_RUN_ID": SESSION["run_id"]},
+                extra_env=extra_env,
             )
             parsed = kv_parse(out)
             if code != 0 and parsed.get("assessment_status") != "skipped":
+                self._json(500, {"error": err or out, "stdout": out, **parsed})
+                return
+            self._json(200, parsed)
+            return
+
+        if path == "/api/session/skip":
+            if not SESSION["run_id"]:
+                self._json(409, {"error": "no active session"})
+                return
+            extra_env: dict[str, str] = {"CROSSFIRE_RUN_ID": SESSION["run_id"]}
+            if "temperature" in payload:
+                try:
+                    extra_env["CROSSFIRE_TEMPERATURE"] = str(
+                        normalize_temperature(payload.get("temperature"))
+                    )
+                except ValueError as exc:
+                    self._json(400, {"error": str(exc)})
+                    return
+            code, out, err = run_practice(
+                ["skip"],
+                extra_env=extra_env,
+            )
+            parsed = kv_parse(out)
+            if code != 0:
                 self._json(500, {"error": err or out, "stdout": out, **parsed})
                 return
             self._json(200, parsed)
