@@ -33,6 +33,9 @@ grep -q 'q_technical_01' "$SKILL" && ok "demo q_technical_01 remains" || bad "de
 grep -Fq 'Walk through how Praetor decides not to contain' "$SKILL" && ok "demo question verbatim" || bad "demo question verbatim"
 grep -q 'temperature' "$SKILL" && ok "skill mentions temperature" || bad "skill mentions temperature"
 grep -q 'Skip' "$SKILL" && ok "skill mentions Skip" || bad "skill mentions Skip"
+grep -Fq 'Tell me more about that' "$SKILL" && ok "skill probe: short answer" || bad "skill probe: short answer"
+grep -Fq 'What was the hardest part of that for you personally?' "$SKILL" && ok "skill probe: rehearsed" || bad "skill probe: rehearsed"
+grep -q 'Forbidden interviewer moves' "$SKILL" && ok "skill forbids coaching" || bad "skill forbids coaching"
 
 echo "source_packs: passed=$pass failed=$fail"
 [ "$fail" -eq 0 ]
