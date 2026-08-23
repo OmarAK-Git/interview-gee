@@ -13,6 +13,7 @@ from urllib.parse import urlparse
 from inference import normalize_inference
 from memory_view import parse_weaknesses
 from packs import list_source_packs, normalize_temperature, start_session_args
+from report import apply_end_report
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = REPO_ROOT / "scripts" / "practice_session.sh"
@@ -240,7 +241,7 @@ class Handler(BaseHTTPRequestHandler):
                 ["end"],
                 extra_env={"CROSSFIRE_RUN_ID": SESSION["run_id"]},
             )
-            parsed = kv_parse(out)
+            parsed = apply_end_report(kv_parse(out))
             SESSION["run_id"] = None
             SESSION["session_id"] = None
             if code != 0:

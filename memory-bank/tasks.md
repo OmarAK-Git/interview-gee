@@ -42,6 +42,8 @@ Next runnable: none (queue drained).
 
 T1 (2026-08-23): Practice UI is paste-only; New session must use the pasted JD (stale server was ignoring it).
 
+T1 (2026-08-23): End-session summary is prose (not `family:[elements]` tag dump).
+
 ## Sprint 6 — Practice weave (must) — GATED
 
 - `S6-T1` done — JD owns Q1; MEMORY seasons follow-ups (verifier survives)
