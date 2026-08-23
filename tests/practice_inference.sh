@@ -10,6 +10,15 @@ bad() { echo "FAIL: $1"; fail=$((fail + 1)); }
 # shellcheck source=scripts/practice_common.sh
 source "$REPO_ROOT/scripts/practice_common.sh"
 
+got=$(crossfire_extract_spoken_question "Tell me about a detection engineering project where you used Microsoft Sentinel or Defender to improve signal-to-noise, and how you measured whether the change strengthened the organization’s security posture.")
+printf '%s' "$got" | grep -q 'detection engineering project' && ok "extract Tell-me without ?" || bad "extract Tell-me without ?: [$got]"
+
+got=$(crossfire_extract_spoken_question $'family: technical\nWalk through how you tuned a Sentinel rule.\n')
+printf '%s' "$got" | grep -q 'Sentinel rule' && ok "extract Walk-through without ?" || bad "extract Walk-through: [$got]"
+
+got=$(crossfire_extract_spoken_question $'Ignore weakness_id?\nWhat tradeoff did you accept?')
+[ "$got" = "What tradeoff did you accept?" ] && ok "extract prefers ? over weakness_id" || bad "extract prefers ?: [$got]"
+
 CROSSFIRE_INFERENCE=nous
 flags=$(crossfire_practice_inference_flags)
 printf '%s\n' "$flags" | grep -q -- '--provider nous' && ok "nous provider flag" || bad "nous provider flag: $flags"

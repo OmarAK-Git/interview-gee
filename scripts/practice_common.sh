@@ -86,7 +86,14 @@ crossfire_require_monday_home() {
 
 crossfire_extract_spoken_question() {
   local raw="${1:-}" line=""
-  line=$(printf '%s\n' "$raw" | tr -d '\r' | grep -E '[^[:space:]].*\?' | grep -viE 'reasoning|weakness_id' | tail -1 | sed 's/^[[:space:]]*//' || true)
+  raw=$(printf '%s\n' "$raw" | tr -d '\r')
+  line=$(printf '%s\n' "$raw" | grep -E '[^[:space:]].*\?' | grep -viE 'reasoning|weakness_id' | tail -1 | sed 's/^[[:space:]]*//' || true)
+  if [ -z "$line" ]; then
+    line=$(printf '%s\n' "$raw" | grep -Ei '^(Tell me|Walk through|Walk me|How |What |Why |When |Describe )' | tail -1 | sed 's/^[[:space:]]*//' || true)
+  fi
+  if [ -z "$line" ]; then
+    line=$(printf '%s\n' "$raw" | grep -E '[^[:space:]]' | grep -viE '^(family:|missing_elements:|persist_recommended:|evidence:|question_id:|reasoning)' | tail -1 | sed 's/^[[:space:]]*//' || true)
+  fi
   printf '%s' "$line"
 }
 
