@@ -2,8 +2,8 @@
 
 ## Current state
 
-Sprint 5 `S5-T1`–`S5-T7` done (verifier survives). Next is `S5-GE`. Branch `practice-live-ui`. Live Codex/Luna practice pass is **human_needed**.
+Sprint 5 is gated. `S5-T1`–`S5-GE` done. Branch `practice-live-ui`. Queue drained.
 
 ## Immediate next step
 
-Run S5-GE in-session (test-runner then Grok gate). Do not treat stub as proof. Isolation fail-closed still required.
+Drain continues: `S6-T1` practice weave (JD owns the first question). Live Luna pass remains **human_needed**. Automated tests must not target real `~/.hermes`.

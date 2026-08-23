@@ -24,7 +24,7 @@ Projected from the plan into `.workflow/autopilot-queue.json`.
 - `S4-T12` done
 - `S4-GE` done (pass, Grok 4.6-high)
 
-## Sprint 5 — Practice interviewer (must) — IN PROGRESS
+## Sprint 5 — Practice interviewer (must) — GATED
 
 Plan: `docs/superpowers/plans/2026-08-23-practice-interviewer.md`
 Spec: `docs/superpowers/specs/2026-08-23-practice-interviewer-design.md`
@@ -36,9 +36,14 @@ Spec: `docs/superpowers/specs/2026-08-23-practice-interviewer-design.md`
 - `S5-T5` done — JD/persona/temp/Skip UI (verifier survives; no browser MCP, HTTP+contract used)
 - `S5-T6` done — End Weak/Strong report; topic `{source} · {family}` (verifier survives; MEMORY write host-gapped on Windows python3)
 - `S5-T7` done — docs; live Luna pass **human_needed**
-- `S5-GE` pending — phase exit, Grok in-session (depends T7)
+- `S5-GE` done (pass, Grok 4.6-high-fast) — live Luna **human_needed**
 
-Next runnable: `S5-GE`.
+Next runnable: `S6-T1` (practice weave; depends S5-GE).
+
+## Sprint 6 — Practice weave (must) — PENDING
+
+- `S6-T1` pending — JD owns the first question (depends S5-GE; needs research)
+- `S6-GE` pending — phase exit, Grok in-session (depends T1)
 
 Parked for S5-T3: sanitize `pack_id` before joining to a filesystem path (`app/packs.py` `require_session_jd`). Reviewer minor; local-only until HTTP.
 

@@ -29,6 +29,7 @@ Sprint 1 complete and gated. Sprint 2 session-one harness complete. S3-GE pass. 
 - S5-T5 done — pick/paste JD UI, Skip, temperature; 400 surfaced
 - S5-T6 done — End report Weak/Strong; persist topic `{label} · {family}`; evidence truncate 180 no ellipsis
 - S5-T7 done — Session JD docs; live Luna **human_needed**
+- S5-GE pass — gate model cursor-grok-4.6-high-fast
 
 ## Evidence
 
@@ -59,6 +60,8 @@ Sprint 1 complete and gated. Sprint 2 session-one harness complete. S3-GE pass. 
 - `.workflow/S5-T5/results/verifier-result.md`
 - `.workflow/S5-T6/results/verifier-result.md`
 - `.workflow/S5-T7/results/verifier-result.md`
+- `.workflow/S5-GE/results/test-runner-result.md`
+- `.workflow/S5-GE/results/verifier-result.md`
 - `docs/acceptance-checklist.md`
 
 ## Known limitations

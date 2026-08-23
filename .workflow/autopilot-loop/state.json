@@ -3,31 +3,32 @@
   "goal": "Bounded GSD autopilot loop for Hermes Interview Sparring Partner.",
   "active_run": {
     "status": "running",
-    "item_id": "S5-T7",
-    "next_runnable": "S5-T7",
+    "item_id": "S6-T1",
+    "next_runnable": "S6-T1",
     "stop_reason": null,
-    "completed_this_run": ["S5-T1", "S5-T2", "S5-T3", "S5-T4", "S5-T5", "S5-T6"],
+    "completed_this_run": [
+      "S5-T1", "S5-T2", "S5-T3", "S5-T4", "S5-T5", "S5-T6", "S5-T7", "S5-GE"
+    ],
     "blocked": [],
     "human_needed": [
       "S4-T11 live free-form Hermes Q&A transcript",
       "S5-T7 live Codex/Luna practice pass"
     ],
     "evidence": [
-      ".workflow/S5-T1/results/verifier-result.md",
-      ".workflow/S5-T2/results/verifier-result.md",
-      ".workflow/S5-T3/results/verifier-result.md",
-      ".workflow/S5-T4/results/verifier-result.md",
-      ".workflow/S5-T5/results/verifier-result.md",
-      ".workflow/S5-T6/results/verifier-result.md"
+      ".workflow/S5-GE/results/verifier-result.md"
     ],
-    "flags": ["draining_sprint_5", "s5t7_live_pass_human_needed"],
-    "updated_at": "2026-08-23T15:10:00-04:00",
+    "flags": [
+      "s5_ge_pass",
+      "next_s6t1",
+      "gate_model_cursor-grok-4.6-high-fast"
+    ],
+    "updated_at": "2026-08-23T15:32:00-04:00",
     "current_packet": null,
     "dispatch": {
       "role": "controller",
       "environment": "local",
       "model": "inherit",
-      "reason": "S5-T6 verifier survives; next S5-T7 docs"
+      "reason": "S5-GE pass; queue has S6-T1"
     }
   }
 }
