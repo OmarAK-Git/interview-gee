@@ -9,6 +9,16 @@ Stable Hermes skill + harness for interview sparring with weakness tracking.
 
 Hermes interviews you in a localhost UI. Weaknesses persist to **WSL `$HOME/.hermes` only**. Windows `%USERPROFILE%\.hermes` is refused. Tests and `demo.sh` still fail-closed on any real home.
 
+Design spec: `docs/superpowers/specs/2026-08-23-practice-interviewer-design.md`.
+
+**Practice UI (one session = one JD):**
+
+- **Required JD** — pick a shipped pack under `skills/crossfire-interviewer/sources/` or paste JD text before New session.
+- **Optional persona** — free-text interviewer voice flavor (title, tenure, style); empty uses default Crossfire voice.
+- **Temperature 1–5** (default 2) — mid-session change applies to the **next** question only.
+- **Skip** — ask a different question from the same JD; no assess, no persist, no report line.
+- **End session** — Weak and Strong report for this session; right panel shows `{source} · {family}` buckets, not transcript cards.
+
 ```bash
 export HOME=/home/fish   # WSL user that has Hermes
 # Once: copy Nous auth from the working isolated profile if Monday has no keys
@@ -17,7 +27,6 @@ export HOME=/home/fish   # WSL user that has Hermes
 bash scripts/practice_ui.sh
 # open http://127.0.0.1:8787
 # Enter sends; Shift+Enter for a new line. Speak (Chrome/Edge) for voice replies.
-# Weaknesses panel shows cards, not the on-disk YAML.
 # Inference toggle: Nous (default) or Codex. Codex: hermes auth add openai-codex
 # on WSL $HOME/.hermes first. Choice applies on New session.
 ```

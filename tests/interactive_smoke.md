@@ -95,3 +95,41 @@ hermes chat \
 ## Monday profile note
 
 For real Monday use, point `HERMES_HOME` at `$HOME/.hermes` and install the skill once (see `README.md`). Do **not** copy `stage` demo `MEMORY.md` or staged candidate skills into Monday. Build weakness history only from your own free-form sessions.
+
+---
+
+## Practice JD — live Luna close-out (S5-T7)
+
+**Date:** 2026-08-23  
+**Status:** **human_needed** — live Codex/Luna pass not run in implementer session. Design spec remains `approved design (awaiting implementation plan)` until this checklist is recorded.
+
+Run on Monday WSL `HERMES_HOME` with Codex / `gpt-5.6-luna` (`bash scripts/practice_ui.sh`, open http://127.0.0.1:8787). Do not raise `--max-turns`; each turn is one `hermes chat -Q`.
+
+### Live checklist
+
+| # | Step | Pass? | Notes |
+| --- | --- | --- | --- |
+| 1 | New session: pack `praetor`, empty persona, temperature 2. Context visible. First question stays in Praetor facts. | pending | |
+| 2 | Answer thinly. Next question probes or stays in-role. | pending | |
+| 3 | Move temperature to 4. Next question is a rarer Praetor angle, not Mastercard/ALTER_EGO. | pending | |
+| 4 | Skip once. No new weakness from the skipped question. | pending | |
+| 5 | Answer well on one family (strong) and poorly on another (weak). | pending | |
+| 6 | End. Report lists Weak and Strong. Panel title is `Project Praetor · …`, tags are only missing elements, quote is short. | pending | |
+| 7 | New session, **paste** a different JD. Questions do not leak Praetor tokens. Optional persona fill once to confirm voice flavor. | pending | |
+
+### Placeholder for live transcript
+
+```text
+# LIVE PRACTICE JD RUN (pending)
+# date:
+# hermes --version:
+# HERMES_HOME:
+# inference: Codex / gpt-5.6-luna
+# pack session opener:
+# temperature-4 question:
+# skip observed (no persist):
+# end report weak/strong:
+# panel bucket titles ({source} · {family}):
+# paste-JD session (no Praetor leak):
+# persona flavor (optional):
+```

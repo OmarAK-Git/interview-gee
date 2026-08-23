@@ -28,6 +28,7 @@ Sprint 1 complete and gated. Sprint 2 session-one harness complete. S3-GE pass. 
 - S5-T4 done — JD preamble on every turn; Skip without persist; inbound temp survives load_state
 - S5-T5 done — pick/paste JD UI, Skip, temperature; 400 surfaced
 - S5-T6 done — End report Weak/Strong; persist topic `{label} · {family}`; evidence truncate 180 no ellipsis
+- S5-T7 done — Session JD docs; live Luna **human_needed**
 
 ## Evidence
 
@@ -57,6 +58,7 @@ Sprint 1 complete and gated. Sprint 2 session-one harness complete. S3-GE pass. 
 - `.workflow/S5-T4/results/verifier-result.md`
 - `.workflow/S5-T5/results/verifier-result.md`
 - `.workflow/S5-T6/results/verifier-result.md`
+- `.workflow/S5-T7/results/verifier-result.md`
 - `docs/acceptance-checklist.md`
 
 ## Known limitations

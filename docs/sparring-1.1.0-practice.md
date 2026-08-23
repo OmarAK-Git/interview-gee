@@ -45,6 +45,14 @@ Override models with `CROSSFIRE_NOUS_MODEL` / `CROSSFIRE_CODEX_MODEL`. Does **no
 
 Practice invokes use `--max-turns 1`, `--reasoning low`, and no `--toolsets`. Luna is the light GPT-5.6 Codex tier; low reasoning stays on so assessment can think without stacked tool rounds. Override with `CROSSFIRE_CODEX_MODEL` / `CROSSFIRE_REASONING`. The UI still waits for the full `hermes chat -Q`.
 
+## Session JD (required)
+
+Every New session needs exactly one job description: pick a shipped pack under `skills/crossfire-interviewer/sources/` or paste JD text. Optional persona flavors interviewer voice. Temperature 1–5 (default 2) changes the next question only. Skip asks again without assessing.
+
+End session shows Weak and Strong for this session. The right panel shows merged family buckets (`{source} · {family}`), not `q_live_N practice gap` transcripts.
+
+Practice invokes remain `--max-turns 1`, `--reasoning low`, Codex default `gpt-5.6-luna`.
+
 ## Named cuts
 
 - Session history / reread past sessions

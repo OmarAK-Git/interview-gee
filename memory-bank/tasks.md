@@ -35,10 +35,10 @@ Spec: `docs/superpowers/specs/2026-08-23-practice-interviewer-design.md`
 - `S5-T4` done — preamble + Skip + mid-session temperature (verifier survives)
 - `S5-T5` done — JD/persona/temp/Skip UI (verifier survives; no browser MCP, HTTP+contract used)
 - `S5-T6` done — End Weak/Strong report; topic `{source} · {family}` (verifier survives; MEMORY write host-gapped on Windows python3)
-- `S5-T7` pending — docs; live Luna pass is a manual check (depends T6)
+- `S5-T7` done — docs; live Luna pass **human_needed**
 - `S5-GE` pending — phase exit, Grok in-session (depends T7)
 
-Next runnable: `S5-T7`.
+Next runnable: `S5-GE`.
 
 Parked for S5-T3: sanitize `pack_id` before joining to a filesystem path (`app/packs.py` `require_session_jd`). Reviewer minor; local-only until HTTP.
 
