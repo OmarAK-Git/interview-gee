@@ -51,4 +51,4 @@ Do not start while Sprint 5 is in progress. The other chat owns S5-T2…S5-GE.
 - `S6-T1` pending — JD owns the first question; MEMORY.md biases follow-ups only (depends S5-GE; needs research)
 - `S6-GE` pending — phase exit, Grok in-session (depends T1)
 
-Supersedes practice design §5 “opener may target the newest gap” and plan Task 4 “Ask ONE question that targets those missing elements.” Leaves `sparring-1.0.0` §13 demo opener locked.
+Supersedes practice design §5 “opener may target the newest gap” and plan Task 4 “Ask ONE question that targets those missing elements.” This is the live UI you run and show. Unused `demo.sh` theater is left alone, not the Monday path.

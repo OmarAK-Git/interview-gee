@@ -44,7 +44,7 @@
     "practice_plan": "docs/superpowers/plans/2026-08-23-practice-interviewer.md",
     "practice_authority": "sparring-1.1.0 + 2026-08-23 practice interviewer design; 1.0.0 demo contract unchanged",
     "practice_weave": "docs/superpowers/specs/2026-08-23-practice-weave-addendum.md",
-    "practice_weave_note": "S6-T1 / S6-GE run only after S5-GE. Do not implement during Sprint 5. Practice New session is JD-first; MEMORY.md biases follow-ups. sparring-1.0.0 §13 demo opener stays memory-only."
+    "practice_weave_note": "S6-T1 / S6-GE run only after S5-GE. Do not implement during Sprint 5. Live practice UI New session is JD-first; MEMORY.md biases follow-ups. That is the session you run and show. Leave unused demo.sh theater as-is."
   },
   "items": [
     {
@@ -961,7 +961,7 @@
       "run_dir": ".workflow/S5-T2"
     },
     {
-      "status": "pending",
+      "status": "in_progress",
       "tier": "T2",
       "type": "task",
       "priority": "must",
@@ -971,7 +971,7 @@
       "code_review_policy": "frequent_after_implement",
       "implementation_agent": "implementer",
       "verification_agent": "skeptic-verifier",
-      "attempts": 0,
+      "attempts": 1,
       "max_retries": 1,
       "evidence": [],
       "id": "S5-T3",
@@ -1254,7 +1254,7 @@
         "S5-GE"
       ],
       "goal": "After Sprint 5 close-out, stop the practice memory-opener drill. New session first question is a normal JD competency question. Known weaknesses season at most one follow-up, then the interviewer moves on.",
-      "scope": "Sprint 6 task 1 only. Practice path. Do not implement during S5-T2..S5-GE. Do not change demo_session_2.sh, isolation, the three demo questions, or persist >=2. Do not add a second memory store or competency picker.",
+      "scope": "Sprint 6 task 1 only. Live practice UI. Do not implement during S5-T2..S5-GE. Do not spend time on unused demo.sh theater. Do not change isolation or persist >=2. Do not add a second memory store or competency picker.",
       "description": "Authoritative addendum: docs/superpowers/specs/2026-08-23-practice-weave-addendum.md. Research first: skill-only rewrite of the first -q vs stop using the practice memory-opener branch and inject MEMORY.md only as follow-up bias. Then amend design §5 (opener may target gap) and plan Task 4 memory-opener -q (Ask ONE question that targets those missing elements). Every new practice session will usually already have a weakness; that is expected. JD owns the question stream. Honor Skip and I don't want this topic as a new JD question, not as hesitation about the same gap. Attribution kv may still print MEMORY.md; it must not force the first spoken question to be the drill.",
       "files_allowed": [
         "skills/crossfire-interviewer/SKILL.md",
@@ -1272,7 +1272,7 @@
         "Practice New session first spoken question is a JD competency question, not a restatement of the newest MEMORY.md gap.",
         "Follow-ups may probe a fitting weakness at most once inside the current story, then move on.",
         "Skip / I don't want this topic yields a different JD question, not another turn on the same gap.",
-        "demo_session_2.sh and sparring-1.0.0 §13 memory-only opener are unchanged.",
+        "Do not rewrite scripts/demo.sh or demo_session_2.sh (legacy theater, not the live path).",
         "Design §5 and plan Task 4 no longer require or prefer a practice opener that targets missing_elements.",
         "Persist rule remains >= 2 missing of one family."
       ],
@@ -1308,7 +1308,7 @@
       "depends_on": [
         "S6-T1"
       ],
-      "goal": "Confirm practice New session is JD-first and the 1.0.0 demo still opens session two on the persisted weakness.",
+      "goal": "Confirm the live practice UI New session is JD-first. Unused demo.sh theater is left alone, not treated as the show path.",
       "scope": "Verify-only sprint-6 gate. Do not implement further weave work here. Gate model is cursor-grok-4.6-high-fast; never Opus.",
       "description": "Static checks that practice no longer ships the Task 4 memory-drill -q, design §5 no longer says the opener may target the gap, and demo_session_2.sh still uses MEMORY.md. Isolation fail-closed still required.",
       "files_allowed": [
@@ -1318,7 +1318,7 @@
       "acceptance_criteria": [
         "S6-T1 is done with verifier evidence.",
         "Practice first-question path is JD-owned; MEMORY.md is follow-up bias only.",
-        "demo_session_2.sh still implements the memory-only opener.",
+        "scripts/demo.sh and demo_session_2.sh were not rewritten.",
         "Automated tests do not target real ~/.hermes."
       ],
       "verification": {
