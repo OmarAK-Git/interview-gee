@@ -155,14 +155,40 @@ function finishVoiceAndSend() {
   }, 200);
 }
 
+const sendBtn = document.getElementById("send");
+const startBtn = document.getElementById("start");
+const endBtn = document.getElementById("end");
+
+function setBusy(on) {
+  sendBtn.disabled = on;
+  startBtn.disabled = on;
+  endBtn.disabled = on;
+  answer.disabled = on;
+}
+
+async function withWait(label, fn) {
+  const wait = document.createElement("div");
+  wait.className = "bubble interviewer waiting";
+  wait.textContent = label;
+  chat.appendChild(wait);
+  chat.scrollTop = chat.scrollHeight;
+  setBusy(true);
+  try {
+    return await fn();
+  } finally {
+    wait.remove();
+    setBusy(false);
+  }
+}
+
 document.getElementById("start").addEventListener("click", async () => {
   tts.cancel();
   stopVoice();
-  const data = await api("/api/session/start", {
+  const data = await withWait("Interviewer is thinking…", () => api("/api/session/start", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ inference: selectedInference() }),
-  });
+  }));
   chat.innerHTML = "";
   showMeta(data);
   if (data.attribution) bubble("interviewer", data.attribution);
@@ -174,7 +200,9 @@ document.getElementById("start").addEventListener("click", async () => {
 document.getElementById("end").addEventListener("click", async () => {
   tts.cancel();
   stopVoice();
-  const data = await api("/api/session/end", { method: "POST", body: "{}" });
+  const data = await withWait("Wrapping up…", () =>
+    api("/api/session/end", { method: "POST", body: "{}" }),
+  );
   bubble("interviewer", `Session ended. Persisted ${data.persisted_count || 0} weakness(es).`);
   await refreshMemory();
 });
@@ -186,11 +214,13 @@ composer.addEventListener("submit", async (e) => {
   if (!text) return;
   bubble("operator", text);
   answer.value = "";
-  const data = await api("/api/session/answer", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text }),
-  });
+  const data = await withWait("Interviewer is thinking…", () =>
+    api("/api/session/answer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    }),
+  );
   showMeta(data);
   const extra = data.assessment_status === "skipped" ? "skipped" : "";
   bubble("interviewer", data.question || data.tts_text, extra);

@@ -43,6 +43,8 @@ The interviewer is still Hermes (`hermes chat --resume`). The UI **Inference** c
 
 Override models with `CROSSFIRE_NOUS_MODEL` / `CROSSFIRE_CODEX_MODEL`. Does **not** rewrite `config.yaml`. Codex needs `hermes auth add openai-codex` (or imported `~/.codex/auth.json`) on the Monday `HERMES_HOME`.
 
+Practice invokes use `--max-turns 1`, `--reasoning none`, and no `--toolsets` so Codex does not spend extra rounds reading skill files. The UI still waits for the full `hermes chat -Q` (no token stream). A faster Codex id is `CROSSFIRE_CODEX_MODEL` (default `gpt-5.4`).
+
 ## Named cuts
 
 - Session history / reread past sessions

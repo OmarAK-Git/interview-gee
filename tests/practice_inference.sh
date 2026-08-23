@@ -28,9 +28,15 @@ else
   ok "unknown inference fail-closed"
 fi
 
-cmd="hermes chat -Q --reasoning none -q hi"
+cmd="hermes chat -Q --reasoning none --max-turns 3 --toolsets skills -q hi"
 injected=$(crossfire_practice_inject_inference "$cmd")
 printf '%s\n' "$injected" | grep -q 'hermes chat --provider' && ok "inject after hermes chat" || bad "inject: $injected"
+printf '%s\n' "$injected" | grep -q -- '--max-turns 1' && ok "force max-turns 1" || bad "max-turns: $injected"
+if printf '%s\n' "$injected" | grep -q -- '--toolsets'; then
+  bad "toolsets should be stripped: $injected"
+else
+  ok "strip toolsets"
+fi
 
 home=$(mktemp -d /tmp/crossfire-practice-inf.XXXXXX)
 trap 'rm -rf "$home"' EXIT

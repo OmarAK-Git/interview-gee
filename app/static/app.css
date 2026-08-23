@@ -26,6 +26,7 @@ main { display: flex; flex-direction: column; min-height: 0; }
 .bubble { max-width: 42rem; margin: 0.5rem 0; padding: 0.75rem 1rem; border-radius: 12px; background: var(--panel); }
 .bubble.operator { margin-left: 2rem; background: #24304a; }
 .bubble.skipped { border: 1px solid var(--warn); }
+.bubble.waiting { opacity: 0.7; font-style: italic; }
 #composer { padding: 1rem; border-top: 1px solid #2a3140; }
 textarea { width: 100%; background: var(--panel); color: var(--ink); border: 1px solid #2a3140; border-radius: 8px; padding: 0.6rem; }
 .row { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; flex-wrap: wrap; }

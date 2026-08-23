@@ -116,8 +116,24 @@ crossfire_practice_inference_flags() {
   printf -- '--provider %s --model %s' "$provider" "$model"
 }
 
+crossfire_practice_speed_tune() {
+  local cmd="${1:-}"
+  # File tools cost extra Codex/Nous rounds. Preload --skills is enough.
+  cmd=$(printf '%s' "$cmd" | sed -E 's/ --toolsets[[:space:]]+[^[:space:]]+//g')
+  if printf '%s' "$cmd" | grep -q -- '--max-turns'; then
+    cmd=$(printf '%s' "$cmd" | sed -E 's/ --max-turns[[:space:]]+[0-9]+/ --max-turns 1/g')
+  else
+    cmd="${cmd/hermes chat/hermes chat --max-turns 1}"
+  fi
+  if ! printf '%s' "$cmd" | grep -q -- '--reasoning'; then
+    cmd="${cmd/hermes chat/hermes chat --reasoning none}"
+  fi
+  printf '%s' "$cmd"
+}
+
 crossfire_practice_inject_inference() {
-  local cmd="${1:-}" flags
+  local cmd flags
+  cmd=$(crossfire_practice_speed_tune "${1:-}")
   flags=$(crossfire_practice_inference_flags)
   printf '%s' "${cmd/hermes chat/hermes chat ${flags}}"
 }
